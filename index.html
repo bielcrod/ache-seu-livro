@@ -1,0 +1,4529 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Ache seu livro 📚</title>
+  <style>
+    /* Reset e estilos base */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    body, html {
+      height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+      overflow-x: hidden;
+      color: #333;
+      line-height: 1.5;
+    }
+    
+    #app {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+    }
+    
+    #background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      filter: brightness(0.4);
+      z-index: 0;
+      transition: background-image 0.8s ease;
+    }
+    
+    #overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: 1;
+    }
+    
+    #content {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      height: 90vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .screen {
+      display: none;
+      padding: 20px;
+      flex-direction: column;
+      height: 100%;
+      overflow-y: auto;
+    }
+    
+    .screen.active {
+      display: flex;
+    }
+    
+    h1, h2, h3 {
+      color: #2d5f8b;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+    }
+    
+    /* Tela inicial */
+    .intro-screen {
+      justify-content: center;
+      text-align: center;
+    }
+    
+    .intro-screen p {
+      margin-bottom: 25px;
+      color: #555;
+    }
+    
+    .language-selection {
+      margin: 25px 0;
+    }
+    
+    .lang-btn {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      background: #2d5f8b;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .lang-btn:hover {
+      background: #3a7ca5;
+      transform: translateY(-2px);
+    }
+    
+    .flag {
+      font-size: 1.3rem;
+      margin-right: 8px;
+    }
+    
+    /* Progresso do quiz */
+    .progress-container {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    
+    .progress-bar {
+      height: 6px;
+      background: #e0e0e0;
+      border-radius: 3px;
+      margin-bottom: 8px;
+      position: relative;
+    }
+    
+    .progress-bar-fill {
+      height: 100%;
+      background: #4cb5f5;
+      border-radius: 3px;
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+    
+    #progressText {
+      display: block;
+      text-align: right;
+      font-size: 0.9rem;
+      color: #666;
+    }
+    
+    /* Perguntas */
+    .question-text {
+      font-size: 1.2rem;
+      margin-bottom: 25px;
+      font-weight: 500;
+      text-align: center;
+      min-height: 3.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .options {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .option {
+      display: flex;
+      align-items: center;
+      padding: 15px;
+      background: white;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .option:hover {
+      border-color: #4cb5f5;
+    }
+    
+    .option input[type="checkbox"],
+    .option input[type="radio"] {
+      margin-right: 12px;
+      transform: scale(1.2);
+    }
+    
+    .option label {
+      cursor: pointer;
+      width: 100%;
+      font-size: 1rem;
+    }
+    
+    /* Navegação */
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: auto;
+      gap: 10px;
+    }
+    
+    .nav-btn {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 10px;
+      background: #2d5f8b;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex: 1;
+      transition: all 0.3s ease;
+    }
+    
+    .nav-btn:hover {
+      background: #3a7ca5;
+    }
+    
+    .nav-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    
+    /* Resultados */
+    .book-section {
+      margin-bottom: 20px;
+    }
+    
+    .book-section h3 {
+      text-align: left;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.1rem;
+    }
+    
+    .book-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+    
+    .book-card {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+    
+    .book-cover {
+      height: 160px;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+    
+    .book-info {
+      padding: 15px;
+    }
+    
+    .book-title {
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: #222;
+      font-size: 1rem;
+    }
+    
+    .book-author {
+      color: #666;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+    }
+    
+    .book-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: #888;
+    }
+    
+    .available-badge {
+      background: #28a745;
+      color: white;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: bold;
+    }
+    
+    /* Botões de ação */
+    .action-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    
+    .action-btn {
+      padding: 15px;
+      border: none;
+      border-radius: 10px;
+      background: #2d5f8b;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+    
+    .action-btn:hover {
+      background: #3a7ca5;
+    }
+    
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 100;
+      overflow-y: auto;
+    }
+    
+    .modal-content {
+      background: white;
+      margin: 20px auto;
+      padding: 20px;
+      border-radius: 15px;
+      max-width: 95%;
+      width: 100%;
+      box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+      position: relative;
+      animation: modalFadeIn 0.3s;
+    }
+/* Estilo do modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modal-content {
+  background-color: white;
+  margin: 10% auto;
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px;
+  text-align: center;
+}
+
+.close-modal {
+  float: right;
+  font-size: 28px;
+  cursor: pointer;
+}    
+
+    @keyframes modalFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .close-modal {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: #aaa;
+      transition: all 0.3s ease;
+    }
+    
+    .close-modal:hover {
+      color: #333;
+    }
+    
+    .vestibular-tabs {
+      display: flex;
+      margin-bottom: 15px;
+      border-bottom: 1px solid #ddd;
+      overflow-x: auto;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    .tab-btn {
+      padding: 10px 15px;
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      font-weight: 500;
+      color: #666;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+    
+    .tab-btn.active {
+      color: #2d5f8b;
+      border-bottom-color: #2d5f8b;
+    }
+    
+    .tab-content {
+      display: none;
+      padding: 10px 0;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    .vestibular-list {
+      list-style: none;
+    }
+    
+    .vestibular-list li {
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+      font-size: 0.95rem;
+    }
+    
+    .book-description {
+      color: #555;
+      font-size: 0.85rem;
+      margin-top: 5px;
+    }
+    
+    /* Animações */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.5s ease;
+    }
+    
+    /* Scroll personalizado */
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 5px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+    
+    /* Fallback quando não há livros */
+    .no-books {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+      font-style: italic;
+    }
+    .no-books-message {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #555;
+      font-style: italic;
+      padding: 0 15px;
+    }
+
+    .fallback-books {
+      margin-top: 20px;
+      border-top: 1px dashed #ccc;
+      padding-top: 20px;
+    }
+
+    /* Novos estilos para o sistema de recomendação */
+    .book-category {
+      margin-bottom: 30px;
+    }
+
+    .book-category h3 {
+      border-bottom: 2px solid #4cb5f5;
+      padding-bottom: 8px;
+      margin-bottom: 15px;
+      color: #2d5f8b;
+    }
+
+    .recommendation-reason {
+      font-size: 0.8rem;
+      color: #4cb5f5;
+      margin-top: 5px;
+      font-style: italic;
+    }
+
+    /* Responsividade para telas pequenas */
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.5rem;
+      }
+      
+      .book-cover {
+        height: 120px;
+      }
+      
+      .book-title {
+        font-size: 0.9rem;
+      }
+      
+      .book-author {
+        font-size: 0.8rem;
+      }
+      
+      .action-btn, .nav-btn {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+      }
+<!-- Modal para compartilhar -->
+<div id="shareModal" class="modal">
+  <div class="modal-content">
+    <span class="close-modal">&times;</span>
+    <h2>Compartilhe o Questionário</h2>
+    
+    <!-- QR Code será gerado aqui -->
+    <div id="qrCodeContainer" style="width: 200px; height: 200px; margin: 20px auto;"></div>
+    
+    <!-- Link copiável -->
+    <div style="margin: 20px 0;">
+      <input type="text" id="shareableLink" readonly style="width: 100%; padding: 8px;">
+      <button onclick="copyLink()" style="margin-top: 10px;">Copiar Link</button>
+    </div>
+    
+    <!-- Botões de compartilhamento direto -->
+    <div>
+      <button onclick="shareOnWhatsApp()">WhatsApp</button>
+      <button onclick="shareOnTwitter()">Twitter</button>
+    </div>
+  </div>
+</div>
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div id="background"></div>
+    <div id="overlay"></div>
+    
+    <div id="content">
+      <!-- Tela inicial -->
+      <div id="intro-screen" class="screen active">
+        <h1>Ache seu livro 📚</h1>
+        <p>Um projeto para estimular a leitura no CECA</p>
+        <div class="language-selection">
+          <h2>1. Escolha o idioma:</h2>
+          <div class="options">
+            <button class="lang-btn" data-lang="pt">
+              <span class="flag">🇧🇷</span> Português
+            </button>
+            <button class="lang-btn" data-lang="es">
+              <span class="flag">🇪🇸</span> Español
+            </button>
+          </div>
+        </div>
+        <div class="credits">
+          <p>Responda as perguntas e ache seu livro</p>
+        </div>
+      </div>
+
+      <!-- Quiz -->
+      <div id="quiz-screen" class="screen">
+        <div class="progress-container">
+          <div class="progress-bar">
+            <div class="progress-bar-fill" id="progressBar"></div>
+          </div>
+          <span id="progressText">Pergunta 1/5</span>
+        </div>
+        
+        <form id="quizForm">
+          <h2 id="questionNumber"></h2>
+          <div class="question-text" id="questionText"></div>
+          <div class="options" id="optionsContainer"></div>
+
+          <div class="nav-buttons">
+            <button type="button" id="prevBtn" class="nav-btn">
+              ← Voltar
+            </button>
+            <button type="button" id="nextBtn" class="nav-btn">
+              Próximo →
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Resultados -->
+      <div id="result-screen" class="screen">
+        <h2 id="resultTitle"></h2>
+        <div class="result-content">
+          <div class="book-section">
+            <h3>📚 Disponíveis no Leia SP</h3>
+            <div id="availableBooks" class="book-grid"></div>
+          </div>
+          
+          <div class="book-section">
+            <h3>🔍 Outras recomendações</h3>
+            <div id="unavailableBooks" class="book-grid"></div>
+          </div>
+          
+          <div id="fallbackBooks" class="fallback-books" style="display: none;">
+            <h3>📖 Recomendações gerais</h3>
+            <p class="no-books-message">Não encontramos livros que se encaixem perfeitamente no seu gosto, mas aqui estão algumas excelentes recomendações para qualquer leitor:</p>
+            <div id="fallbackBooksList" class="book-grid"></div>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button id="vestibularBtn" class="action-btn">
+            📖 Livros para vestibular
+          </button>
+          <button id="shareBtn" class="action-btn">
+            📤 Compartilhar
+          </button>
+          <button id="restartBtn" class="action-btn">
+            🔄 Refazer quiz
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Vestibular -->
+  <div id="vestibularModal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <h2>📚 Livros para Vestibular</h2>
+      <div class="vestibular-tabs">
+        <button class="tab-btn active" data-tab="fuvest">Fuvest</button>
+        <button class="tab-btn" data-tab="comvest">Comvest</button>
+        <button class="tab-btn" data-tab="enem">ENEM</button>
+      </div>
+      
+      <div id="fuvest" class="tab-content active">
+        <!-- Preenchido por JavaScript -->
+      </div>
+      
+      <div id="comvest" class="tab-content">
+        <!-- Preenchido por JavaScript -->
+      </div>
+      
+      <div id="enem" class="tab-content">
+        <!-- Preenchido por JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Livros de fallback para quando não houver recomendações
+    const fallbackBooks = [
+      {
+        id: 1001,
+        title: "O Pequeno Príncipe",
+        author: "Antoine de Saint-Exupéry",
+        cover: "https://covers.openlibrary.org/b/id/8264441-M.jpg",
+        grade: "EF1",
+        available: true,
+        type: "estrangeira",
+        genres: ["infantil", "filosofia"],
+        tags: ["classico", "fabulas"],
+        mood: ["emocionar"],
+        time: ["fantasia"],
+        description: "Clássico atemporal que aborda valores humanos essenciais.",
+        popularity: 9
+      },
+      {
+        id: 1002,
+        title: "Dom Casmurro",
+        author: "Machado de Assis",
+        cover: "https://covers.openlibrary.org/b/id/10414035-M.jpg",
+        grade: "EM",
+        available: true,
+        type: "brasileira",
+        genres: ["romance", "classico"],
+        tags: ["realismo", "literatura-brasileira"],
+        mood: ["emocionar"],
+        time: ["passado"],
+        description: "Clássico da literatura brasileira que explora ciúme e ambiguidade.",
+        popularity: 8
+      },
+      {
+        id: 1003,
+        title: "A Revolução dos Bichos",
+        author: "George Orwell",
+        cover: "https://covers.openlibrary.org/b/id/8264445-M.jpg",
+        grade: "EM",
+        available: false,
+        type: "estrangeira",
+        genres: ["distopia", "politica"],
+        tags: ["alegoria", "classico"],
+        mood: ["surpreender"],
+        time: ["fantasia"],
+        description: "Fábula política sobre poder e corrupção.",
+        popularity: 8
+      },
+      {
+        id: 1004,
+        title: "Capitães da Areia",
+        author: "Jorge Amado",
+        cover: "https://covers.openlibrary.org/b/id/8264443-M.jpg",
+        grade: "EM",
+        available: true,
+        type: "brasileira",
+        genres: ["romance", "social"],
+        tags: ["bahia", "literatura-brasileira"],
+        mood: ["emocionar"],
+        time: ["passado"],
+        description: "Romance sobre um grupo de meninos de rua em Salvador.",
+        popularity: 7
+      },
+      {
+        id: 1005,
+        title: "O Menino Maluquinho",
+        author: "Ziraldo",
+        cover: "https://covers.openlibrary.org/b/id/8264447-M.jpg",
+        grade: "EF1",
+        available: true,
+        type: "brasileira",
+        genres: ["infantil", "humor"],
+        tags: ["infantil", "brasil"],
+        mood: ["emocionar"],
+        time: ["presente"],
+        description: "Clássico da literatura infantil brasileira sobre as travessuras de um menino.",
+        popularity: 7
+      }
+    ];
+
+    // Banco de dados de livros ATUALIZADO com todos os livros do Leia SP
+    const booksDatabase = [
+      // Livros do Leia SP (disponíveis)
+      {
+        id: 1,
+        title: "A Comédia dos Erros",
+        author: "William Shakespeare",
+        cover: "https://covers.openlibrary.org/b/id/10598545-M.jpg",
+        grade: "EF2",
+        available: true,
+        type: "estrangeira",
+        genres: ["drama", "comedia"],
+        tags: ["classico", "teatro"],
+        mood: ["surpreender"],
+        time: ["passado"],
+        description: "Uma das primeiras comédias de Shakespeare, cheia de confusões e identidades trocadas.",
+        popularity: 6
+      },
+      {
+        id: 2,
+        title: "A Coragem de Ser Imperfeito",
+        author: "Brené Brown",
+        cover: "https://covers.openlibrary.org/b/id/12883422-M.jpg",
+        grade: "EM",
+        available: true,
+        type: "estrangeira",
+        genres: ["autoajuda", "psicologia"],
+        tags: ["vulnerabilidade", "crescimento-pessoal"],
+        mood: ["emocionar"],
+        time: ["presente"],
+        description: "Um estudo sobre vulnerabilidade, coragem e autenticidade.",
+        popularity: 7
+      },
+      {
+        id: 3,
+        title: "A Divina Comédia",
+        author: "Dante Alighieri",
+        cover: "https://covers.openlibrary.org/b/id/7890750-M.jpg",
+        grade: "EM",
+        available: true,
+        type: "estrangeira",
+        genres: ["poesia", "classico"],
+        tags: ["religiao", "filosofia"],
+        mood: ["emocionar"],
+        time: ["passado"],
+        description: "Obra-prima da literatura mundial que descreve a jornada de Dante pelo Inferno, Purgatório e Paraíso.",
+        popularity: 8
+      },
+      {
+        id: 4,
+        title: "A Moreninha",
+        author: "Joaquim Manuel de Macedo",
+        cover: "https://covers.openlibrary.org/b/id/10414031-M.jpg",
+        grade: "EF2",
+        available: true,
+        type: "brasileira",
+        genres: ["romance", "classico"],
+        tags: ["romantismo", "literatura-brasileira"],
+        mood: ["emocionar"],
+        time: ["passado"],
+        description: "Primeiro romance romântico brasileiro, que conta a história de um amor juvenil.",
+        popularity: 6
+      },
+      {
+        id: 5,
+        title: "Dom Casmurro",
+        author: "Machado de Assis",
+        cover: "https://covers.openlibrary.org/b/id/10414035-M.jpg",
+        grade: "EM",
+        available: true,
+        type: "brasileira",
+        genres: ["romance", "classico"],
+        tags: ["realismo", "literatura-brasileira"],
+        mood: ["emocionar"],
+        time: ["passado"],
+        description: "Clássico da literatura brasileira que explora ciúme e ambiguidade.",
+        popularity: 8
+      },
+      {
+        id: 6,
+        title: "O Pequeno Príncipe",
+        author: "Antoine de Saint-Exupéry",
+        cover: "https://covers.openlibrary.org/b/id/8264441-M.jpg",
+        grade: "EF1",
+        available: true,
+        type: "estrangeira",
+        genres: ["infantil", "filosofia"],
+        tags: ["classico", "fabulas"],
+        mood: ["emocionar"],
+        time: ["fantasia"],
+        description: "Clássico atemporal que aborda valores humanos essenciais.",
+        popularity: 9
+      },
+      {
+        id: 7,
+        title: "Capitães da Areia",
+        author: "Jorge Amado",
+        cover: "https://covers.openlibrary.org/b/id/8264443-M.jpg",
+        grade: "EM",
+        available: true,
+        type: "brasileira",
+        genres: ["romance", "social"],
+        tags: ["bahia", "literatura-brasileira"],
+        mood: ["emocionar"],
+        time: ["passado"],
+        description: "Romance sobre um grupo de meninos de rua em Salvador.",
+        popularity: 7
+      },
+      {
+        id: 8,
+        title: "A Revolução dos Bichos",
+        author: "George Orwell",
+        cover: "https://covers.openlibrary.org/b/id/8264445-M.jpg",
+        grade: "EM",
+        available: false,
+        type: "estrangeira",
+        genres: ["distopia", "politica"],
+        tags: ["alegoria", "classico"],
+        mood: ["surpreender"],
+        time: ["fantasia"],
+        description: "Fábula política sobre poder e corrupção.",
+        popularity: 8
+      },
+      {
+        id: 9,
+        title: "O Menino Maluquinho",
+        author: "Ziraldo",
+        cover: "https://covers.openlibrary.org/b/id/8264447-M.jpg",
+        grade: "EF1",
+        available: true,
+        type: "brasileira",
+        genres: ["infantil", "humor"],
+        tags: ["infantil", "brasil"],
+        mood: ["emocionar"],
+        time: ["presente"],
+        description: "Clássico da literatura infantil brasileira sobre as travessuras de um menino.",
+        popularity: 7
+      },
+      {
+        id: 10,
+        title: "Vidas Secas",
+        author: "Graciliano Ramos",
+        cover: "https://covers.openlibrary.org/b/id/8264449-M.jpg",
+        grade: "EM",
+        available: true,
+        type: "brasileira",
+        genres: ["romance", "realismo"],
+        tags: ["nordeste", "literatura-brasileira"],
+        mood: ["emocionar"],
+        time: ["passado"],
+        description: "Retrato da vida difícil de uma família de retirantes no Nordeste.",
+        popularity: 7
+      },
+      {
+        id: 11,
+        title: "O Alienista",
+        author: "Machado de Assis",
+        cover: "https://covers.openlibrary.org/b/id/8264451-M.jpg",
+        grade: "EM",
+        available: true,
+        type: "brasileira",
+        genres: ["conto", "classico"],
+        tags: ["psicologia", "literatura-brasileira"],
+        mood: ["surpreender"],
+        time: ["passado"],
+        description: "Conto que questiona os limites entre sanidade e loucura.",
+        popularity: 6
+      },
+      {
+        id: 12,
+        title: "Harry Potter e a Pedra Filosofal",
+        author: "J.K. Rowling",
+        cover: "https://covers.openlibrary.org/b/id/8264453-M.jpg",
+        grade: "EF1",
+        available: true,
+        type: "estrangeira",
+        genres: ["fantasia", "aventura"],
+        tags: ["magia", "infantojuvenil"],
+        mood: ["surpreender"],
+        time: ["fantasia"],
+        description: "Primeiro livro da famosa série sobre o jovem bruxo Harry Potter.",
+        popularity: 9
+      },
+      {
+        id: 13,
+        title: "O Cortiço",
+        author: "Aluísio Azevedo",
+        cover: "https://covers.openlibrary.org/b/id/8264455-M.jpg",
+        grade: "EM",
+        available: true,
+        type: "brasileira",
+        genres: ["romance", "naturalismo"],
+        tags: ["realismo", "literatura-brasileira"],
+        mood: ["emocionar"],
+        time: ["passado"],
+        description: "Romance naturalista sobre a vida nos cortiços cariocas.",
+        popularity: 7
+      },
+      {
+        id: 14,
+        title: "A Hora da Estrela",
+        author: "Clarice Lispector",
+        cover: "https://covers.openlibrary.org/b/id/8264457-M.jpg",
+        grade: "EM",
+        available: true,
+        type: "brasileira",
+        genres: ["romance", "existencialismo"],
+        tags: ["filosofia", "literatura-brasileira"],
+        mood: ["emocionar"],
+        time: ["presente"],
+        description: "Último romance da autora, sobre a vida de uma datilógrafa.",
+        popularity: 7
+      },
+      {
+        id: 15,
+        title: "O Guarani",
+        author: "José de Alencar",
+        cover: "https://covers.openlibrary.org/b/id/8264459-M.jpg",
+        grade: "EF2",
+        available: true,
+        type: "brasileira",
+        genres: ["romance", "indianismo"],
+        tags: ["romantismo", "literatura-brasileira"],
+        mood: ["emocionar"],
+        time: ["passado"],
+        description: "Romance indianista que retrata o amor entre o índio Peri e a branca Ceci.",
+        popularity: 6
+      },
+        {
+    id: 16,
+    title: "A Metamorfose",
+    author: "Franz Kafka",
+    cover: "https://covers.openlibrary.org/b/id/8264461-M.jpg",
+    grade: "EM",
+    available: true,
+    type: "estrangeira",
+    genres: ["classico", "existencialismo"],
+    tags: ["absurdo", "transformacao"],
+    mood: ["surpreender"],
+    time: ["presente"],
+    description: "Conta a história de Gregor Samsa que acorda transformado em um inseto monstruoso.",
+    popularity: 8
+  },
+  {
+    id: 17,
+    title: "A Noite na Taverna",
+    author: "Álvares de Azevedo",
+    cover: "https://covers.openlibrary.org/b/id/8264463-M.jpg",
+    grade: "EM",
+    available: true,
+    type: "brasileira",
+    genres: ["romance", "gotico"],
+    tags: ["romantismo", "terror"],
+    mood: ["surpreender"],
+    time: ["passado"],
+    description: "Contos sombrios que misturam elementos do Romantismo com o Gótico.",
+    popularity: 6
+  },
+  {
+    id: 18,
+    title: "A Volta ao Mundo em 80 Dias",
+    author: "Júlio Verne",
+    cover: "https://covers.openlibrary.org/b/id/8264465-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "estrangeira",
+    genres: ["aventura", "classico"],
+    tags: ["viagem", "aventura"],
+    mood: ["surpreender"],
+    time: ["passado"],
+    description: "A clássica aventura de Phileas Fogg em sua jornada ao redor do mundo.",
+    popularity: 7
+  },
+  {
+    id: 19,
+    title: "Dom Quixote",
+    author: "Miguel de Cervantes",
+    cover: "https://covers.openlibrary.org/b/id/8264467-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "estrangeira",
+    genres: ["classico", "aventura"],
+    tags: ["cavaleiro", "aventura"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "A história do fidalgo que enlouquece lendo romances de cavalaria.",
+    popularity: 9
+  },
+  {
+    id: 20,
+    title: "Iracema",
+    author: "José de Alencar",
+    cover: "https://covers.openlibrary.org/b/id/8264469-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "brasileira",
+    genres: ["romance", "indianismo"],
+    tags: ["romantismo", "indio"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Romance indianista que conta a história de amor entre Iracema e Martim.",
+    popularity: 7
+  },
+  {
+    id: 101,
+    title: "1984",
+    author: "George Orwell",
+    cover: "https://covers.openlibrary.org/b/id/7222246-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["distopia", "ficcao"],
+    tags: ["politica", "futuro"],
+    mood: ["surpreender"],
+    time: ["futuro"],
+    description: "Clássico distópico sobre vigilância governamental e controle da mente.",
+    popularity: 9
+  },
+  {
+    id: 102,
+    title: "Uma breve história do tempo",
+    author: "Stephen Hawking",
+    cover: "https://covers.openlibrary.org/b/id/8264471-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["ciencia", "fisica"],
+    tags: ["universo", "cosmologia"],
+    mood: ["surpreender"],
+    time: ["presente"],
+    description: "Introdução acessível aos conceitos mais complexos da cosmologia.",
+    popularity: 8
+  },
+  {
+    id: 103,
+    title: "Uma Comovente Obra de Espantoso Talento",
+    author: "Dave Eggers",
+    cover: "https://covers.openlibrary.org/b/id/8264473-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["memoir", "drama"],
+    tags: ["autobiografia", "familia"],
+    mood: ["emocionar"],
+    time: ["presente"],
+    description: "Memórias de um jovem que cria seu irmão mais novo após a morte dos pais.",
+    popularity: 6
+  },
+  {
+    id: 104,
+    title: "Muito longe de casa: memórias de um menino-soldado",
+    author: "Ishmael Beah",
+    cover: "https://covers.openlibrary.org/b/id/8264475-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["memoir", "guerra"],
+    tags: ["africa", "sobrevivencia"],
+    mood: ["emocionar"],
+    time: ["presente"],
+    description: "Relato autobiográfico de um ex-criança soldado em Serra Leoa.",
+    popularity: 7
+  },
+  {
+    id: 105,
+    title: "Mau começo",
+    author: "Lemony Snicket",
+    cover: "https://covers.openlibrary.org/b/id/8264477-M.jpg",
+    grade: "EF1",
+    available: false,
+    type: "estrangeira",
+    genres: ["aventura", "infantil"],
+    tags: ["orfas", "mistério"],
+    mood: ["surpreender"],
+    time: ["fantasia"],
+    description: "Primeiro livro da série Desventuras em Série sobre três órfãos desafortunados.",
+    popularity: 7
+  },
+  {
+    id: 106,
+    title: "Uma dobra no tempo",
+    author: "Madeleine L'Engle",
+    cover: "https://covers.openlibrary.org/b/id/8264479-M.jpg",
+    grade: "EF2",
+    available: false,
+    type: "estrangeira",
+    genres: ["ficcao-cientifica", "fantasia"],
+    tags: ["viagem-no-tempo", "aventura"],
+    mood: ["surpreender"],
+    time: ["futuro"],
+    description: "Clássico da ficção científica juvenil sobre viagem no tempo e espaço.",
+    popularity: 7
+  },
+  {
+    id: 107,
+    title: "Alice no País das Maravilhas & Através do espelho",
+    author: "Lewis Carroll",
+    cover: "https://covers.openlibrary.org/b/id/8264481-M.jpg",
+    grade: "EF1",
+    available: false,
+    type: "estrangeira",
+    genres: ["fantasia", "infantil"],
+    tags: ["classico", "aventura"],
+    mood: ["surpreender"],
+    time: ["fantasia"],
+    description: "As duas obras clássicas de Carroll sobre o mundo mágico de Alice.",
+    popularity: 8
+  },
+  {
+    id: 108,
+    title: "Todos os homens do presidente",
+    author: "Bob Woodward e Carl Bernstein",
+    cover: "https://covers.openlibrary.org/b/id/8264483-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["jornalismo", "politica"],
+    tags: ["watergate", "investigacao"],
+    mood: ["surpreender"],
+    time: ["passado"],
+    description: "Relato da investigação que levou ao impeachment do presidente Nixon.",
+    popularity: 7
+  },
+  {
+    id: 109,
+    title: "Angela's Ashes: memórias",
+    author: "Frank McCourt",
+    cover: "https://covers.openlibrary.org/b/id/8264485-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["memoir", "drama"],
+    tags: ["infancia", "pobreza"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Memórias da infância pobre do autor na Irlanda dos anos 1930-40.",
+    popularity: 7
+  },
+  {
+    id: 110,
+    title: "Deus, você está aí??",
+    author: "Judy Blume",
+    cover: "https://covers.openlibrary.org/b/id/8264487-M.jpg",
+    grade: "EF1",
+    available: false,
+    type: "estrangeira",
+    genres: ["infantil", "drama"],
+    tags: ["adolescencia", "crescimento"],
+    mood: ["emocionar"],
+    time: ["presente"],
+    description: "Clássico juvenil sobre as dúvidas e descobertas da adolescência.",
+    popularity: 6
+  },
+  {
+    id: 111,
+    title: "Bel Canto",
+    author: "Ann Patchett",
+    cover: "https://covers.openlibrary.org/b/id/8264489-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["romance", "drama"],
+    tags: ["musica", "sequestro"],
+    mood: ["emocionar"],
+    time: ["presente"],
+    description: "História de um sequestro em uma festa diplomática na América do Sul.",
+    popularity: 6
+  },
+  {
+    id: 112,
+    title: "Amada",
+    author: "Toni Morrison",
+    cover: "https://covers.openlibrary.org/b/id/8264491-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["romance", "historico"],
+    tags: ["escravidao", "fantasma"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Romance premiado sobre os traumas da escravidão nos EUA.",
+    popularity: 8
+  },
+  {
+    id: 113,
+    title: "Nascido para correr",
+    author: "Christopher McDougall",
+    cover: "https://covers.openlibrary.org/b/id/8264493-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["esporte", "aventura"],
+    tags: ["corrida", "superacao"],
+    mood: ["emocionar"],
+    time: ["presente"],
+    description: "Investigação sobre tribos que correm longas distâncias e segredos da corrida.",
+    popularity: 7
+  },
+  {
+    id: 114,
+    title: "Breath, Eyes, Memory",
+    author: "Edwidge Danticat",
+    cover: "https://covers.openlibrary.org/b/id/8264495-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["romance", "drama"],
+    tags: ["haiti", "imigracao"],
+    mood: ["emocionar"],
+    time: ["presente"],
+    description: "História de uma jovem haitiana que se muda para Nova York.",
+    popularity: 6
+  },
+  {
+    id: 115,
+    title: "Ardil 22",
+    author: "Joseph Heller",
+    cover: "https://covers.openlibrary.org/b/id/8264497-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["satira", "guerra"],
+    tags: ["segunda-guerra", "absurdo"],
+    mood: ["surpreender"],
+    time: ["passado"],
+    description: "Sátira clássica sobre a burocracia militar durante a Segunda Guerra.",
+    popularity: 7
+  },
+  {
+    id: 116,
+    title: "Charlie e a fábrica de chocolate",
+    author: "Roald Dahl",
+    cover: "https://covers.openlibrary.org/b/id/8264499-M.jpg",
+    grade: "EF1",
+    available: false,
+    type: "estrangeira",
+    genres: ["infantil", "fantasia"],
+    tags: ["aventura", "doces"],
+    mood: ["surpreender"],
+    time: ["fantasia"],
+    description: "A mágica história de Charlie Bucket e sua visita à fábrica de Willy Wonka.",
+    popularity: 8
+  },
+  {
+    id: 117,
+    title: "A teia de Charlotte",
+    author: "E.B. White",
+    cover: "https://covers.openlibrary.org/b/id/8264501-M.jpg",
+    grade: "EF1",
+    available: false,
+    type: "estrangeira",
+    genres: ["infantil", "drama"],
+    tags: ["amizade", "animais"],
+    mood: ["emocionar"],
+    time: ["fantasia"],
+    description: "Comovente história de amizade entre um porco e uma aranha.",
+    popularity: 8
+  },
+  {
+    id: 118,
+    title: "O Décimo Primeiro Mandamento",
+    author: "Abraham Verghese",
+    cover: "https://covers.openlibrary.org/b/id/8264503-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["romance", "medico"],
+    tags: ["etiopia", "medicina"],
+    mood: ["emocionar"],
+    time: ["presente"],
+    description: "História de um médico indiano que trabalha na Etiópia.",
+    popularity: 6
+  },
+  {
+    id: 119,
+    title: "Diário de Um Banana",
+    author: "Jeff Kinney",
+    cover: "https://covers.openlibrary.org/b/id/8264505-M.jpg",
+    grade: "EF1",
+    available: false,
+    type: "estrangeira",
+    genres: ["infantil", "humor"],
+    tags: ["escola", "adolescencia"],
+    mood: ["emocionar"],
+    time: ["presente"],
+    description: "As desventuras hilárias de Greg Heffley na escola e em casa.",
+    popularity: 7
+  },
+  {
+    id: 120,
+    title: "Os filhos de Duna",
+    author: "Frank Herbert",
+    cover: "https://covers.openlibrary.org/b/id/8264507-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["ficcao-cientifica", "aventura"],
+    tags: ["duna", "futuro"],
+    mood: ["surpreender"],
+    time: ["futuro"],
+    description: "Continuação da saga de Duna, explorando o destino dos filhos de Paul Atreides.",
+    popularity: 7
+  },
+  {
+    id: 121,
+    title: "A Revolta de Atlas",
+    author: "Ayn Rand",
+    cover: "https://covers.openlibrary.org/b/id/8264509-M.jpg",
+    grade: "EM",
+    available: true,
+    type: "estrangeira",
+    genres: ["ficcao", "filosofia"],
+    tags: ["objetivismo", "capitalismo"],
+    mood: ["surpreender"],
+    time: ["futuro"],
+    description: "Romance filosófico que explora temas de individualismo e liberdade.",
+    popularity: 7
+  },
+  {
+    id: 122,
+    title: "Alice Através do Espelho",
+    author: "Lewis Carroll",
+    cover: "https://covers.openlibrary.org/b/id/8264511-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "estrangeira",
+    genres: ["fantasia", "infantil"],
+    tags: ["sequencia", "aventura"],
+    mood: ["surpreender"],
+    time: ["fantasia"],
+    description: "Sequência de Alice no País das Maravilhas, com mais aventuras fantásticas.",
+    popularity: 7
+  },
+  {
+    id: 123,
+    title: "Alma Inquieta",
+    author: "Olavo Bilac",
+    cover: "https://covers.openlibrary.org/b/id/8264513-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "brasileira",
+    genres: ["poesia"],
+    tags: ["parnasianismo", "sonetos"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Coletânea de poemas do principal expoente do Parnasianismo no Brasil.",
+    popularity: 6
+  },
+  {
+    id: 124,
+    title: "Amar, Verbo Intransitivo",
+    author: "Mário de Andrade",
+    cover: "https://covers.openlibrary.org/b/id/8264515-M.jpg",
+    grade: "EM",
+    available: true,
+    type: "brasileira",
+    genres: ["romance", "modernismo"],
+    tags: ["modernismo", "educacao"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Romance modernista sobre educação e relações afetivas.",
+    popularity: 6
+  },
+  {
+    id: 125,
+    title: "Apologia de Sócrates",
+    author: "Platão",
+    cover: "https://covers.openlibrary.org/b/id/8264517-M.jpg",
+    grade: "EM",
+    available: true,
+    type: "estrangeira",
+    genres: ["filosofia"],
+    tags: ["classico", "grecia"],
+    mood: ["surpreender"],
+    time: ["passado"],
+    description: "Defesa de Sócrates perante o tribunal ateniense que o condenou à morte.",
+    popularity: 7
+  },
+    {
+    id: 126,
+    title: "As Viagens na Minha Terra",
+    author: "Almeida Garrett",
+    cover: "https://covers.openlibrary.org/b/id/8264519-M.jpg",
+    grade: "EM",
+    available: true,
+    type: "portuguesa",
+    genre: ["romance", "viagem"],
+    tags: ["romantismo", "portugal"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Clássico da literatura portuguesa que mistura narrativa de viagem e ficção.",
+    popularity: 7
+  },
+  {
+    id: 127,
+    title: "Campo Geral",
+    author: "João Guimarães Rosa",
+    cover: "https://covers.openlibrary.org/b/id/8264521-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "brasileira",
+    genre: ["conto", "regionalismo"],
+    tags: ["sertao", "infancia"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Conto que faz parte de 'Corpo de Baile', sobre a infância no sertão.",
+    popularity: 6
+  },
+  {
+    id: 128,
+    title: "Cartas ao Meu Vizinho Palestino",
+    author: "Yossi Klein Halevi",
+    cover: "https://covers.openlibrary.org/b/id/8264523-M.jpg",
+    grade: "EM",
+    available: true,
+    type: "estrangeira",
+    genre: ["politica", "historia"],
+    tags: ["conflito", "dialogo"],
+    mood: ["surpreender"],
+    time: ["presente"],
+    description: "Reflexão sobre o conflito israelense-palestino em forma de cartas.",
+    popularity: 5
+  },
+  {
+    id: 129,
+    title: "Cartas para Minha Avó",
+    author: "Djamila Ribeiro",
+    cover: "https://covers.openlibrary.org/b/id/8264525-M.jpg",
+    grade: "EF1",
+    available: true,
+    type: "brasileira",
+    genre: ["biografia", "memoir"],
+    tags: ["feminismo", "ancestralidade"],
+    mood: ["emocionar"],
+    time: ["presente"],
+    description: "Reflexões sobre ancestralidade, memória e identidade negra.",
+    popularity: 6
+  },
+  {
+    id: 130,
+    title: "Chega de Plástico!",
+    author: "Time Árvore",
+    cover: "https://covers.openlibrary.org/b/id/8264527-M.jpg",
+    grade: "EF1",
+    available: true,
+    type: "brasileira",
+    genre: ["educativo", "ecologia"],
+    tags: ["meio-ambiente", "sustentabilidade"],
+    mood: ["surpreender"],
+    time: ["presente"],
+    description: "Guia infantil sobre os impactos do plástico e como reduzir seu uso.",
+    popularity: 4
+  },
+  {
+    id: 131,
+    title: "Contos",
+    author: "Eça de Queirós",
+    cover: "https://covers.openlibrary.org/b/id/8264529-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "portuguesa",
+    genre: ["conto", "realismo"],
+    tags: ["critica-social", "portugal"],
+    mood: ["surpreender"],
+    time: ["passado"],
+    description: "Coletânea de contos do mestre do Realismo português.",
+    popularity: 6
+  },
+  {
+    id: 132,
+    title: "Contos de Lima Barreto",
+    author: "Lima Barreto",
+    cover: "https://covers.openlibrary.org/b/id/8264531-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "brasileira",
+    genre: ["conto", "pre-modernismo"],
+    tags: ["critica-social", "racial"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Contos que retratam a sociedade brasileira do início do século XX.",
+    popularity: 5
+  },
+  {
+    id: 133,
+    title: "Contos Novos",
+    author: "Mário de Andrade",
+    cover: "https://covers.openlibrary.org/b/id/8264533-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "brasileira",
+    genre: ["conto", "modernismo"],
+    tags: ["brasil", "diversidade"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Contos modernistas que exploram a diversidade cultural brasileira.",
+    popularity: 5
+  },
+  {
+    id: 134,
+    title: "Elon Musk",
+    author: "Walter Isaacson",
+    cover: "https://covers.openlibrary.org/b/id/8264535-M.jpg",
+    grade: "EM",
+    available: true,
+    type: "estrangeira",
+    genre: ["biografia", "tecnologia"],
+    tags: ["inovacao", "empreendedorismo"],
+    mood: ["surpreender"],
+    time: ["presente"],
+    description: "Biografia do visionário por trás da Tesla e SpaceX.",
+    popularity: 7
+  },
+  {
+    id: 135,
+    title: "Em Busca da Alma Brasileira",
+    author: "Jason Tércio",
+    cover: "https://covers.openlibrary.org/b/id/8264537-M.jpg",
+    grade: "EM",
+    available: true,
+    type: "brasileira",
+    genre: ["ensaio", "cultura"],
+    tags: ["identidade", "brasilidade"],
+    mood: ["surpreender"],
+    time: ["presente"],
+    description: "Reflexão sobre o que define a identidade cultural brasileira.",
+    popularity: 4
+  },
+  {
+    id: 136,
+    title: "Era dos Dinossauros",
+    author: "Time Árvore",
+    cover: "https://covers.openlibrary.org/b/id/8264539-M.jpg",
+    grade: "EF1",
+    available: true,
+    type: "brasileira",
+    genre: ["educativo", "ciencia"],
+    tags: ["pre-historia", "animais"],
+    mood: ["surpreender"],
+    time: ["passado"],
+    description: "Guia ilustrado sobre os dinossauros e o mundo pré-histórico.",
+    popularity: 4
+  },
+  {
+    id: 137,
+    title: "Espumas Flutuantes",
+    author: "Castro Alves",
+    cover: "https://covers.openlibrary.org/b/id/8264541-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "brasileira",
+    genre: ["poesia", "romantismo"],
+    tags: ["abolicao", "natureza"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Principal obra poética do 'Poeta dos Escravos'.",
+    popularity: 6
+  },
+  {
+    id: 138,
+    title: "Ficções do Interlúdio",
+    author: "Fernando Pessoa",
+    cover: "https://covers.openlibrary.org/b/id/8264543-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "portuguesa",
+    genre: ["poesia", "modernismo"],
+    tags: ["heteronimos", "filosofia"],
+    mood: ["surpreender"],
+    time: ["passado"],
+    description: "Poemas de Fernando Pessoa sob diversos heterônimos.",
+    popularity: 6
+  },
+  {
+    id: 139,
+    title: "Guerra dos Mascates",
+    author: "José de Alencar",
+    cover: "https://covers.openlibrary.org/b/id/8264545-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "brasileira",
+    genre: ["romance", "historico"],
+    tags: ["colonial", "nordeste"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Romance histórico sobre conflitos no Brasil colonial.",
+    popularity: 5
+  },
+  {
+    id: 140,
+    title: "Hamlet",
+    author: "William Shakespeare",
+    cover: "https://covers.openlibrary.org/b/id/8264547-M.jpg",
+    grade: "EM",
+    available: true,
+    type: "estrangeira",
+    genre: ["drama", "tragedia"],
+    tags: ["classico", "vinganca"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "A mais famosa tragédia de Shakespeare sobre vingança e loucura.",
+    popularity: 9
+  },
+  {
+    id: 141,
+    title: "Harry Potter e o Cálice de Fogo",
+    author: "J.K. Rowling",
+    cover: "https://covers.openlibrary.org/b/id/8264549-M.jpg",
+    grade: "EF1",
+    available: true,
+    type: "estrangeira",
+    genre: ["fantasia", "aventura"],
+    tags: ["magia", "torneio"],
+    mood: ["surpreender"],
+    time: ["fantasia"],
+    description: "Quarto livro da saga, onde Harry participa do Torneio Tribruxo.",
+    popularity: 8
+  },
+  {
+    id: 142,
+    title: "Harry Potter e o Enigma do Príncipe",
+    author: "J.K. Rowling",
+    cover: "https://covers.openlibrary.org/b/id/8264551-M.jpg",
+    grade: "EF1",
+    available: true,
+    type: "estrangeira",
+    genre: ["fantasia", "aventura"],
+    tags: ["magia", "memorias"],
+    mood: ["emocionar"],
+    time: ["fantasia"],
+    description: "Sexto livro da saga, com revelações sobre o passado de Voldemort.",
+    popularity: 8
+  },
+  {
+    id: 143,
+    title: "Harry Potter e o Prisioneiro de Azkaban",
+    author: "J.K. Rowling",
+    cover: "https://covers.openlibrary.org/b/id/8264553-M.jpg",
+    grade: "EF1",
+    available: true,
+    type: "estrangeira",
+    genre: ["fantasia", "aventura"],
+    tags: ["magia", "fuga"],
+    mood: ["surpreender"],
+    time: ["fantasia"],
+    description: "Terceiro livro da saga, com a fuga de Sirius Black de Azkaban.",
+    popularity: 8
+  },
+  {
+    id: 144,
+    title: "Harry Potter e as Relíquias da Morte",
+    author: "J.K. Rowling",
+    cover: "https://covers.openlibrary.org/b/id/8264555-M.jpg",
+    grade: "EF1",
+    available: true,
+    type: "estrangeira",
+    genre: ["fantasia", "aventura"],
+    tags: ["magia", "busca"],
+    mood: ["emocionar"],
+    time: ["fantasia"],
+    description: "Sétimo e último livro da saga, com a batalha final contra Voldemort.",
+    popularity: 8
+  },
+  {
+    id: 145,
+    title: "Ilíada",
+    author: "Homero",
+    cover: "https://covers.openlibrary.org/b/id/8264557-M.jpg",
+    grade: "EM",
+    available: true,
+    type: "estrangeira",
+    genre: ["epico", "classico"],
+    tags: ["grecia", "guerra"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Poema épico sobre a Guerra de Troia e a ira de Aquiles.",
+    popularity: 8
+  },
+  {
+    id: 146,
+    title: "Indivisível",
+    author: "Marita Mathijsen",
+    cover: "https://covers.openlibrary.org/b/id/8264559-M.jpg",
+    grade: "EF1",
+    available: true,
+    type: "estrangeira",
+    genre: ["ficcao", "drama"],
+    tags: ["familia", "segredos"],
+    mood: ["emocionar"],
+    time: ["presente"],
+    description: "História sobre segredos familiares e reconciliação.",
+    popularity: 3
+  },
+  {
+    id: 147,
+    title: "Jeremias: Alma",
+    author: "Rafael Calça",
+    cover: "https://covers.openlibrary.org/b/id/8264561-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "brasileira",
+    genre: ["quadrinhos", "drama"],
+    tags: ["escravidao", "historico"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Graphic novel que reconta a história bíblica de Jeremias no contexto da escravidão.",
+    popularity: 4
+  },
+  {
+    id: 148,
+    title: "Macbeth",
+    author: "William Shakespeare",
+    cover: "https://covers.openlibrary.org/b/id/8264563-M.jpg",
+    grade: "EM",
+    available: true,
+    type: "estrangeira",
+    genre: ["drama", "tragedia"],
+    tags: ["ambicao", "poder"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Tragédia sobre ambição desmedida e suas consequências.",
+    popularity: 8
+  },
+  {
+    id: 149,
+    title: "Macunaíma",
+    author: "Mário de Andrade",
+    cover: "https://covers.openlibrary.org/b/id/8264565-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "brasileira",
+    genre: ["romance", "modernismo"],
+    tags: ["heroi", "folclore"],
+    mood: ["surpreender"],
+    time: ["fantasia"],
+    description: "O 'herói sem nenhum caráter' em uma aventura pelo Brasil folclórico.",
+    popularity: 7
+  },
+  {
+    id: 150,
+    title: "Mensagem",
+    author: "Fernando Pessoa",
+    cover: "https://covers.openlibrary.org/b/id/8264567-M.jpg",
+    grade: "EM",
+    available: true,
+    type: "portuguesa",
+    genre: ["poesia"],
+    tags: ["sebastianismo", "portugal"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Único livro em português publicado em vida por Pessoa, sobre o destino de Portugal.",
+    popularity: 7
+  },
+  {
+    id: 151,
+    title: "Mulherzinhas",
+    author: "Louisa May Alcott",
+    cover: "https://covers.openlibrary.org/b/id/8264569-M.jpg",
+    grade: "EM",
+    available: true,
+    type: "estrangeira",
+    genre: ["romance", "drama"],
+    tags: ["familia", "crescimento"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Clássico sobre as irmãs March e suas jornadas para a vida adulta.",
+    popularity: 8
+  },
+  {
+    id: 152,
+    title: "O Ateneu",
+    author: "Raul Pompeia",
+    cover: "https://covers.openlibrary.org/b/id/8264571-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "brasileira",
+    genre: ["romance", "realismo"],
+    tags: ["internato", "critica"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Romance impressionista sobre a vida em um internato no século XIX.",
+    popularity: 6
+  },
+  {
+    id: 153,
+    title: "O Caçador de Esmeraldas",
+    author: "Olavo Bilac",
+    cover: "https://covers.openlibrary.org/b/id/8264573-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "brasileira",
+    genre: ["poesia", "parnasianismo"],
+    tags: ["bandeirantes", "brasil"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Poema épico sobre a saga dos bandeirantes em busca de esmeraldas.",
+    popularity: 5
+  },
+  {
+    id: 154,
+    title: "O Demônio Familiar",
+    author: "José de Alencar",
+    cover: "https://covers.openlibrary.org/b/id/8264575-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "brasileira",
+    genre: ["teatro", "comedia"],
+    tags: ["escravidao", "costumes"],
+    mood: ["surpreender"],
+    time: ["passado"],
+    description: "Peça teatral que satiriza os costumes da elite brasileira do século XIX.",
+    popularity: 5
+  },
+  {
+    id: 155,
+    title: "O Gênio do Crime",
+    author: "João Carlos Marinho",
+    cover: "https://covers.openlibrary.org/b/id/8264577-M.jpg",
+    grade: "EF1",
+    available: true,
+    type: "brasileira",
+    genre: ["aventura", "infantil"],
+    tags: ["detetive", "misterio"],
+    mood: ["surpreender"],
+    time: ["presente"],
+    description: "Aventura de um grupo de crianças para desvendar um mistério.",
+    popularity: 5
+  },
+  {
+    id: 156,
+    title: "O Homem que Calculava",
+    author: "Malba Tahan",
+    cover: "https://covers.openlibrary.org/b/id/8264579-M.jpg",
+    grade: "EF1",
+    available: true,
+    type: "brasileira",
+    genre: ["matematica", "aventura"],
+    tags: ["numeros", "oriental"],
+    mood: ["surpreender"],
+    time: ["passado"],
+    description: "Aventuras matemáticas de Beremiz Samir no mundo árabe.",
+    popularity: 6
+  },
+  {
+    id: 157,
+    title: "O Jardim Secreto",
+    author: "Frances Hodgson Burnett",
+    cover: "https://covers.openlibrary.org/b/id/8264581-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "estrangeira",
+    genre: ["infantil", "drama"],
+    tags: ["amizade", "natureza"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Clássico infantil sobre redenção e amizade em um jardim misterioso.",
+    popularity: 7
+  },
+  {
+    id: 158,
+    title: "O Menino do Dedo Verde",
+    author: "Maurice Druon",
+    cover: "https://covers.openlibrary.org/b/id/8264583-M.jpg",
+    grade: "EF1",
+    available: true,
+    type: "estrangeira",
+    genre: ["infantil", "fantasia"],
+    tags: ["natureza", "poderes"],
+    mood: ["emocionar"],
+    time: ["fantasia"],
+    description: "História de um menino com o dom de fazer flores crescerem ao seu toque.",
+    popularity: 6
+  },
+  {
+    id: 159,
+    title: "O Menino que Descobriu o Vento",
+    author: "William Kamkwamba",
+    cover: "https://covers.openlibrary.org/b/id/8264585-M.jpg",
+    grade: "EF1",
+    available: true,
+    type: "estrangeira",
+    genre: ["biografia", "inspiracao"],
+    tags: ["africa", "inovacao"],
+    mood: ["emocionar"],
+    time: ["presente"],
+    description: "História real de um jovem que construiu um moinho de vento no Malawi.",
+    popularity: 5
+  },
+  {
+    id: 160,
+    title: "O Pequeno Manual Antirracista",
+    author: "Djamila Ribeiro",
+    cover: "https://covers.openlibrary.org/b/id/8264587-M.jpg",
+    grade: "EF1",
+    available: true,
+    type: "brasileira",
+    genre: ["ensaio", "social"],
+    tags: ["racismo", "educacao"],
+    mood: ["surpreender"],
+    time: ["presente"],
+    description: "Guia conciso para compreender e combater o racismo no cotidiano.",
+    popularity: 6
+  },
+  {
+    id: 161,
+    title: "O Rei Édipo",
+    author: "Sófocles",
+    cover: "https://covers.openlibrary.org/b/id/8264589-M.jpg",
+    grade: "EM",
+    available: true,
+    type: "estrangeira",
+    genre: ["teatro", "tragedia"],
+    tags: ["grecia", "destino"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Tragédia grega sobre Édipo, que sem saber mata o pai e casa com a mãe.",
+    popularity: 8
+  },
+  {
+    id: 162,
+    title: "O Triste Fim de Policarpo Quaresma",
+    author: "Lima Barreto",
+    cover: "https://covers.openlibrary.org/b/id/8264591-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "brasileira",
+    genre: ["romance", "pre-modernismo"],
+    tags: ["nacionalismo", "loucuras"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Sátira sobre um nacionalista ingênuo no Brasil da Primeira República.",
+    popularity: 6
+  },
+  {
+    id: 163,
+    title: "Os Escravos",
+    author: "Castro Alves",
+    cover: "https://covers.openlibrary.org/b/id/8264593-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "brasileira",
+    genre: ["poesia", "romantismo"],
+    tags: ["abolicao", "justica"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Poemas abolicionistas que denunciam os horrores da escravidão.",
+    popularity: 6
+  },
+  {
+    id: 164,
+    title: "Pauliceia Desvairada",
+    author: "Mário de Andrade",
+    cover: "https://covers.openlibrary.org/b/id/8264595-M.jpg",
+    grade: "EM",
+    available: true,
+    type: "brasileira",
+    genre: ["poesia", "modernismo"],
+    tags: ["sao-paulo", "vanguarda"],
+    mood: ["surpreender"],
+    time: ["passado"],
+    description: "Primeiro livro de poemas modernistas de Mário de Andrade.",
+    popularity: 6
+  },
+  {
+    id: 165,
+    title: "Poemas de Álvaro de Campos",
+    author: "Fernando Pessoa",
+    cover: "https://covers.openlibrary.org/b/id/8264597-M.jpg",
+    grade: "EM",
+    available: true,
+    type: "portuguesa",
+    genre: ["poesia", "modernismo"],
+    tags: ["heteronimo", "futurismo"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Poemas do heterônimo mais futurista e angustiado de Pessoa.",
+    popularity: 7
+  },
+  {
+    id: 166,
+    title: "Poemas de Ricardo Reis",
+    author: "Fernando Pessoa",
+    cover: "https://covers.openlibrary.org/b/id/8264599-M.jpg",
+    grade: "EM",
+    available: true,
+    type: "portuguesa",
+    genre: ["poesia", "modernismo"],
+    tags: ["heteronimo", "classicismo"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Poemas do heterônimo clássico e epicurista de Pessoa.",
+    popularity: 7
+  },
+  {
+    id: 167,
+    title: "Poemas Esquecidos",
+    author: "Augusto dos Anjos",
+    cover: "https://covers.openlibrary.org/b/id/8264601-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "brasileira",
+    genre: ["poesia", "parnasianismo"],
+    tags: ["morte", "existencia"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Poemas que exploram temas como a morte e a finitude humana.",
+    popularity: 5
+  },
+  {
+    id: 168,
+    title: "Poemas Inconjuntos",
+    author: "Alberto Caeiro",
+    cover: "https://covers.openlibrary.org/b/id/8264603-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "portuguesa",
+    genre: ["poesia", "modernismo"],
+    tags: ["heteronimo", "natureza"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Poemas do heterônimo mais 'natural' de Fernando Pessoa.",
+    popularity: 6
+  },
+  {
+    id: 169,
+    title: "Poesias Completas",
+    author: "Mário de Andrade",
+    cover: "https://covers.openlibrary.org/b/id/8264605-M.jpg",
+    grade: "EM",
+    available: true,
+    type: "brasileira",
+    genre: ["poesia", "modernismo"],
+    tags: ["brasil", "vanguarda"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Reunião da obra poética completa do autor modernista.",
+    popularity: 6
+  },
+  {
+    id: 170,
+    title: "Rei Lear",
+    author: "William Shakespeare",
+    cover: "https://covers.openlibrary.org/b/id/8264607-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "estrangeira",
+    genre: ["teatro", "tragedia"],
+    tags: ["poder", "familia"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Tragédia sobre um rei que divide seu reino entre as filhas, com consequências trágicas.",
+    popularity: 8
+  },
+  {
+    id: 171,
+    title: "Romeu e Julieta",
+    author: "William Shakespeare",
+    cover: "https://covers.openlibrary.org/b/id/8264609-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "estrangeira",
+    genre: ["teatro", "tragedia"],
+    tags: ["amor", "conflito"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "A mais famosa história de amor proibido da literatura mundial.",
+    popularity: 9
+  },
+  {
+    id: 172,
+    title: "Sombra e Ossos",
+    author: "Leigh Bardugo",
+    cover: "https://covers.openlibrary.org/b/id/8264611-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "estrangeira",
+    genre: ["fantasia", "aventura"],
+    tags: ["magia", "poderes"],
+    mood: ["surpreender"],
+    time: ["fantasia"],
+    description: "Primeiro livro da trilogia Grisha, sobre uma orfã com poderes extraordinários.",
+    popularity: 6
+  },
+  {
+    id: 173,
+    title: "Que Museu é Esse?",
+    author: "Time Árvore",
+    cover: "https://covers.openlibrary.org/b/id/8264613-M.jpg",
+    grade: "EF1",
+    available: true,
+    type: "brasileira",
+    genre: ["educativo", "arte"],
+    tags: ["cultura", "aprendizado"],
+    mood: ["surpreender"],
+    time: ["presente"],
+    description: "Guia infantil para explorar museus e apreciar arte.",
+    popularity: 3
+  },
+  {
+    id: 174,
+    title: "Arlindo",
+    author: "Ilustralu",
+    cover: "https://covers.openlibrary.org/b/id/8264615-M.jpg",
+    grade: "EF1",
+    available: true,
+    type: "brasileira",
+    genre: ["infantil", "diversidade"],
+    tags: ["inclusao", "amizade"],
+    mood: ["emocionar"],
+    time: ["presente"],
+    description: "História sobre um caracol diferente que ensina sobre aceitação.",
+    popularity: 3
+  },
+  {
+    id: 175,
+    title: "O Clima na Terra Pirou?",
+    author: "Time Árvore",
+    cover: "https://covers.openlibrary.org/b/id/8264617-M.jpg",
+    grade: "EF1",
+    available: true,
+    type: "brasileira",
+    genre: ["educativo", "ciencia"],
+    tags: ["meio-ambiente", "clima"],
+    mood: ["surpreender"],
+    time: ["presente"],
+    description: "Explicação lúdica sobre mudanças climáticas para crianças.",
+    popularity: 4
+  },
+  {
+    id: 176,
+    title: "O Pequeno Príncipe Preto",
+    author: "Rodrigo França",
+    cover: "https://covers.openlibrary.org/b/id/8264619-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "brasileira",
+    genre: ["infantil", "drama"],
+    tags: ["ancestralidade", "identidade"],
+    mood: ["emocionar"],
+    time: ["fantasia"],
+    description: "Releitura afrocentrada do clássico, sobre autoestima e herança cultural.",
+    popularity: 5
+  },
+  {
+    id: 177,
+    title: "O Mistério do 5 Estrelas",
+    author: "Marcos Rey",
+    cover: "https://covers.openlibrary.org/b/id/8264621-M.jpg",
+    grade: "EF1",
+    available: true,
+    type: "brasileira",
+    genre: ["misterio", "infantil"],
+    tags: ["detetive", "hotel"],
+    mood: ["surpreender"],
+    time: ["presente"],
+    description: "Aventura de um grupo de crianças para desvendar um roubo em um hotel luxuoso.",
+    popularity: 5
+  },
+  {
+    id: 178,
+    title: "Drácula",
+    author: "Bram Stoker",
+    cover: "https://covers.openlibrary.org/b/id/8264623-M.jpg",
+    grade: "EM",
+    available: true,
+    type: "estrangeira",
+    genre: ["terror", "gotico"],
+    tags: ["vampiro", "classico"],
+    mood: ["surpreender"],
+    time: ["passado"],
+    description: "O romance que popularizou o mito do vampiro Conde Drácula.",
+    popularity: 8
+  },
+  {
+    id: 179,
+    title: "Harry Potter e a Ordem da Fênix",
+    author: "J.K. Rowling",
+    cover: "https://covers.openlibrary.org/b/id/8264625-M.jpg",
+    grade: "EF1",
+    available: true,
+    type: "estrangeira",
+    genre: ["fantasia", "aventura"],
+    tags: ["magia", "resistencia"],
+    mood: ["emocionar"],
+    time: ["fantasia"],
+    description: "Quinto livro da saga, onde Harry enfrenta a negação do Ministério sobre o retorno de Voldemort.",
+    popularity: 8
+  },
+  {
+    id: 180,
+    title: "Poemas de Fernando Pessoa",
+    author: "Fernando Pessoa",
+    cover: "https://covers.openlibrary.org/b/id/8264627-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "portuguesa",
+    genre: ["poesia", "modernismo"],
+    tags: ["heteronimos", "filosofia"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Seleção de poemas do poeta português e seus principais heterônimos.",
+    popularity: 7
+  },
+  {
+    id: 181,
+    title: "Cadê Meu Smartphone?",
+    author: "Time Árvore",
+    cover: "https://covers.openlibrary.org/b/id/8264629-M.jpg",
+    grade: "EF1",
+    available: true,
+    type: "brasileira",
+    genre: ["educativo", "tecnologia"],
+    tags: ["digital", "consumo"],
+    mood: ["surpreender"],
+    time: ["presente"],
+    description: "Reflexão sobre uso consciente da tecnologia para crianças.",
+    popularity: 3
+  },
+  {
+    id: 182,
+    title: "Memórias Póstumas de Brás Cubas",
+    author: "Machado de Assis",
+    cover: "https://covers.openlibrary.org/b/id/8264631-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "brasileira",
+    genre: ["romance", "realismo"],
+    tags: ["ironia", "critica"],
+    mood: ["surpreender"],
+    time: ["passado"],
+    description: "Romance narrado por um defunto que critica a sociedade brasileira do século XIX.",
+    popularity: 7
+  },
+  {
+    id: 183,
+    title: "Crime e Castigo",
+    author: "Fiódor Dostoiévski",
+    cover: "https://covers.openlibrary.org/b/id/8264633-M.jpg",
+    grade: "EM",
+    available: true,
+    type: "estrangeira",
+    genre: ["romance", "psicologico"],
+    tags: ["culpa", "redencao"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Clássico sobre um estudante que comete um assassinato e lida com as consequências morais.",
+    popularity: 8
+  },
+  {
+    id: 184,
+    title: "Mundo dos Bichos",
+    author: "Time Árvore",
+    cover: "https://covers.openlibrary.org/b/id/8264635-M.jpg",
+    grade: "EF1",
+    available: true,
+    type: "brasileira",
+    genre: ["educativo", "natureza"],
+    tags: ["animais", "biodiversidade"],
+    mood: ["surpreender"],
+    time: ["presente"],
+    description: "Guia ilustrado sobre a vida animal e ecossistemas.",
+    popularity: 3
+  },
+{
+    id: 185,
+    title: "Quincas Borba",
+    author: "Machado de Assis",
+    cover: "https://covers.openlibrary.org/b/id/8264637-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "brasileira",
+    genre: ["romance", "realismo"],
+    tags: ["humanitismo", "ironia"],
+    mood: ["surpreender"],
+    time: ["passado"],
+    description: "Sátira machadiana sobre heranças, filosofia e ambição.",
+    popularity: 6
+  },
+  {
+    id: 186,
+    title: "Contos",
+    author: "Lima Barreto",
+    cover: "https://covers.openlibrary.org/b/id/8264639-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "brasileira",
+    genre: ["conto", "pre-modernismo"],
+    tags: ["critica-social", "racial"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Contos que retratam a sociedade brasileira do início do século XX.",
+    popularity: 5
+  },
+  {
+    id: 187,
+    title: "A Revolta de Atlas",
+    author: "Ayn Rand",
+    cover: "https://covers.openlibrary.org/b/id/8264641-M.jpg",
+    grade: "EM",
+    available: true,
+    type: "estrangeira",
+    genre: ["ficcao", "filosofia"],
+    tags: ["objetivismo", "capitalismo"],
+    mood: ["surpreender"],
+    time: ["futuro"],
+    description: "Romance filosófico que explora temas de individualismo e liberdade.",
+    popularity: 7
+  },
+  {
+    id: 188,
+    title: "Tupã Tenondé",
+    author: "Kaká Werá Jecupé",
+    cover: "https://covers.openlibrary.org/b/id/8264643-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "brasileira",
+    genre: ["mitologia", "indigena"],
+    tags: ["cosmovisao", "sabedoria"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Narrativas da cosmovisão guarani sobre a criação do mundo.",
+    popularity: 4
+  },
+  {
+    id: 189,
+    title: "A Vizinha Antipática que Sabia Matemática",
+    author: "Eliana Martins",
+    cover: "https://covers.openlibrary.org/b/id/8264645-M.jpg",
+    grade: "EF1",
+    available: true,
+    type: "brasileira",
+    genre: ["infantil", "matematica"],
+    tags: ["numeros", "amizade"],
+    mood: ["emocionar"],
+    time: ["presente"],
+    description: "História sobre como a matemática pode unir pessoas diferentes.",
+    popularity: 3
+  },
+  {
+    id: 190,
+    title: "Um Homem Célebre",
+    author: "Machado de Assis",
+    cover: "https://covers.openlibrary.org/b/id/8264647-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "brasileira",
+    genre: ["conto", "realismo"],
+    tags: ["musica", "frustracao"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Conto sobre um compositor famoso que não consegue criar sua obra-prima.",
+    popularity: 5
+  },
+  {
+    id: 191,
+    title: "Ayrton",
+    author: "Ernesto Rodrigues",
+    cover: "https://covers.openlibrary.org/b/id/8264649-M.jpg",
+    grade: "EM",
+    available: true,
+    type: "brasileira",
+    genre: ["biografia", "esporte"],
+    tags: ["f1", "superacao"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Biografia do maior ídolo do automobilismo brasileiro.",
+    popularity: 6
+  },
+  {
+    id: 192,
+    title: "Morangos Mofados",
+    author: "Caio Fernando Abreu",
+    cover: "https://covers.openlibrary.org/b/id/8264651-M.jpg",
+    grade: "EM",
+    available: true,
+    type: "brasileira",
+    genre: ["conto", "drama"],
+    tags: ["anos-80", "marginal"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Contos que retratam a geração dos anos 80 com sensibilidade e crueza.",
+    popularity: 5
+  },
+  {
+    id: 193,
+    title: "Invenções do Futuro",
+    author: "Time Árvore",
+    cover: "https://covers.openlibrary.org/b/id/8264653-M.jpg",
+    grade: "EF1",
+    available: true,
+    type: "brasileira",
+    genre: ["educativo", "tecnologia"],
+    tags: ["inovacao", "ciencia"],
+    mood: ["surpreender"],
+    time: ["futuro"],
+    description: "Exploração de tecnologias que podem mudar o mundo no futuro.",
+    popularity: 3
+  },
+  {
+    id: 194,
+    title: "Lugares de Indígenas",
+    author: "Time Árvore",
+    cover: "https://covers.openlibrary.org/b/id/8264655-M.jpg",
+    grade: "EF1",
+    available: true,
+    type: "brasileira",
+    genre: ["educativo", "cultura"],
+    tags: ["povos-originarios", "historia"],
+    mood: ["surpreender"],
+    time: ["presente"],
+    description: "Guia sobre a diversidade dos povos indígenas brasileiros.",
+    popularity: 3
+  },
+  {
+    id: 195,
+    title: "Édipo Rei",
+    author: "Sófocles",
+    cover: "https://covers.openlibrary.org/b/id/8264657-M.jpg",
+    grade: "EM",
+    available: true,
+    type: "estrangeira",
+    genre: ["teatro", "tragedia"],
+    tags: ["grecia", "destino"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Tragédia grega sobre Édipo, que sem saber mata o pai e casa com a mãe.",
+    popularity: 8
+  },
+  {
+    id: 196,
+    title: "Uma Tragédia no Amazonas",
+    author: "João do Rio / Raul Pompeia",
+    cover: "https://covers.openlibrary.org/b/id/8264659-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "brasileira",
+    genre: ["teatro", "drama"],
+    tags: ["amazonia", "colonial"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Peça teatral sobre conflitos na região amazônica no período colonial.",
+    popularity: 4
+  },
+  {
+    id: 197,
+    title: "Viagens na Minha Terra",
+    author: "Almeida Garrett",
+    cover: "https://covers.openlibrary.org/b/id/8264661-M.jpg",
+    grade: "EM",
+    available: true,
+    type: "portuguesa",
+    genre: ["romance", "viagem"],
+    tags: ["romantismo", "portugal"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Clássico da literatura portuguesa que mistura narrativa de viagem e ficção.",
+    popularity: 7
+  },
+  {
+    id: 198,
+    title: "Eu e Outras Poesias",
+    author: "Augusto dos Anjos",
+    cover: "https://covers.openlibrary.org/b/id/8264663-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "brasileira",
+    genre: ["poesia", "parnasianismo"],
+    tags: ["morte", "existencia"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Poemas que exploram temas como a morte e a finitude humana.",
+    popularity: 5
+  },
+  {
+    id: 199,
+    title: "Obras Poéticas",
+    author: "Gregório de Matos",
+    cover: "https://covers.openlibrary.org/b/id/8264665-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "brasileira",
+    genre: ["poesia", "barroco"],
+    tags: ["colonial", "satira"],
+    mood: ["surpreender"],
+    time: ["passado"],
+    description: "Poemas do 'Boca do Inferno', conhecido por sua lírica satírica e religiosa.",
+    popularity: 6
+  },
+  {
+    id: 200,
+    title: "Balada de Amor ao Vento",
+    author: "Paulina Chiziane",
+    cover: "https://covers.openlibrary.org/b/id/8264667-M.jpg",
+    grade: "EF1",
+    available: true,
+    type: "estrangeira",
+    genre: ["romance", "drama"],
+    tags: ["africa", "mulheres"],
+    mood: ["emocionar"],
+    time: ["presente"],
+    description: "Primeiro romance publicado por uma mulher em Moçambique, sobre tradição e modernidade.",
+    popularity: 4
+  },
+{
+    id: 201, // Novo ID (não existente na Lista 1)
+    title: "Valentes",
+    author: "Aryane Cararo",
+    cover: "https://covers.openlibrary.org/b/id/placeholder-M.jpg", // URL fictícia
+    grade: "EM",
+    available: true,
+    type: "brasileira",
+    genres: ["romance", "historico"],
+    tags: ["guerra", "coragem"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Romance histórico sobre heroísmo em contextos de conflito.",
+    popularity: 5
+},
+{
+    id: 202,
+    title: "A Cidade e as Serras",
+    author: "Eça de Queirós",
+    cover: "https://covers.openlibrary.org/b/id/placeholder-M.jpg",
+    grade: "EM",
+    available: true,
+    type: "portuguesa",
+    genres: ["romance", "realismo"],
+    tags: ["civilizacao", "natureza"],
+    mood: ["refletir"],
+    time: ["passado"],
+    description: "Contraste entre a vida urbana e rural na obra do mestre do Realismo português.",
+    popularity: 6
+},
+{
+    id: 203,
+    title: "Prosas Seguidas de Odes Mínimas",
+    author: "José Paulo Paes",
+    cover: "https://covers.openlibrary.org/b/id/placeholder-M.jpg",
+    grade: "EM",
+    available: true,
+    type: "brasileira",
+    genres: ["poesia", "modernismo"],
+    tags: ["minimalismo", "cotidiano"],
+    mood: ["refletir"],
+    time: ["presente"],
+    description: "Poemas que exploram a beleza nas pequenas coisas do dia a dia.",
+    popularity: 4
+},
+{
+    id: 204,
+    title: "Anna Kariênina",
+    author: "Liev Tolstói",
+    cover: "https://covers.openlibrary.org/b/id/placeholder-M.jpg",
+    grade: "EM",
+    available: true,
+    type: "estrangeira",
+    genres: ["romance", "drama"],
+    tags: ["russia", "tragedia"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Clássico russo sobre amor, traição e convenções sociais.",
+    popularity: 8
+},
+{
+    id: 205,
+    title: "A Margem da História",
+    author: "Euclides da Cunha",
+    cover: "https://covers.openlibrary.org/b/id/placeholder-M.jpg",
+    grade: "EF2",
+    available: true,
+    type: "brasileira",
+    genres: ["ensaio", "historico"],
+    tags: ["nordeste", "seca"],
+    mood: ["refletir"],
+    time: ["passado"],
+    description: "Análise social e geográfica sobre regiões marginalizadas do Brasil.",
+    popularity: 5
+},
+{
+    id: 206,
+    title: "Fahrenheit 451",
+    author: "Ray Bradbury",
+    cover: "https://covers.openlibrary.org/b/id/7222246-M.jpg", // URL real da capa
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["distopia", "ficcao-cientifica"],
+    tags: ["censura", "futuro"],
+    mood: ["surpreender"],
+    time: ["futuro"],
+    description: "Clássico distópico sobre uma sociedade onde livros são proibidos e bombeiros queimam obras literárias.",
+    popularity: 9
+  },
+  {
+    id: 207,
+    title: "Medo e Delírio em Las Vegas",
+    author: "Hunter S. Thompson",
+    cover: "https://covers.openlibrary.org/b/id/8264669-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["jornalismo", "ficcao"],
+    tags: ["contracultura", "drogas"],
+    mood: ["surpreender"],
+    time: ["passado"],
+    description: "Relato alucinado de uma viagem pelo sonho americano sob o efeito de substâncias psicodélicas.",
+    popularity: 6
+  },
+  {
+    id: 208,
+    title: "Garota Exemplar",
+    author: "Gillian Flynn",
+    cover: "https://covers.openlibrary.org/b/id/8264671-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["thriller", "drama"],
+    tags: ["suspense", "crime"],
+    mood: ["surpreender"],
+    time: ["presente"],
+    description: "Thriller psicológico sobre o desaparecimento de uma mulher perfeita e os segredos de seu casamento.",
+    popularity: 7
+  },
+  {
+    id: 209,
+    title: "Goodnight Moon",
+    author: "Margaret Wise Brown",
+    cover: "https://covers.openlibrary.org/b/id/8264673-M.jpg",
+    grade: "EF1",
+    available: false,
+    type: "estrangeira",
+    genres: ["infantil", "poesia"],
+    tags: ["hora-de-dormir", "ritual"],
+    mood: ["acalmar"],
+    time: ["fantasia"],
+    description: "Clássico infantil que acompanha um coelho em seu ritual noturno antes de dormir.",
+    popularity: 5
+  },
+  {
+    id: 210,
+    title: "Great Expectations",
+    author: "Charles Dickens",
+    cover: "https://covers.openlibrary.org/b/id/8264675-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["romance", "classico"],
+    tags: ["vitoriano", "ascensao-social"],
+    mood: ["refletir"],
+    time: ["passado"],
+    description: "Romance de formação sobre Pip, um órfão que herda uma fortuna misteriosa.",
+    popularity: 8
+  },
+  {
+    id: 211,
+    title: "Armas, germes e aço",
+    author: "Jared Diamond",
+    cover: "https://covers.openlibrary.org/b/id/8264677-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["historia", "antropologia"],
+    tags: ["civilizacao", "evolucao"],
+    mood: ["surpreender"],
+    time: ["passado"],
+    description: "Análise sobre como fatores geográficos moldaram o desenvolvimento das sociedades humanas.",
+    popularity: 7
+  },
+  {
+    id: 212,
+    title: "Harry Potter e a Câmara Secreta",
+    author: "J. K. Rowling",
+    cover: "https://covers.openlibrary.org/b/id/8264679-M.jpg",
+    grade: "EF1",
+    available: false,
+    type: "estrangeira",
+    genres: ["fantasia", "aventura"],
+    tags: ["magia", "hogwarts"],
+    mood: ["surpreender"],
+    time: ["fantasia"],
+    description: "Segundo livro da série, onde Harry descobre segredos sombrios em Hogwarts.",
+    popularity: 8
+  },
+  {
+    id: 213,
+    title: "A sangue frio",
+    author: "Truman Capote",
+    cover: "https://covers.openlibrary.org/b/id/8264681-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["jornalismo-literario", "crime"],
+    tags: ["assassinato", "investigacao"],
+    mood: ["chocar"],
+    time: ["passado"],
+    description: "Clássico do jornalismo literário sobre um assassinato real no Kansas.",
+    popularity: 8
+  },
+  {
+    id: 214,
+    title: "Intérprete de males",
+    author: "Jhumpa Lahiri",
+    cover: "https://covers.openlibrary.org/b/id/8264683-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["contos", "drama"],
+    tags: ["imigracao", "identidade"],
+    mood: ["emocionar"],
+    time: ["presente"],
+    description: "Contos sobre indianos e seus descendentes lidando com deslocamento cultural.",
+    popularity: 6
+  },
+  {
+    id: 215,
+    title: "Homem Invisível",
+    author: "Ralph Ellison",
+    cover: "https://covers.openlibrary.org/b/id/8264685-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["romance", "social"],
+    tags: ["racismo", "identidade"],
+    mood: ["refletir"],
+    time: ["passado"],
+    description: "Romance seminal sobre um homem negro invisível para a sociedade americana dos anos 1950.",
+    popularity: 7
+  },
+  {
+    id: 216,
+    title: "The Smartest Kid on Earth",
+    author: "Chris Ware",
+    cover: "https://covers.openlibrary.org/b/id/8264687-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["quadrinhos", "drama"],
+    tags: ["vida-cotidiana", "isolamento"],
+    mood: ["refletir"],
+    time: ["presente"],
+    description: "Graphic novel que explora solidão e conexões humanas de forma visual inovadora.",
+    popularity: 5
+  },
+  {
+    id: 217,
+    title: "Cozinha confidencial",
+    author: "Anthony Bourdain",
+    cover: "https://covers.openlibrary.org/b/id/8264689-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["memoir", "gastronomia"],
+    tags: ["restaurantes", "culinaria"],
+    mood: ["surpreender"],
+    time: ["presente"],
+    description: "Relato cru dos bastidores da alta gastronomia por um chef icônico.",
+    popularity: 6
+  },
+  {
+    id: 218,
+    title: "O fio da vida",
+    author: "Kate Atkinson",
+    cover: "https://covers.openlibrary.org/b/id/8264691-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["ficcao-historica", "drama"],
+    tags: ["segunda-guerra", "destino"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "História de uma mulher que vive múltiplas vidas alternativas durante a Segunda Guerra.",
+    popularity: 6
+  },
+  {
+    id: 219,
+    title: "Uma casa na campina",
+    author: "Laura Ingalls Wilder",
+    cover: "https://covers.openlibrary.org/b/id/8264693-M.jpg",
+    grade: "EF2",
+    available: false,
+    type: "estrangeira",
+    genres: ["autobiografia", "historico"],
+    tags: ["fronteira", "familia"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Clássico autobiográfico sobre a vida pioneira nos EUA do século XIX.",
+    popularity: 5
+  },
+  {
+    id: 220,
+    title: "Lolita",
+    author: "Vladimir Nabokov",
+    cover: "https://covers.openlibrary.org/b/id/8264695-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["romance", "drama"],
+    tags: ["obsessao", "moralidade"],
+    mood: ["perturbar"],
+    time: ["passado"],
+    description: "Controversa obra sobre a obsessão de um homem por uma adolescente.",
+    popularity: 8
+  },
+  {
+    id: 221,
+    title: "Amor nos tempos de cólera",
+    author: "Gabriel García Márquez",
+    cover: "https://covers.openlibrary.org/b/id/8264697-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["romance", "realismo-magico"],
+    tags: ["amor", "tempo"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "História de um amor que persiste por décadas na América Latina.",
+    popularity: 8
+  },
+  {
+    id: 222,
+    title: "Love Medicine",
+    author: "Louise Erdrich",
+    cover: "https://covers.openlibrary.org/b/id/8264699-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["romance", "drama"],
+    tags: ["nativos-americanos", "familia"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Saga familiar sobre a comunidade indígena Chippewa no século XX.",
+    popularity: 5
+  },
+  {
+    id: 223,
+    title: "Em busca de sentido",
+    author: "Viktor E. Frankl",
+    cover: "https://covers.openlibrary.org/b/id/8264701-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["psicologia", "memoir"],
+    tags: ["holocausto", "logoterapia"],
+    mood: ["refletir"],
+    time: ["passado"],
+    description: "Relato de um psiquiatra sobre sua sobrevivência em campos de concentração e sua teoria psicológica.",
+    popularity: 7
+  },
+  {
+    id: 224,
+    title: "Me Talk Pretty One Day",
+    author: "David Sedaris",
+    cover: "https://covers.openlibrary.org/b/id/8264703-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["humor", "memoir"],
+    tags: ["autobiografia", "sarcasmo"],
+    mood: ["divertir"],
+    time: ["presente"],
+    description: "Ensaios humorísticos sobre as experiências absurdas do autor nos EUA e França.",
+    popularity: 6
+  },
+  {
+    id: 225,
+    title: "Middlesex",
+    author: "Jeffrey Eugenides",
+    cover: "https://covers.openlibrary.org/b/id/8264705-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["romance", "drama"],
+    tags: ["identidade-de-genero", "imigracao"],
+    mood: ["refletir"],
+    time: ["passado"],
+    description: "Saga multigeracional sobre um intersexual descendente de imigrantes gregos.",
+    popularity: 7
+  },
+  {
+    id: 226,
+    title: "Os filhos da meia-noite",
+    author: "Salman Rushdie",
+    cover: "https://covers.openlibrary.org/b/id/8264707-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["realismo-magico", "historico"],
+    tags: ["india", "independencia"],
+    mood: ["surpreender"],
+    time: ["passado"],
+    description: "Romance épico sobre crianças nascidas no momento da independência da Índia.",
+    popularity: 8
+  },
+  {
+    id: 227,
+    title: "Moneyball",
+    author: "Michael Lewis",
+    cover: "https://covers.openlibrary.org/b/id/8264709-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["esporte", "jornalismo"],
+    tags: ["beisebol", "estatistica"],
+    mood: ["surpreender"],
+    time: ["presente"],
+    description: "Análise revolucionária sobre como dados transformaram o beisebol profissional.",
+    popularity: 6
+  },
+  {
+    id: 228,
+    title: "Servidão humana",
+    author: "W. Somerset Maugham",
+    cover: "https://covers.openlibrary.org/b/id/8264711-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["romance", "drama"],
+    tags: ["existencialismo", "amor"],
+    mood: ["refletir"],
+    time: ["passado"],
+    description: "Clássico sobre um médico com deformidade física e suas relações conturbadas.",
+    popularity: 7
+  },
+  {
+    id: 229,
+    title: "On the Road",
+    author: "Jack Kerouac",
+    cover: "https://covers.openlibrary.org/b/id/8264713-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["aventura", "autobiografia"],
+    tags: ["beat-generation", "viagem"],
+    mood: ["inspirar"],
+    time: ["passado"],
+    description: "Obra seminal da geração beat sobre viagens rodoviárias pelos EUA.",
+    popularity: 6
+  },
+  {
+    id: 230,
+    title: "Out of Africa",
+    author: "Isak Dinesen",
+    cover: "https://covers.openlibrary.org/b/id/8264715-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["memoir", "drama"],
+    tags: ["africa", "colonialismo"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Memórias poéticas de uma dinamarquesa em uma fazenda no Quênia colonial.",
+    popularity: 6
+  },
+  {
+    id: 231,
+    title: "Orgulho e Preconceito",
+    author: "Jane Austen",
+    cover: "https://covers.openlibrary.org/b/id/8264717-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["romance", "classico"],
+    tags: ["sociedade", "amor"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Clássico romance sobre Elizabeth Bennet e Mr. Darcy na Inglaterra do século XIX.",
+    popularity: 9
+  },
+  {
+    id: 232,
+    title: "Primavera silenciosa",
+    author: "Rachel Carson",
+    cover: "https://covers.openlibrary.org/b/id/8264719-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["ciencia", "ecologia"],
+    tags: ["meio-ambiente", "pesticidas"],
+    mood: ["refletir"],
+    time: ["passado"],
+    description: "Obra pioneira que alertou sobre os perigos dos pesticidas sintéticos.",
+    popularity: 7
+  },
+  {
+    id: 233,
+    title: "Slaughterhouse-Five",
+    author: "Kurt Vonnegut",
+    cover: "https://covers.openlibrary.org/b/id/8264721-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["ficcao", "guerra"],
+    tags: ["segunda-guerra", "anti-guerra"],
+    mood: ["perturbar"],
+    time: ["passado"],
+    description: "Sátira anti-guerra sobre um soldado que viaja no tempo após o bombardeio de Dresden.",
+    popularity: 8
+  },
+  {
+    id: 234,
+    title: "Team of Rivals",
+    author: "Doris Kearns Goodwin",
+    cover: "https://covers.openlibrary.org/b/id/8264723-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["historia", "biografia"],
+    tags: ["abraham-lincoln", "politica"],
+    mood: ["refletir"],
+    time: ["passado"],
+    description: "Análise de como Lincoln formou seu gabinete com ex-rivais políticos.",
+    popularity: 6
+  },
+  {
+    id: 235,
+    title: "A época da inocência",
+    author: "Edith Wharton",
+    cover: "https://covers.openlibrary.org/b/id/8264725-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["romance", "drama"],
+    tags: ["sociedade", "moralidade"],
+    mood: ["refletir"],
+    time: ["passado"],
+    description: "Crítica à alta sociedade nova-iorquina do século XIX através de um triângulo amoroso.",
+    popularity: 7
+  },
+  {
+    id: 236,
+    title: "The Amazing Adventures of Kavalier & Clay",
+    author: "Michael Chabon",
+    cover: "https://covers.openlibrary.org/b/id/8264727-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["ficcao", "historico"],
+    tags: ["quadrinhos", "holocausto"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "História de dois primos que criam um super-herói durante a Era de Ouro dos quadrinhos.",
+    popularity: 7
+  },
+  {
+    id: 237,
+    title: "Malcolm X: Uma vida de reinvenções",
+    author: "Malcolm X",
+    cover: "https://covers.openlibrary.org/b/id/8264729-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["biografia", "historia"],
+    tags: ["direitos-civis", "islamismo"],
+    mood: ["inspirar"],
+    time: ["passado"],
+    description: "Autobiografia do icônico ativista dos direitos civis norte-americanos.",
+    popularity: 6
+  },
+  {
+    id: 238,
+    title: "A menina que roubava livros",
+    author: "Markus Zusak",
+    cover: "https://covers.openlibrary.org/b/id/8264731-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["drama", "historico"],
+    tags: ["segunda-guerra", "nazismo"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "História de uma jovem que encontra refúgio nos livros durante a Alemanha nazista.",
+    popularity: 8
+  },
+  {
+    id: 239,
+    title: "A Fantástica vida breve de Oscar Wao",
+    author: "Junot Díaz",
+    cover: "https://covers.openlibrary.org/b/id/8264733-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["romance", "drama"],
+    tags: ["republica-dominicana", "ditadura"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "História de um jovem dominicano-americano obcecado por ficção científica e amor.",
+    popularity: 7
+  },
+  {
+    id: 240,
+    title: "Apanhador no campo de centeio",
+    author: "J. D. Salinger",
+    cover: "https://covers.openlibrary.org/b/id/8264735-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["romance", "drama"],
+    tags: ["adolescencia", "alienacao"],
+    mood: ["refletir"],
+    time: ["passado"],
+    description: "Clássico sobre Holden Caulfield e sua jornada de descoberta em Nova York.",
+    popularity: 9
+  },
+  {
+    id: 241,
+    title: "The Color of Water",
+    author: "James McBride",
+    cover: "https://covers.openlibrary.org/b/id/8264737-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["biografia", "memoir"],
+    tags: ["racismo", "familia"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Memórias de um homem negro sobre sua mãe branca e judia nos EUA dos anos 1960.",
+    popularity: 6
+  },
+  {
+    id: 242,
+    title: "As correções",
+    author: "Jonathan Franzen",
+    cover: "https://covers.openlibrary.org/b/id/8264739-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["romance", "drama"],
+    tags: ["familia", "disfuncional"],
+    mood: ["refletir"],
+    time: ["presente"],
+    description: "Saga familiar sobre os Lambert e suas complexas relações no meio-oeste americano.",
+    popularity: 6
+  },
+  {
+    id: 243,
+    title: "O demônio na cidade branca",
+    author: "Erik Larson",
+    cover: "https://covers.openlibrary.org/b/id/8264741-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["historia", "crime"],
+    tags: ["chicago", "serial-killer"],
+    mood: ["chocar"],
+    time: ["passado"],
+    description: "Narrativa real sobre um arquiteto e um serial killer durante a Feira Mundial de Chicago.",
+    popularity: 7
+  },
+  {
+    id: 244,
+    title: "O diário de Anne Frank",
+    author: "Anne Frank",
+    cover: "https://covers.openlibrary.org/b/id/8264743-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["biografia", "historico"],
+    tags: ["holocausto", "nazismo"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Relato pessoal de uma jovem judia escondida durante a Segunda Guerra Mundial.",
+    popularity: 9
+  },
+  {
+    id: 245,
+    title: "A culpa é das estrelas",
+    author: "John Green",
+    cover: "https://covers.openlibrary.org/b/id/8264745-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["romance", "drama"],
+    tags: ["cancer", "adolescencia"],
+    mood: ["emocionar"],
+    time: ["presente"],
+    description: "História de amor entre dois adolescentes que se conhecem em um grupo de apoio ao câncer.",
+    popularity: 8
+  },
+  {
+    id: 246,
+    title: "O doador de memórias",
+    author: "Lois Lowry",
+    cover: "https://covers.openlibrary.org/b/id/8264747-M.jpg",
+    grade: "EF2",
+    available: false,
+    type: "estrangeira",
+    genres: ["distopia", "ficcao"],
+    tags: ["utopia", "controle"],
+    mood: ["refletir"],
+    time: ["futuro"],
+    description: "Clássico juvenil sobre uma sociedade aparentemente perfeita sem dor ou memórias.",
+    popularity: 6
+  },
+  {
+    id: 247,
+    title: "A bússola de ouro",
+    author: "Philip Pullman",
+    cover: "https://covers.openlibrary.org/b/id/8264749-M.jpg",
+    grade: "EF2",
+    available: false,
+    type: "estrangeira",
+    genres: ["fantasia", "aventura"],
+    tags: ["universo-paralelo", "daemon"],
+    mood: ["surpreender"],
+    time: ["fantasia"],
+    description: "Primeiro livro da trilogia Fronteiras do Universo, sobre Lyra e sua jornada épica.",
+    popularity: 7
+  },
+  {
+    id: 248,
+    title: "O grande Gatsby",
+    author: "F. Scott Fitzgerald",
+    cover: "https://covers.openlibrary.org/b/id/8264751-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["romance", "classico"],
+    tags: ["sonho-americano", "anos-20"],
+    mood: ["refletir"],
+    time: ["passado"],
+    description: "Retrato da decadência do sonho americano nos anos 1920 através de Jay Gatsby.",
+    popularity: 9
+  },
+  {
+    id: 249,
+    title: "O conto da aia",
+    author: "Margaret Atwood",
+    cover: "https://covers.openlibrary.org/b/id/8264753-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["distopia", "ficcao"],
+    tags: ["totalitarismo", "feminismo"],
+    mood: ["perturbar"],
+    time: ["futuro"],
+    description: "Distopia sobre um regime teocrático onde mulheres são escravas reprodutivas.",
+    popularity: 8
+  },
+  {
+    id: 250,
+    title: "The house at Pooh Corner",
+    author: "A. A. Milne",
+    cover: "https://covers.openlibrary.org/b/id/8264755-M.jpg",
+    grade: "EF1",
+    available: false,
+    type: "estrangeira",
+    genres: ["infantil", "fantasia"],
+    tags: ["ursinho-pooh", "amizade"],
+    mood: ["divertir"],
+    time: ["fantasia"],
+    description: "Continução das aventuras do Ursinho Pooh e seus amigos na Floresta dos Cem Acres.",
+    popularity: 6
+  },
+  {
+    id: 251,
+    title: "Jogos Vorazes",
+    author: "Suzanne Collins",
+    cover: "https://covers.openlibrary.org/b/id/8264757-M.jpg",
+    grade: "EF2",
+    available: false,
+    type: "estrangeira",
+    genres: ["distopia", "aventura"],
+    tags: ["realidade-tv", "sobrevivencia"],
+    mood: ["surpreender"],
+    time: ["futuro"],
+    description: "Primeiro livro da trilogia sobre Katniss Everdeen e os jogos mortais do Capitólio.",
+    popularity: 8
+  },
+  {
+    id: 252,
+    title: "A vida imortal de Henrietta Lacks",
+    author: "Rebecca Skloot",
+    cover: "https://covers.openlibrary.org/b/id/8264759-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["ciencia", "biografia"],
+    tags: ["hela", "etica-medica"],
+    mood: ["refletir"],
+    time: ["passado"],
+    description: "História real por trás das células HeLa e os dilemas éticos da pesquisa médica.",
+    popularity: 7
+  },
+  {
+    id: 253,
+    title: "The Liars' Club: A Memoir",
+    author: "Mary Karr",
+    cover: "https://covers.openlibrary.org/b/id/8264761-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["memoir", "drama"],
+    tags: ["infancia", "texas"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Memórias de uma infância turbulenta no Texas dos anos 1960.",
+    popularity: 5
+  },
+  {
+    id: 254,
+    title: "Percy Jackson e o ladrão de raios",
+    author: "Rick Riordan",
+    cover: "https://covers.openlibrary.org/b/id/8264763-M.jpg",
+    grade: "EF1",
+    available: false,
+    type: "estrangeira",
+    genres: ["fantasia", "aventura"],
+    tags: ["mitologia-grega", "semideuses"],
+    mood: ["divertir"],
+    time: ["presente"],
+    description: "Primeiro livro da série sobre um garoto que descobre ser filho de Poseidon.",
+    popularity: 7
+  },
+  {
+    id: 255,
+    title: "O sono eterno",
+    author: "Raymond Chandler",
+    cover: "https://covers.openlibrary.org/b/id/8264765-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["policial", "noir"],
+    tags: ["detetive", "misterio"],
+    mood: ["surpreender"],
+    time: ["passado"],
+    description: "Clássico do romance noir com o detetive Philip Marlowe em Los Angeles.",
+    popularity: 7
+  },
+  {
+    id: 256,
+    title: "O Vulto das Torres",
+    author: "Lawrence Wright",
+    cover: "https://covers.openlibrary.org/b/id/8264767-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["jornalismo", "historia"],
+    tags: ["al-qaeda", "11-de-setembro"],
+    mood: ["refletir"],
+    time: ["passado"],
+    description: "Investigação sobre os eventos que levaram aos ataques de 11 de setembro.",
+    popularity: 6
+  },
+  {
+    id: 257,
+    title: "O senhor dos Anéis",
+    author: "J. R. R. Tolkien",
+    cover: "https://covers.openlibrary.org/b/id/8264769-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["fantasia", "aventura"],
+    tags: ["terra-media", "anel-do-poder"],
+    mood: ["surpreender"],
+    time: ["fantasia"],
+    description: "Trilogia épica sobre a jornada para destruir o Um Anel e salvar a Terra-média.",
+    popularity: 10
+  },
+  {
+    id: 258,
+    title: "O homem que confundiu sua mulher com um chapéu",
+    author: "Oliver Sacks",
+    cover: "https://covers.openlibrary.org/b/id/8264771-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["neurologia", "ciencia"],
+    tags: ["casos-clinicos", "mente"],
+    mood: ["surpreender"],
+    time: ["presente"],
+    description: "Estudos de caso neurológicos que revelam os mistérios do cérebro humano.",
+    popularity: 7
+  },
+  {
+    id: 259,
+    title: "O dilema do onívoro",
+    author: "Michael Pollan",
+    cover: "https://covers.openlibrary.org/b/id/8264773-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["alimentacao", "ciencia"],
+    tags: ["industria-alimenticia", "etica"],
+    mood: ["refletir"],
+    time: ["presente"],
+    description: "Investigação sobre as origens do que comemos e seus impactos éticos e ambientais.",
+    popularity: 6
+  },
+  {
+    id: 260,
+    title: "Tudo depende de como você vê as coisas",
+    author: "Norton Juster",
+    cover: "https://covers.openlibrary.org/b/id/8264775-M.jpg",
+    grade: "EF1",
+    available: false,
+    type: "estrangeira",
+    genres: ["infantil", "filosofia"],
+    tags: ["percepcao", "aprendizado"],
+    mood: ["refletir"],
+    time: ["fantasia"],
+    description: "Clássico infantil que ensina sobre perspectivas através de aventuras imaginativas.",
+    popularity: 5
+  },
+  {
+    id: 261,
+    title: "Bíblia envenenada",
+    author: "Barbara Kingsolver",
+    cover: "https://covers.openlibrary.org/b/id/8264777-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["ficcao", "drama"],
+    tags: ["mexico", "missionarios"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "História de uma família de missionários no México dos anos 1950 e seus conflitos culturais.",
+    popularity: 6
+  },
+  {
+    id: 262,
+    title: "The Power Broker",
+    author: "Robert A. Caro",
+    cover: "https://covers.openlibrary.org/b/id/8264779-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["biografia", "politica"],
+    tags: ["urbanismo", "poder"],
+    mood: ["refletir"],
+    time: ["passado"],
+    description: "Biografia de Robert Moses e sua influência no desenvolvimento urbano de Nova York.",
+    popularity: 7
+  },
+  {
+    id: 263,
+    title: "Os eleitos",
+    author: "Tom Wolfe",
+    cover: "https://covers.openlibrary.org/b/id/8264781-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["ficcao", "historico"],
+    tags: ["nasa", "corrida-espacial"],
+    mood: ["surpreender"],
+    time: ["passado"],
+    description: "Romance sobre os primeiros astronautas do programa espacial norte-americano.",
+    popularity: 6
+  },
+  {
+    id: 264,
+    title: "A estrada",
+    author: "Cormac McCarthy",
+    cover: "https://covers.openlibrary.org/b/id/8264783-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["ficcao", "pos-apocaliptico"],
+    tags: ["sobrevivencia", "pai-e-filho"],
+    mood: ["perturbar"],
+    time: ["futuro"],
+    description: "História sombria de um pai e seu filho em um mundo pós-apocalíptico.",
+    popularity: 8
+  },
+  {
+    id: 265,
+    title: "A história secreta",
+    author: "Donna Tartt",
+    cover: "https://covers.openlibrary.org/b/id/8264785-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["suspense", "drama"],
+    tags: ["universidade", "crime"],
+    mood: ["surpreender"],
+    time: ["passado"],
+    description: "Narrativa sobre um grupo de estudantes de elite envolvidos em um assassinato.",
+    popularity: 7
+  },
+  {
+    id: 266,
+    title: "O iluminado",
+    author: "Stephen King",
+    cover: "https://covers.openlibrary.org/b/id/8264787-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["terror", "suspense"],
+    tags: ["hotel", "loucura"],
+    mood: ["assustar"],
+    time: ["passado"],
+    description: "Clássico do terror sobre um escritor que se torna zelador de um hotel assombrado.",
+    popularity: 9
+  },
+  {
+    id: 267,
+    title: "O estrangeiro",
+    author: "Albert Camus",
+    cover: "https://covers.openlibrary.org/b/id/8264789-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["filosofia", "drama"],
+    tags: ["absurdo", "existencialismo"],
+    mood: ["refletir"],
+    time: ["passado"],
+    description: "Romance existencialista sobre um homem indiferente julgado por um crime.",
+    popularity: 8
+  },
+  {
+    id: 268,
+    title: "O sol também se levanta",
+    author: "Ernest Hemingway",
+    cover: "https://covers.openlibrary.org/b/id/8264791-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["romance", "drama"],
+    tags: ["geracao-perdida", "expatriados"],
+    mood: ["refletir"],
+    time: ["passado"],
+    description: "Retrato da Geração Perdida de americanos em Paris após a Primeira Guerra.",
+    popularity: 7
+  },
+  {
+    id: 269,
+    title: "The Things they Carried",
+    author: "Tim O'Brien",
+    cover: "https://covers.openlibrary.org/b/id/8264793-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["guerra", "ficcao"],
+    tags: ["vietna", "trauma"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Coleção de histórias interligadas sobre soldados na Guerra do Vietnã.",
+    popularity: 7
+  },
+  {
+    id: 270,
+    title: "Uma Lagarta Muito Comilona",
+    author: "Eric Carle",
+    cover: "https://covers.openlibrary.org/b/id/8264795-M.jpg",
+    grade: "EF1",
+    available: false,
+    type: "estrangeira",
+    genres: ["infantil", "educativo"],
+    tags: ["alimentacao", "cores"],
+    mood: ["divertir"],
+    time: ["fantasia"],
+    description: "Clássico infantil sobre uma lagarta que come até se transformar em borboleta.",
+    popularity: 5
+  },
+  {
+    id: 271,
+    title: "O Vento nos Salgueiros",
+    author: "Kenneth Grahame",
+    cover: "https://covers.openlibrary.org/b/id/8264797-M.jpg",
+    grade: "EF2",
+    available: false,
+    type: "estrangeira",
+    genres: ["infantil", "aventura"],
+    tags: ["animais", "amizade"],
+    mood: ["acalmar"],
+    time: ["fantasia"],
+    description: "Aventuras de Toupeira, Rato e outros animais antropomórficos na Inglaterra rural.",
+    popularity: 6
+  },
+  {
+    id: 272,
+    title: "The wind-up bird chronicle",
+    author: "Haruki Murakami",
+    cover: "https://covers.openlibrary.org/b/id/8264799-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["ficcao", "surrealismo"],
+    tags: ["japao", "misterio"],
+    mood: ["surpreender"],
+    time: ["presente"],
+    description: "Narrativa surreal sobre um homem que busca sua esposa desaparecida em Tóquio.",
+    popularity: 7
+  },
+  {
+    id: 273,
+    title: "O mundo Segundo Garp",
+    author: "John Irving",
+    cover: "https://covers.openlibrary.org/b/id/8264801-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["romance", "drama"],
+    tags: ["escritor", "tragicomedia"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "História da vida do escritor T.S. Garp e sua família incomum.",
+    popularity: 6
+  },
+  {
+    id: 274,
+    title: "The Year of Magical Thinking",
+    author: "Joan Didion",
+    cover: "https://covers.openlibrary.org/b/id/8264803-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["memoir", "drama"],
+    tags: ["luto", "perda"],
+    mood: ["emocionar"],
+    time: ["presente"],
+    description: "Relato autobiográfico sobre o luto após a morte repentina do marido da autora.",
+    popularity: 6
+  },
+  {
+    id: 275,
+    title: "O mundo se despedaça",
+    author: "Chinua Achebe",
+    cover: "https://covers.openlibrary.org/b/id/8264805-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["romance", "historico"],
+    tags: ["nigeria", "colonialismo"],
+    mood: ["refletir"],
+    time: ["passado"],
+    description: "Clássico africano sobre o choque entre tradições igbo e o colonialismo britânico.",
+    popularity: 8
+  },
+  {
+    id: 276,
+    title: "O sol é para todos",
+    author: "Harper Lee",
+    cover: "https://covers.openlibrary.org/b/id/8264807-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["romance", "drama"],
+    tags: ["racismo", "justica"],
+    mood: ["emocionar"],
+    time: ["passado"],
+    description: "Clássico sobre um advogado que defende um homem negro injustamente acusado no sul dos EUA.",
+    popularity: 9
+  },
+  {
+    id: 277,
+    title: "Invencível",
+    author: "Laura Hillenbrand",
+    cover: "https://covers.openlibrary.org/b/id/8264809-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["biografia", "historia"],
+    tags: ["segunda-guerra", "superacao"],
+    mood: ["inspirar"],
+    time: ["passado"],
+    description: "História real de um atleta olímpico sobrevivente de um acidente aéreo na Segunda Guerra.",
+    popularity: 7
+  },
+  {
+    id: 278,
+    title: "Valley of the Dolls",
+    author: "Jacqueline Susann",
+    cover: "https://covers.openlibrary.org/b/id/8264811-M.jpg",
+    grade: "EM",
+    available: false,
+    type: "estrangeira",
+    genres: ["romance", "drama"],
+    tags: ["hollywood", "drogas"],
+    mood: ["chocar"],
+    time: ["passado"],
+    description: "Clássico sobre três mulheres e seus dramas na indústria do entretenimento dos anos 1960.",
+    popularity: 6
+  },
+  {
+    id: 279,
+    title: "Where the sidewalk ends",
+    author: "Shel Silverstein",
+    cover: "https://covers.openlibrary.org/b/id/8264813-M.jpg",
+    grade: "EF1",
+    available: false,
+    type: "estrangeira",
+    genres: ["poesia", "infantil"],
+    tags: ["humor", "imaginacao"],
+    mood: ["divertir"],
+    time: ["fantasia"],
+    description: "Coleção de poemas nonsense e ilustrações para crianças.",
+    popularity: 6
+  },
+  {
+    id: 280,
+    title: "Onde vivem os monstros",
+    author: "Maurice Sendak",
+    cover: "https://covers.openlibrary.org/b/id/8264815-M.jpg",
+    grade: "EF1",
+    available: false,
+    type: "estrangeira",
+    genres: ["infantil", "fantasia"],
+    tags: ["imaginacao", "aventura"],
+    mood: ["divertir"],
+    time: ["fantasia"],
+    description: "Clássico infantil sobre Max e sua terra de monstros selvagens.",
+    popularity: 7
+  }
+    ];
+
+    // Extrair todos os gêneros únicos do banco de dados
+    const allGenres = Array.from(new Set(
+      booksDatabase.flatMap(book => book.genres || [])
+        .concat(fallbackBooks.flatMap(book => book.genres || []))
+    )).filter(Boolean);
+
+    // Perguntas do quiz em português e espanhol
+    const quizQuestions = {
+      pt: [
+        {
+          id: 1,
+          question: "📚 Qual sua série?",
+          options: [
+            { value: "EF1", label: "6° ou 7° ano" },
+            { value: "EF2", label: "8° ou 9° ano" },
+            { value: "EM", label: "Ensino Médio" },
+            { value: "EM", label: "Professor/Outro" }
+          ],
+          filterKey: "grade"
+        },
+        {
+          id: 2,
+          question: "🌎 Qual tipo de literatura prefere?",
+          options: [
+            { value: "brasileira", label: "🇧🇷 Brasileira" },
+            { value: "estrangeira", label: "🌐 Estrangeira" },
+            { value: "qualquer", label: "📖 Qualquer uma" }
+          ],
+          filterKey: "type"
+        },
+        {
+          id: 3,
+          question: "📖 Quais gêneros você mais gosta?",
+          options: allGenres.map(genre => ({
+            value: genre,
+            label: genre.charAt(0).toUpperCase() + genre.slice(1)
+          })),
+          filterKey: "genres",
+          multiple: true
+        },
+        {
+  id: 4,
+  question: "📖 Que tipo de experiência você busca?",
+  options: [
+    { value: "emocionar", label: "😢 Emoção/Drama" },
+    { value: "surpreender", label: "😲 Mistério/Suspense" },
+    { value: "refletir", label: "🤔 Reflexão" },
+    { value: "rir", label: "😂 Comédia" },
+    { value: "aventura", label: "🏹 Ação/Aventura" },
+    { value: "acalmar", label: "🌿 Leve/Relaxante" },
+    { value: "assustar", label: "😨 Terror" },
+    { value: "perturbar", label: "🤯 Intenso/Pesado" },
+    { value: "divertir", label: "😊 Entretenimento" },
+    { value: "inspirar", label: "🧠 Superação" }
+  ],
+  filterKey: "mood",
+  multiple: true
+}
+,
+        {
+          id: 5,
+          question: "⏳ Prefere histórias que se passam no:",
+          options: [
+            { value: "presente", label: "📅 Presente" },
+            { value: "passado", label: "🏺 Passado" },
+            { value: "futuro", label: "🚀 Futuro" },
+            { value: "todos", label: "🌈 Qualquer época" }
+          ],
+          filterKey: "time"
+        }
+      ],
+      es: [
+        {
+          id: 1,
+          question: "📚 ¿Cuál es tu grado escolar?",
+          options: [
+            { value: "EF1", label: "6° o 7° grado" },
+            { value: "EF2", label: "8° o 9° grado" },
+            { value: "EM", label: "Escuela secundaria" },
+            { value: "EM", label: "Profesor/Otro" }
+          ],
+          filterKey: "grade"
+        },
+        {
+          id: 2,
+          question: "🌎 ¿Qué tipo de literatura prefieres?",
+          options: [
+            { value: "brasileira", label: "🇧🇷 Brasileña" },
+            { value: "estrangeira", label: "🌐 Extranjera" },
+            { value:  "qualquer", label: "📖 Cualquiera" }
+          ],
+          filterKey: "type"
+        },
+        {
+          id: 3,
+          question: "📖 ¿Qué géneros te gustan más?",
+          options: allGenres.map(genre => ({
+            value: genre,
+            label: genre.charAt(0).toUpperCase() + genre.slice(1)
+          })),
+          filterKey: "genres",
+          multiple: true
+        },
+        {
+  id: 4,
+  question: "📖 ¿Qué tipo de experiencia buscas?",
+  options: [
+    { value: "emocionar", label: "😢 Emoción/Drama" },
+    { value: "surpreender", label: "😲 Misterio/Suspenso" },
+    { value: "refletir", label: "🤔 Reflexión" },
+    { value: "rir", label: "😂 Comedia" },
+    { value: "aventura", label: "🏹 Acción/Aventura" },
+    { value: "acalmar", label: "🌿 Lectura ligera" },
+    { value: "assustar", label: "😨 Terror" },
+    { value: "perturbar", label: "🤯 Intenso" },
+    { value: "divertir", label: "😊 Entretenimiento" },
+    { value: "inspirar", label: "🧠 Superación" }
+  ],
+  filterKey: "mood",
+  multiple: true
+},
+        {
+          id: 5,
+          question: "⏳ ¿Prefieres historias que ocurren en:",
+          options: [
+            { value: "presente", label: "📅 Presente" },
+            { value: "passado", label: "🏺 Pasado" },
+            { value: "futuro", label: "🚀 Futuro" },
+            { value: "todos", label: "🌈 Cualquier época" }
+          ],
+          filterKey: "time"
+        }
+      ]
+    };
+
+    // Livros para vestibular com descrições completas
+    const vestibularBooks = {
+      fuvest: [
+        {
+          title: "Prosas seguidas de odes mínimas",
+          author: "José Paulo Paes",
+          description: "Coletânea de poemas e prosas poéticas que exploram o cotidiano com sensibilidade e humor. O autor trabalha com linguagem simples mas profundamente poética, abordando temas como a passagem do tempo e as pequenas alegrias da vida."
+        },
+        {
+          title: "Olhos d'água",
+          author: "Conceição Evaristo",
+          description: "Coletânea de contos que abordam a realidade da população negra no Brasil, especialmente das mulheres. A autora explora temas como racismo, violência e resistência, com uma escrita potente e cheia de humanidade."
+        },
+        {
+          title: "Dom Casmurro",
+          author: "Machado de Assis",
+          description: "Clássico da literatura brasileira que narra a história de Bentinho e Capitu, explorando temas como ciúme, ambiguidade e a natureza da verdade. A obra é famosa por seu narrador não confiável e por deixar em aberto a questão da traição."
+        },
+        {
+          title: "Grande Sertão: Veredas",
+          author: "João Guimarães Rosa",
+          description: "Obra-prima da literatura brasileira que reinventa a linguagem para contar a história de Riobaldo, um ex-jagunço que relembra sua vida no sertão. O livro aborda temas universais como amor, amizade, pacto com o diabo e a busca pelo sentido da vida."
+        },
+        {
+          title: "Memórias Póstumas de Brás Cubas",
+          author: "Machado de Assis",
+          description: "Romance inovador narrado por um defunto autor, que critica a sociedade brasileira do século XIX com ironia fina. A obra marca o início do Realismo no Brasil e questiona valores como hipocrisia social e o sentido da existência."
+        },
+        {
+          title: "O Cortiço",
+          author: "Aluísio Azevedo",
+          description: "Principal obra do Naturalismo brasileiro, que retrata a vida nos cortiços do Rio de Janeiro no século XIX. O romance mostra como o ambiente influencia os personagens, abordando temas como determinismo social, luxúria e ganância."
+        },
+        {
+          title: "O Primo Basílio",
+          author: "José Maria Eça de Queirós",
+          description: "Romance realista português que critica a burguesia lisboeta do século XIX. A história centra-se no adultério de Luísa e nas consequências de seus atos, mostrando a hipocrisia da sociedade da época."
+        },
+        {
+          title: "A Hora da Estrela",
+          author: "Clarice Lispector",
+          description: "Último romance da autora, que conta a história de Macabéa, uma datilógrafa alagoana que vive no Rio de Janeiro. A obra explora temas como a solidão, a insignificância humana e a busca por identidade."
+        },
+        {
+          title: "Vidas Secas",
+          author: "Graciliano Ramos",
+          description: "Romance que retrata a vida difícil de uma família de retirantes no Nordeste brasileiro. A obra mostra a luta pela sobrevivência em meio à seca e à pobreza, com uma linguagem seca e objetiva que reflete o ambiente hostil."
+        },
+        {
+          title: "A Moreninha",
+          author: "Joaquim Manuel de Macedo",
+          description: "Primeiro romance romântico brasileiro, publicado em 1844. Conta a história de amor entre Augusto e Carolina (a Moreninha), com elementos típicos do Romantismo como amor à primeira vista e final feliz."
+        }
+      ],
+      comvest: [
+        {
+          title: "A Revolução dos Bichos",
+          author: "George Orwell",
+          description: "Fábula política que satiriza a Revolução Russa e o stalinismo. Narra a rebelião dos animais de uma granja contra os humanos, mostrando como o poder corrompe e como revoluções podem se desviar de seus ideais originais."
+        },
+        {
+          title: "Capitães da Areia",
+          author: "Jorge Amado",
+          description: "Romance que retrata a vida de um grupo de meninos de rua em Salvador nos anos 1930. A obra mostra a dura realidade desses jovens, mas também sua solidariedade e desejo de liberdade, com forte crítica social."
+        },
+        {
+          title: "O Ateneu",
+          author: "Raul Pompeia",
+          description: "Romance impressionista que narra a experiência de Sérgio em um colégio interno no Rio de Janeiro do século XIX. A obra critica a educação repressora da época e mostra a descoberta do mundo adulto através dos olhos de um adolescente."
+        },
+        {
+          title: "O Primo Basílio",
+          author: "José Maria Eça de Queirós",
+          description: "Romance realista português que critica a burguesia lisboeta do século XIX. A história centra-se no adultério de Luísa e nas consequências de seus atos, mostrando a hipocrisia da sociedade da época."
+        },
+        {
+          title: "Memórias Póstumas de Brás Cubas",
+          author: "Machado de Assis",
+          description: "Romance inovador narrado por um defunto autor, que critica a sociedade brasileira do século XIX com ironia fina. A obra marca o início do Realismo no Brasil e questiona valores como hipocrisia social e o sentido da existência."
+        },
+        {
+          title: "O Cortiço",
+          author: "Aluísio Azevedo",
+          description: "Principal obra do Naturalismo brasileiro, que retrata a vida nos cortiços do Rio de Janeiro no século XIX. O romance mostra como o ambiente influencia os personagens, abordando temas como determinismo social, luxúria e ganância."
+        },
+        {
+          title: "Vidas Secas",
+          author: "Graciliano Ramos",
+          description: "Romance que retrata a vida difícil de uma família de retirantes no Nordeste brasileiro. A obra mostra a luta pela sobrevivência em meio à seca e à pobreza, com uma linguagem seca e objetiva que reflete o ambiente hostil."
+        },
+        {
+          title: "A Moreninha",
+          author: "Joaquim Manuel de Macedo",
+          description: "Primeiro romance romântico brasileiro, publicado em 1844. Conta a história de amor entre Augusto e Carolina (a Moreninha), com elementos típicos do Romantismo como amor à primeira vista e final feliz."
+        },
+        {
+          title: "A Hora da Estrela",
+          author: "Clarice Lispector",
+          description: "Último romance da autora, que conta a história de Macabéa, uma datilógrafa alagoana que vive no Rio de Janeiro. A obra explora temas como a solidão, a insignificância humana e a busca por identidade."
+        },
+        {
+          title: "O Tempo e o Vento",
+          author: "Erico Verissimo",
+          description: "Trilogia épica que conta a história do Rio Grande do Sul e do Brasil através das gerações da família Terra Cambará. A obra mistura ficção e história, mostrando a formação da identidade gaúcha e brasileira."
+        }
+      ],
+      enem: [
+        {
+          title: "O Cortiço",
+          author: "Aluísio Azevedo",
+          description: "Principal obra do Naturalismo brasileiro, que retrata a vida nos cortiços do Rio de Janeiro no século XIX. O romance mostra como o ambiente influencia os personagens, abordando temas como determinismo social, luxúria e ganância."
+        },
+        {
+          title: "Vidas Secas",
+          author: "Graciliano Ramos",
+          description: "Romance que retrata a vida difícil de uma família de retirantes no Nordeste brasileiro. A obra mostra a luta pela sobrevivência em meio à seca e à pobreza, com uma linguagem seca e objetiva que reflete o ambiente hostil."
+        },
+        {
+          title: "Memórias Póstumas de Brás Cubas",
+          author: "Machado de Assis",
+          description: "Romance inovador narrado por um defunto autor, que critica a sociedade brasileira do século XIX com ironia fina. A obra marca o início do Realismo no Brasil e questiona valores como hipocrisia social e o sentido da existência."
+        },
+        {
+          title: "Dom Casmurro",
+          author: "Machado de Assis",
+          description: "Clássico da literatura brasileira que narra a história de Bentinho e Capitu, explorando temas como ciúme, ambiguidade e a natureza da verdade. A obra é famosa por seu narrador não confiável e por deixar em aberto a questão da traição."
+        },
+        {
+          title: "A Hora da Estrela",
+          author: "Clarice Lispector",
+          description: "Último romance da autora, que conta a história de Macabéa, uma datilógrafa alagoana que vive no Rio de Janeiro. A obra explora temas como a solidão, a insignificância humana e a busca por identidade."
+        },
+        {
+          title: "Capitães da Areia",
+          author: "Jorge Amado",
+          description: "Romance que retrata a vida de um grupo de meninos de rua em Salvador nos anos 1930. A obra mostra a dura realidade desses jovens, mas também sua solidariedade e desejo de liberdade, com forte crítica social."
+        },
+        {
+          title: "A Moreninha",
+          author: "Joaquim Manuel de Macedo",
+          description: "Primeiro romance romântico brasileiro, publicado em 1844. Conta a história de amor entre Augusto e Carolina (a Moreninha), com elementos típicos do Romantismo como amor à primeira vista e final feliz."
+        },
+        {
+          title: "O Primo Basílio",
+          author: "José Maria Eça de Queirós",
+          description: "Romance realista português que critica a burguesia lisboeta do século XIX. A história centra-se no adultério de Luísa e nas consequências de seus atos, mostrando a hipocrisia da sociedade da época."
+        },
+        {
+          title: "Grande Sertão: Veredas",
+          author: "João Guimarães Rosa",
+          description: "Obra-prima da literatura brasileira que reinventa a linguagem para contar a história de Riobaldo, um ex-jagunço que relembra sua vida no sertão. O livro aborda temas universais como amor, amizade, pacto com o diabo e a busca pelo sentido da vida."
+        },
+        {
+          title: "O Tempo e o Vento",
+          author: "Erico Verissimo",
+          description: "Trilogia épica que conta a história do Rio Grande do Sul e do Brasil através das gerações da família Terra Cambará. A obra mistura ficção e história, mostrando a formação da identidade gaúcha e brasileira."
+        }
+      ]
+    };
+
+    const elements = {
+      introScreen: document.getElementById('intro-screen'),
+      quizScreen: document.getElementById('quiz-screen'),
+      resultScreen: document.getElementById('result-screen'),
+      quizForm: document.getElementById('quizForm'),
+      questionText: document.getElementById('questionText'),
+      optionsContainer: document.getElementById('optionsContainer'),
+      prevBtn: document.getElementById('prevBtn'),
+      nextBtn: document.getElementById('nextBtn'),
+      progressBar: document.getElementById('progressBar'),
+      progressText: document.getElementById('progressText'),
+      resultTitle: document.getElementById('resultTitle'),
+      availableBooks: document.getElementById('availableBooks'),
+      unavailableBooks: document.getElementById('unavailableBooks'),
+      vestibularBtn: document.getElementById('vestibularBtn'),
+      shareBtn: document.getElementById('shareBtn'),
+      restartBtn: document.getElementById('restartBtn'),
+      vestibularModal: document.getElementById('vestibularModal'),
+      closeModal: document.querySelector('.close-modal'),
+      langButtons: document.querySelectorAll('.lang-btn'),
+      fallbackBooks: document.getElementById('fallbackBooks'),
+      fallbackBooksList: document.getElementById('fallbackBooksList')
+    };
+
+    // Estado da aplicação
+    const state = {
+      currentLanguage: null,
+      currentQuestion: 0,
+      answers: [],
+      filteredBooks: []
+    };
+
+    // Inicialização
+    function init() {
+      setupEventListeners();
+      loadRandomBackground();
+    }
+
+    // Configurar event listeners
+    function setupEventListeners() {
+      // Seleção de idioma
+      elements.langButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.currentLanguage = btn.dataset.lang;
+          startQuiz();
+        });
+      });
+
+      // Navegação do quiz
+      elements.nextBtn.addEventListener('click', goToNextQuestion);
+      elements.prevBtn.addEventListener('click', goToPreviousQuestion);
+      
+      // Botões de resultado
+      elements.vestibularBtn.addEventListener('click', showVestibularModal);
+      elements.shareBtn.addEventListener('click', shareResults);
+      elements.restartBtn.addEventListener('click', restartQuiz);
+      
+      // Fechar modal
+      elements.closeModal.addEventListener('click', () => {
+        elements.vestibularModal.style.display = 'none';
+      });
+      
+      // Fechar modal ao clicar fora
+      window.addEventListener('click', (e) => {
+        if (e.target === elements.vestibularModal) {
+          elements.vestibularModal.style.display = 'none';
+        }
+      });
+    }
+
+    // Começar o quiz
+    function startQuiz() {
+      elements.introScreen.classList.remove('active');
+      elements.quizScreen.classList.add('active');
+      loadQuestion(state.currentQuestion);
+    }
+
+    // Carregar pergunta
+    function loadQuestion(index) {
+      const questions = quizQuestions[state.currentLanguage];
+      const question = questions[index];
+      
+      // Atualizar progresso
+      updateProgress(index + 1, questions.length);
+      
+      // Exibir pergunta
+      elements.questionText.textContent = question.question;
+      elements.optionsContainer.innerHTML = '';
+      
+      // Adicionar opções
+      question.options.forEach(option => {
+        const optionElement = document.createElement('div');
+        optionElement.className = 'option';
+        
+        const input = document.createElement('input');
+        input.type = question.multiple ? 'checkbox' : 'radio';
+        input.name = question.multiple ? `answer-${question.id}` : 'answer';
+        input.id = `option-${option.value}`;
+        input.value = option.value;
+        
+        // Marcar se já foi respondido
+        if (state.answers[index]) {
+          if (question.multiple) {
+            input.checked = state.answers[index].includes(option.value);
+          } else {
+            input.checked = state.answers[index] === option.value;
+          }
+        }
+        
+        input.addEventListener('change', () => {
+          if (question.multiple) {
+            const selectedOptions = Array.from(
+              document.querySelectorAll(`input[name="answer-${question.id}"]:checked`)
+            ).map(el => el.value);
+            state.answers[index] = selectedOptions;
+          } else {
+            state.answers[index] = option.value;
+          }
+          elements.nextBtn.disabled = !state.answers[index] || 
+            (question.multiple && state.answers[index].length === 0);
+        });
+        
+        const label = document.createElement('label');
+        label.htmlFor = `option-${option.value}`;
+        label.textContent = option.label;
+        
+        optionElement.appendChild(input);
+        optionElement.appendChild(label);
+        elements.optionsContainer.appendChild(optionElement);
+      });
+      
+      // Atualizar botões de navegação
+      elements.prevBtn.disabled = index === 0;
+      elements.nextBtn.disabled = !state.answers[index] || 
+        (question.multiple && state.answers[index].length === 0);
+    }
+
+    // Atualizar barra de progresso
+    function updateProgress(current, total) {
+      const percentage = (current / total) * 100;
+      elements.progressBar.style.width = `${percentage}%`;
+      elements.progressText.textContent = state.currentLanguage === 'pt' 
+        ? `Pergunta ${current} de ${total}` 
+        : `Pregunta ${current} de ${total}`;
+    }
+
+    // Navegação
+    function goToNextQuestion() {
+      const questions = quizQuestions[state.currentLanguage];
+      const currentQuestion = questions[state.currentQuestion];
+      
+      if (!state.answers[state.currentQuestion] || 
+          (currentQuestion.multiple && state.answers[state.currentQuestion].length === 0)) {
+        alert(state.currentLanguage === 'pt' 
+          ? 'Por favor, selecione uma opção' 
+          : 'Por favor, seleccione una opción');
+        return;
+      }
+      
+      if (state.currentQuestion < questions.length - 1) {
+        state.currentQuestion++;
+        loadQuestion(state.currentQuestion);
+      } else {
+        showResults();
+      }
+    }
+
+    function goToPreviousQuestion() {
+      if (state.currentQuestion > 0) {
+        state.currentQuestion--;
+        loadQuestion(state.currentQuestion);
+      }
+    }
+
+    // Sistema de recomendação melhorado
+    function calculateBookScore(book, filters) {
+  let score = 0;
+
+  // 1. Gênero literário (40% de peso relativo)
+  if (filters.genres?.length > 0 && book.genres) {
+    const matchingGenres = book.genres.filter(g => filters.genres.includes(g)).length;
+    score += (matchingGenres / filters.genres.length) * 40;
+  }
+
+  // 2. Faixa etária (25% de peso relativo)
+  if (book.grade === filters.grade) {
+    score += 25; // Match exato
+  } else if (
+    (filters.grade === 'EF2' && book.grade === 'EF1') ||
+    (filters.grade === 'EM' && book.grade === 'EF2')
+  ) {
+    score += 15; // Faixa próxima
+  }
+
+  // 3. Compatibilidade com humor (25% de peso relativo)
+  if (filters.mood?.length > 0 && book.mood) {
+  const moodMatch = filters.mood.some(selectedMood => 
+    Array.isArray(book.mood) 
+      ? book.mood.includes(selectedMood)
+      : book.mood === selectedMood
+  );
+  if (moodMatch) score += 30; // Pontuação única para qualquer match
+}
+
+  // 4. Tipo de literatura (10% de peso relativo)
+  if (filters.type !== 'qualquer' && book.type === filters.type) {
+    score += 20; // Match exato
+  }
+
+  // 5. Popularidade (5% de peso relativo)
+  score += (book.popularity || 5) * 0.5; // Converte 1-10 para 0.5-5
+
+  // 6. Disponibilidade (Bônus absoluto)
+  if (book.available) score += 1;
+
+  return score;
+}
+
+    function getRecommendedBooks(filters) {
+  // Filtro inicial considerando tipo de literatura
+  let candidates = booksDatabase.filter(book => {
+    // Filtro de faixa etária
+    if (filters.grade === 'EF1' && book.grade === 'EM') return false;
+    
+    // Filtro de tipo de literatura (se o usuário não escolheu "qualquer")
+    if (filters.type !== 'qualquer' && book.type !== filters.type) return false;
+    
+    return true;
+  });
+
+  // Calcula score para cada livro
+  candidates.forEach(book => {
+    book.relevanceScore = calculateBookScore(book, filters);
+  });
+
+  // Ordena por score (decrescente) e pega os top 12
+  return candidates.sort((a, b) => b.relevanceScore - a.relevanceScore).slice(0, 10);
+}
+
+
+    function getFallbackRecommendations(filters) {
+      // 1. Tenta relaxar os filtros gradualmente
+      const relaxedFilters = {...filters, type: 'qualquer', mood: 'ambos', time: 'todos'};
+      let fallbacks = getRecommendedBooks(relaxedFilters);
+      
+      // 2. Se ainda vazio, pega os mais populares do perfil demográfico
+      if (fallbacks.length < 5) {
+        fallbacks = booksDatabase
+          .filter(book => book.grade === filters.grade || !filters.grade)
+          .sort((a, b) => (b.popularity || 0) - (a.popularity || 0))
+          .slice(0, 8);
+      }
+      
+      return fallbacks;
+    }
+
+    // Mostrar resultados
+    function showResults() {
+      elements.quizScreen.classList.remove('active');
+      elements.resultScreen.classList.add('active');
+      
+      // Filtrar livros com base nas respostas
+      const questions = quizQuestions[state.currentLanguage];
+      const filters = {
+        grade: state.answers[0],
+        type: state.answers[1],
+        genres: state.answers[2] || [],
+        mood: state.answers[3],
+        time: state.answers[4]
+      };
+
+      // Obter recomendações principais
+      state.filteredBooks = getRecommendedBooks(filters);
+      
+      // Se poucos resultados, complementa com fallback
+      if (state.filteredBooks.length < 6) {
+        const fallbacks = getFallbackRecommendations(filters)
+          .filter(fb => !state.filteredBooks.some(b => b.id === fb.id));
+        
+        state.filteredBooks = [...state.filteredBooks, ...fallbacks];
+      }
+      
+      // Exibir livros disponíveis
+      const availableBooks = state.filteredBooks.filter(book => book.available);
+      displayBooks(availableBooks, elements.availableBooks, true);
+      
+      // Exibir livros não disponíveis
+      const unavailableBooks = state.filteredBooks.filter(book => !book.available);
+      displayBooks(unavailableBooks, elements.unavailableBooks, false);
+      
+      // Mostrar fallback se não houver livros
+      if (availableBooks.length === 0 && unavailableBooks.length === 0) {
+        elements.fallbackBooks.style.display = 'block';
+        
+        // Atualizar a mensagem de fallback de acordo com o idioma
+        const fallbackMessage = elements.fallbackBooks.querySelector('.no-books-message');
+        if (fallbackMessage) {
+          fallbackMessage.textContent = state.currentLanguage === 'pt' 
+            ? 'Não encontramos livros que se encaixem perfeitamente no seu gosto, mas aqui estão algumas excelentes recomendações para qualquer leitor:' 
+            : 'No encontramos libros que se ajusten perfectamente a tus gustos, pero aquí hay algunas excelentes recomendaciones para cualquier lector:';
+        }
+        
+        // Atualizar o título também
+        const fallbackTitle = elements.fallbackBooks.querySelector('h3');
+        if (fallbackTitle) {
+          fallbackTitle.textContent = state.currentLanguage === 'pt' 
+            ? '📖 Não encontramos livros que se encaixem perfeitamente no seu gosto, mas aqui estão algumas excelentes recomendações para qualquer leitor:' 
+            : '📖 No encontramos libros que se ajusten perfectamente a tus gustos, pero aquí hay algunas excelentes recomendaciones para cualquier lector:';
+        }
+        
+        displayBooks(fallbackBooks, elements.fallbackBooksList, true);
+      } else {
+        elements.fallbackBooks.style.display = 'none';
+      }
+      
+      // Atualizar título principal
+      elements.resultTitle.textContent = state.currentLanguage === 'pt' 
+        ? 'Livros recomendados para você' 
+        : 'Libros recomendados para ti';
+    }
+
+    // Exibir livros na tela
+    function displayBooks(books, container, isAvailable) {
+      container.innerHTML = '';
+      
+      if (books.length === 0) {
+        container.innerHTML = '<p class="no-books">' + 
+          (state.currentLanguage === 'pt' ? 'Nenhum livro encontrado' : 'No se encontraron libros') + 
+          '</p>';
+        return;
+      }
+      
+      books.forEach(book => {
+        const bookCard = document.createElement('div');
+        bookCard.className = 'book-card fade-in';
+        
+        bookCard.innerHTML = `
+          <div class="book-cover" style="background-image: url('${book.cover || 'https://via.placeholder.com/150x200?text=Sem+Capa'}')"></div>
+          <div class="book-info">
+            <h4 class="book-title">${book.title}</h4>
+            <p class="book-author">${book.author}</p>
+            ${book.description ? `<p class="book-description">${book.description}</p>` : ''}
+            <div class="book-meta">
+              <span>${book.grade === 'EF1' ? (state.currentLanguage === 'pt' ? '6°-7° ano' : '6°-7° grado') : 
+                book.grade === 'EF2' ? (state.currentLanguage === 'pt' ? '8°-9° ano' : '8°-9° grado') : 
+                (state.currentLanguage === 'pt' ? 'Ensino Médio' : 'Escuela secundaria')}</span>
+              ${isAvailable ? '<span class="available-badge">' + (state.currentLanguage === 'pt' ? 'Disponível' : 'Disponible') + '</span>' : ''}
+            </div>
+          </div>
+        `;
+        
+        container.appendChild(bookCard);
+      });
+    }
+
+    // Mostrar modal de livros para vestibular
+    function showVestibularModal() {
+      elements.vestibularModal.style.display = 'block';
+      
+      // Preencher com os livros
+      fillVestibularList('fuvest');
+      fillVestibularList('comvest');
+      fillVestibularList('enem');
+      
+      // Configurar tabs
+      setupVestibularTabs();
+    }
+
+    function fillVestibularList(type) {
+      const container = document.getElementById(type);
+      container.innerHTML = '';
+      
+      const books = vestibularBooks[type];
+      const list = document.createElement('ul');
+      list.className = 'vestibular-list';
+      
+      books.forEach(book => {
+        const item = document.createElement('li');
+        item.innerHTML = `
+          <strong>${book.title}</strong> - ${book.author}<br>
+          <p class="book-description">${book.description}</p>
+        `;
+        list.appendChild(item);
+      });
+      
+      container.appendChild(list);
+    }
+
+    function setupVestibularTabs() {
+      const tabs = document.querySelectorAll('.tab-btn');
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          // Remover classe active de todas as tabs
+          tabs.forEach(t => t.classList.remove('active'));
+          document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+          
+          // Adicionar classe active à tab clicada
+          tab.classList.add('active');
+          document.getElementById(tab.dataset.tab).classList.add('active');
+        });
+      });
+    }
+function generateShareableLink() {
+  // Pega a URL atual sem parâmetros (para evitar links poluídos)
+  const baseUrl = window.location.origin + window.location.pathname; // Ex: "https://meusite.com/quiz"
+  return baseUrl + "?source=shared"; // Identificador opcional para rastreamento
+}
+    // Compartilhar resultados
+    function shareResults() {
+      if (navigator.share) {
+        navigator.share({
+          title: state.currentLanguage === 'pt' 
+            ? 'Minhas recomendações de leitura' 
+            : 'Mis recomendaciones de lectura',
+          text: state.currentLanguage === 'pt' 
+            ? 'Confira os livros que foram recomendados para mim!' 
+            : '¡Mira los libros que me recomendaron!',
+          url: window.location.href
+        }).catch(err => {
+          console.log('Erro ao compartilhar:', err);
+        });
+      } else {
+        // Fallback para copiar link
+        alert(state.currentLanguage === 'pt' 
+          ? 'Recurso de compartilhamento não disponível. Copie o link manualmente.' 
+          : 'Función de compartir no disponible. Copie el enlace manualmente.');
+      }
+    }
+
+    // Reiniciar quiz
+    function restartQuiz() {
+      state.currentQuestion = 0;
+      state.answers = [];
+      elements.resultScreen.classList.remove('active');
+      elements.introScreen.classList.add('active');
+      loadRandomBackground();
+    }
+
+    // Carregar background aleatório
+    function loadRandomBackground() {
+      const backgrounds = [
+        'https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
+        'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
+        'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
+        'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'
+      ];
+      
+      const randomBg = backgrounds[Math.floor(Math.random() * backgrounds.length)];
+      document.getElementById('background').style.backgroundImage = `url(${randomBg})`;
+    }
+
+    // Iniciar aplicação quando o DOM estiver carregado
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
