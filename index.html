@@ -3781,7 +3781,36 @@
       booksDatabase.flatMap(book => book.genres || [])
         .concat(fallbackBooks.flatMap(book => book.genres || []))
     )).filter(Boolean);
-
+const genreTranslations = {
+  pt: {
+    "drama": "drama", "comedia": "comédia", "autoajuda": "autoajuda", "psicologia": "psicologia",
+    "poesia": "poesia", "classico": "clássico", "romance": "romance", "social": "social",
+    "infantil": "infantil", "filosofia": "filosofia", "distopia": "distopia", "politica": "política",
+    "aventura": "aventura", "humor": "humor", "realismo": "realismo", "conto": "conto",
+    "existencialismo": "existencialismo", "naturalismo": "naturalismo", "indianismo": "indianismo",
+    "gotico": "gótico", "teatro": "teatro", "tragedia": "tragédia", "satira": "sátira",
+    "memoir": "memórias", "guerra": "guerra", "ficcao-cientifica": "ficção científica", "fantasia": "fantasia",
+    "historico": "histórico", "biografia": "biografia", "tecnologia": "tecnologia", "ecologia": "ecologia",
+    "matematica": "matemática", "fisica": "física", "medico": "médico", "jornalismo": "jornalismo",
+    "quadrinhos": "quadrinhos", "educativo": "educativo", "cultura": "cultura", "mitologia": "mitologia",
+    "pre-modernismo": "pré-modernismo", "modernismo": "modernismo", "barroco": "barroco",
+    "parnasianismo": "parnasianismo", "romantismo": "romantismo"
+  },
+  es: {
+    "drama": "drama", "comedia": "comedia", "autoajuda": "autoayuda", "psicologia": "psicología",
+    "poesia": "poesía", "classico": "clásico", "romance": "romance", "social": "social",
+    "infantil": "infantil", "filosofia": "filosofía", "distopia": "distopía", "politica": "política",
+    "aventura": "aventura", "humor": "humor", "realismo": "realismo", "conto": "cuento",
+    "existencialismo": "existencialismo", "naturalismo": "naturalismo", "indianismo": "indianismo",
+    "gotico": "gótico", "teatro": "teatro", "tragedia": "tragedia", "satira": "sátira",
+    "memoir": "memorias", "guerra": "guerra", "ficcao-cientifica": "ciencia ficción", "fantasia": "fantasía",
+    "historico": "histórico", "biografia": "biografía", "tecnologia": "tecnología", "ecologia": "ecología",
+    "matematica": "matemáticas", "fisica": "física", "medico": "médico", "jornalismo": "periodismo",
+    "quadrinhos": "cómics", "educativo": "educativo", "cultura": "cultura", "mitologia": "mitología",
+    "pre-modernismo": "pre-modernismo", "modernismo": "modernismo", "barroco": "barroco",
+    "parnasianismo": "parnasianismo", "romantismo": "romanticismo"
+  }
+};
     // Perguntas do quiz em português e espanhol
     const quizQuestions = {
       pt: [
@@ -3810,9 +3839,9 @@
           id: 3,
           question: "📖 Quais gêneros você mais gosta? (Selecione até 10)",
           options: allGenres.map(genre => ({
-            value: genre,
-            label: genre.charAt(0).toUpperCase() + genre.slice(1)
-          })),
+  value: genre,
+  label: genreTranslations.pt[genre] || genre
+})),
           filterKey: "genres",
           multiple: true
         },
@@ -3873,9 +3902,9 @@
           id: 3,
           question: "📖 ¿Qué géneros te gustan más? (Selecciona hasta 10)",
           options: allGenres.map(genre => ({
-            value: genre,
-            label: genre.charAt(0).toUpperCase() + genre.slice(1)
-          })),
+  value: genre,
+  label: genreTranslations.es[genre] || genre
+})),
           filterKey: "genres",
           multiple: true
         },
