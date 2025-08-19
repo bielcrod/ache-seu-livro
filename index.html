@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -428,19 +429,36 @@
     }
     
     .book-cover {
-      height: 160px;
-      background-size: cover;
-      background-position: center;
-      position: relative;
-      background-color: #f5f5f5;
-    }
+  height: 200px; /* Altura fixa maior */
+  background-color: #f5f5f5; /* Cor de fundo */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden; /* Para imagens não vazarem */
+}
 
-    .book-cover.loading {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #f5f5f5;
-    }
+.book-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Garante que a imagem cubra o espaço */
+  transition: opacity 0.3s ease;
+}
+
+.book-cover.loading {
+  background-color: #f5f5f5;
+}
+
+.book-cover.loading::after {
+  content: "Carregando...";
+  color: #999;
+  font-size: 14px;
+}
+
+/* Efeito de fade-in quando a imagem carrega */
+.book-cover img.loaded {
+  opacity: 1;
+}
     
     .book-info {
       padding: 15px;
@@ -1056,7 +1074,12 @@
         <div class="top-books">
   <!-- Livro 1 - O Pequeno Príncipe -->
   <div class="book-card">
-    <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/id/8264441-M.jpg')"></div>
+    <div class="book-cover loading">
+  <img class="lazy" 
+       data-src="https://covers.openlibrary.org/b/id/8264441-M.jpg" 
+       alt="Capa do livro: O Pequeno Príncipe"
+       onerror="this.onerror=null;this.src='https://via.placeholder.com/150x200?text=Sem+Capa'">
+</div>
     <div class="book-info">
       <h4>O Pequeno Príncipe</h4>
       <p>Antoine de Saint-Exupéry</p>
@@ -4935,27 +4958,51 @@
     }
 
     // Configurar lazy loading para imagens
-    function setupLazyLoading() {
-      const lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
+function setupLazyLoading() {
+  const lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
 
-      if ("IntersectionObserver" in window) {
-        let lazyImageObserver = new IntersectionObserver(function(entries, observer) {
-          entries.forEach(function(entry) {
-            if (entry.isIntersecting) {
-              let lazyImage = entry.target;
-              lazyImage.src = lazyImage.dataset.src;
-              lazyImage.classList.remove("lazy");
-              lazyImage.classList.add("loaded");
-              lazyImageObserver.unobserve(lazyImage);
-            }
-          });
-        });
+  if ("IntersectionObserver" in window) {
+    let lazyImageObserver = new IntersectionObserver(function(entries, observer) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          let lazyImage = entry.target;
+          lazyImage.src = lazyImage.dataset.src;
+          
+          // Remove classe de loading do container
+          lazyImage.parentElement.classList.remove("loading");
+          
+          // Adiciona classe quando carregar
+          lazyImage.onload = function() {
+            lazyImage.classList.add("loaded");
+          };
+          
+          // Fallback para erro
+          lazyImage.onerror = function() {
+            this.src = 'https://via.placeholder.com/150x200?text=Sem+Capa';
+            this.parentElement.classList.remove("loading");
+          };
+          
+          lazyImageObserver.unobserve(lazyImage);
+        }
+      });
+    }, {
+      rootMargin: "100px", // Carrega 100px antes de entrar na viewport
+      threshold: 0.01
+    });
 
-        lazyImages.forEach(function(lazyImage) {
-          lazyImageObserver.observe(lazyImage);
-        });
-      }
-    }
+    lazyImages.forEach(function(lazyImage) {
+      lazyImageObserver.observe(lazyImage);
+    });
+  } else {
+    // Fallback para navegadores sem IntersectionObserver
+    lazyImages.forEach(function(lazyImage) {
+      lazyImage.src = lazyImage.dataset.src;
+      lazyImage.onerror = function() {
+        this.src = 'https://via.placeholder.com/150x200?text=Sem+Capa';
+      };
+    });
+  }
+}
 
     // Atualizar breadcrumbs
     function updateBreadcrumbs() {
@@ -5527,54 +5574,58 @@
     }
 
     // Exibir livros na tela
-    function displayBooks(books, container, isAvailable) {
-      container.innerHTML = '';
-      
-      if (books.length === 0) {
-        container.innerHTML = '<p class="no-books">' + 
-          (state.currentLanguage === 'pt' ? 'Nenhum livro encontrado' : 'No se encontraron libros') + 
-          '</p>';
-        return;
-      }
-      
-      books.forEach(book => {
-        const bookCard = document.createElement('div');
-        bookCard.className = 'book-card fade-in';
-        
-        bookCard.innerHTML = `
-          <div class="book-cover lazy" data-src="${book.cover || 'https://via.placeholder.com/150x200?text=Sem+Capa'}"></div>
-          <div class="book-info">
-            <h4 class="book-title">${book.title}</h4>
-            <p class="book-author">${book.author}</p>
-            ${book.recommendationReason ? `<p class="book-reason">${book.recommendationReason}</p>` : ''}
-            ${book.description ? `<p class="book-description">${book.description}</p>` : ''}
-            <div class="book-meta">
-              <span>${book.grade === 'EF1' ? (state.currentLanguage === 'pt' ? '6°-7° ano' : '6°-7° grado') : 
-                book.grade === 'EF2' ? (state.currentLanguage === 'pt' ? '8°-9° ano' : '8°-9° grado') : 
-                (state.currentLanguage === 'pt' ? 'Ensino Médio' : 'Escuela secundaria')}</span>
-              ${isAvailable ? '<span class="available-badge">' + (state.currentLanguage === 'pt' ? 'Disponível' : 'Disponible') + '</span>' : 
-               '<span class="unavailable-badge">' + (state.currentLanguage === 'pt' ? 'Indisponível' : 'No disponible') + '</span>'}
-            </div>
-          </div>
-        `;
-        
-        // Adicionar evento de clique para mostrar informações do autor
-        const authorElement = bookCard.querySelector('.book-author');
-        if (authorElement && authorsInfo[book.author]) {
-          authorElement.style.cursor = 'pointer';
-          authorElement.style.textDecoration = 'underline';
-          authorElement.addEventListener('click', (e) => {
-            e.preventDefault();
-            showAuthorModal(book.author);
-          });
-        }
-        
-        container.appendChild(bookCard);
+function displayBooks(books, container, isAvailable) {
+  container.innerHTML = '';
+  
+  if (books.length === 0) {
+    container.innerHTML = '<p class="no-books">' + 
+      (state.currentLanguage === 'pt' ? 'Nenhum livro encontrado' : 'No se encontraron libros') + 
+      '</p>';
+    return;
+  }
+  
+  books.forEach(book => {
+    const bookCard = document.createElement('div');
+    bookCard.className = 'book-card fade-in';
+    
+    bookCard.innerHTML = `
+      <div class="book-cover loading">
+        <img class="lazy" 
+             data-src="${book.cover || 'https://via.placeholder.com/150x200?text=Sem+Capa'}" 
+             alt="Capa do livro: ${book.title}"
+             onerror="this.onerror=null;this.src='https://via.placeholder.com/150x200?text=Sem+Capa'">
+      </div>
+      <div class="book-info">
+        <h4 class="book-title">${book.title}</h4>
+        <p class="book-author">${book.author}</p>
+        ${book.recommendationReason ? `<p class="book-reason">${book.recommendationReason}</p>` : ''}
+        ${book.description ? `<p class="book-description">${book.description}</p>` : ''}
+        <div class="book-meta">
+          <span>${book.grade === 'EF1' ? (state.currentLanguage === 'pt' ? '6°-7° ano' : '6°-7° grado') : 
+            book.grade === 'EF2' ? (state.currentLanguage === 'pt' ? '8°-9° ano' : '8°-9° grado') : 
+            (state.currentLanguage === 'pt' ? 'Ensino Médio' : 'Escuela secundaria')}</span>
+          ${isAvailable ? '<span class="available-badge">' + (state.currentLanguage === 'pt' ? 'Disponível' : 'Disponible') + '</span>' : 
+           '<span class="unavailable-badge">' + (state.currentLanguage === 'pt' ? 'Indisponível' : 'No disponible') + '</span>'}
+        </div>
+      </div>
+    `;
+    
+    // Adiciona evento de clique para informações do autor (se existir)
+    const authorElement = bookCard.querySelector('.book-author');
+    if (authorElement && authorsInfo[book.author]) {
+      authorElement.style.cursor = 'pointer';
+      authorElement.addEventListener('click', (e) => {
+        e.preventDefault();
+        showAuthorModal(book.author);
       });
-      
-      // Configurar lazy loading para as novas imagens
-      setupLazyLoading();
     }
+    
+    container.appendChild(bookCard);
+  });
+  
+  // Ativa o lazy loading para as novas imagens
+  setupLazyLoading();
+}
 
     // Mostrar modal de autor
     function showAuthorModal(authorName) {
@@ -5824,7 +5875,6 @@ document.getElementById('toggleGenresBtn').addEventListener('click', toggleGenre
   </script>
 </body>
 </html>
-
 
 
 
