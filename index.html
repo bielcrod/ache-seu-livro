@@ -1423,7 +1423,7 @@
         title: "O Pequeno Príncipe",
         author: "Antoine de Saint-Exupéry",
         cover: "https://covers.openlibrary.org/b/id/8264441-M.jpg",
-        grade: "EF1",
+        grade: ["EF1", "EF2", "EM"],
         available: true,
         type: "estrangeira",
         genres: ["infantil", "filosofia"],
@@ -1453,7 +1453,7 @@
         title: "A Revolução dos Bichos",
         author: "George Orwell",
         cover: "https://covers.openlibrary.org/b/id/8264445-M.jpg",
-        grade: "EM",
+        grade: ["EF2", "EM"],
         available: true,
         type: "estrangeira",
         genres: ["distopia", "politica"],
@@ -1476,7 +1476,7 @@
         mood: ["emocionar"],
         time: ["passado"],
         description: "Romance sobre um grupo de meninos de rua em Salvador.",
-        popularity: 8
+        popularity: 9
       },
       {
         id: 1005,
@@ -1577,7 +1577,7 @@
         title: "O Pequeno Príncipe",
         author: "Antoine de Saint-Exupéry",
         cover: "https://covers.openlibrary.org/b/id/8264441-M.jpg",
-        grade: "EF1",
+        grade: ["EF1", "EF2", "EM"],
         available: true,
         type: "estrangeira",
         genres: ["infantil", "filosofia"],
@@ -1600,14 +1600,14 @@
         mood: ["emocionar"],
         time: ["passado"],
         description: "Romance sobre um grupo de meninos de rua em Salvador.",
-        popularity: 7
+        popularity: 9
       },
       {
         id: 8,
         title: "A Revolução dos Bichos",
         author: "George Orwell",
         cover: "https://covers.openlibrary.org/b/id/8264445-M.jpg",
-        grade: "EM",
+        grade: ["EF2", "EM"],
         available: true,
         type: "estrangeira",
         genres: ["distopia", "politica"],
@@ -1645,7 +1645,7 @@
         mood: ["emocionar"],
         time: ["passado"],
         description: "Retrato da vida difícil de uma família de retirantes no Nordeste.",
-        popularity: 7
+        popularity: 9
       },
       {
         id: 11,
@@ -1660,14 +1660,14 @@
         mood: ["surpreender"],
         time: ["passado"],
         description: "Conto que questiona os limites entre sanidade e loucura.",
-        popularity: 6
+        popularity: 7
       },
       {
         id: 12,
         title: "Harry Potter e a Pedra Filosofal",
         author: "J.K. Rowling",
         cover: "https://covers.openlibrary.org/b/id/8264453-M.jpg",
-        grade: "EF1",
+        grade: ["EF1", "EF2", "EM"],
         available: true,
         type: "estrangeira",
         genres: ["fantasia", "aventura"],
@@ -1735,7 +1735,7 @@
     mood: ["surpreender"],
     time: ["presente"],
     description: "Conta a história de Gregor Samsa que acorda transformado em um inseto monstruoso.",
-    popularity: 8
+    popularity: 9
   },
   {
     id: 17,
@@ -5131,38 +5131,43 @@ function setupLazyLoading() {
     }
 
     // Mostrar livros mais populares
-    function displayTopBooks() {
-      elements.topBooksList.innerHTML = '';
-      
-      // Ordenar livros por popularidade
-      const topBooks = [...booksDatabase]
-        .sort((a, b) => (b.popularity || 0) - (a.popularity || 0))
-        .slice(0, 8);
-      
-      topBooks.forEach(book => {
-        const bookCard = document.createElement('div');
-        bookCard.className = 'book-card fade-in';
-        
-        bookCard.innerHTML = `
-          <div class="book-cover lazy" data-src="${book.cover || 'https://via.placeholder.com/150x200?text=Sem+Capa'}"></div>
-          <div class="book-info">
-            <h4 class="book-title">${book.title}</h4>
-            <p class="book-author">${book.author}</p>
-            ${book.description ? `<p class="book-description">${book.description}</p>` : ''}
-            <div class="book-meta">
-              <span>${book.grade === 'EF1' ? '6°-7° ano' : book.grade === 'EF2' ? '8°-9° ano' : 'Ensino Médio'}</span>
-              ${book.available ? '<span class="available-badge">Disponível</span>' : '<span class="unavailable-badge">Indisponível</span>'}
-            </div>
-          </div>
-        `;
-        
-        elements.topBooksList.appendChild(bookCard);
-      });
-      
-      // Configurar lazy loading para as novas imagens
-      setupLazyLoading();
-    }
-
+    // Mostrar livros mais populares - VERSÃO CORRIGIDA
+function displayTopBooks() {
+  elements.topBooksList.innerHTML = '';
+  
+  // Ordenar livros por popularidade
+  const topBooks = [...booksDatabase]
+    .sort((a, b) => (b.popularity || 0) - (a.popularity || 0))
+    .slice(0, 10);
+  
+  topBooks.forEach(book => {
+    const bookCard = document.createElement('div');
+    bookCard.className = 'book-card fade-in';
+    
+    bookCard.innerHTML = `
+      <div class="book-cover loading">
+        <img class="lazy" 
+             data-src="${book.cover || 'https://via.placeholder.com/150x200?text=Sem+Capa'}" 
+             alt="Capa do livro: ${book.title}"
+             onerror="this.onerror=null;this.src='https://via.placeholder.com/150x200?text=Sem+Capa'">
+      </div>
+      <div class="book-info">
+        <h4 class="book-title">${book.title}</h4>
+        <p class="book-author">${book.author}</p>
+        ${book.description ? `<p class="book-description">${book.description}</p>` : ''}
+        <div class="book-meta">
+          <span>${book.grade === 'EF1' ? '6°-7° ano' : book.grade === 'EF2' ? '8°-9° ano' : 'Ensino Médio'}</span>
+          ${book.available ? '<span class="available-badge">Disponível</span>' : '<span class="unavailable-badge">Indisponível</span>'}
+        </div>
+      </div>
+    `;
+    
+    elements.topBooksList.appendChild(bookCard);
+  });
+  
+  // Configurar lazy loading para as novas imagens
+  setupLazyLoading();
+}
     // Começar o quiz
     function startQuiz() {
       document.querySelector('.screen.active').classList.remove('active');
@@ -5875,6 +5880,7 @@ document.getElementById('toggleGenresBtn').addEventListener('click', toggleGenre
   </script>
 </body>
 </html>
+
 
 
 
