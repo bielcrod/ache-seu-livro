@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Ache seu livro 📚</title>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     /* Reset e estilos base */
     * {
@@ -16,39 +16,45 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    .contact-message {
+      text-align: center;
+      margin: 20px 15px 0;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      font-size: 0.9rem;
+      color: #333;
+      border: 1px solid #e0e0e0;
+    }
 
-.contact-message {
-  text-align: center;
-  margin: 20px 15px 0;
-  padding: 15px;
-  background: rgba(255, 255, 255, 0.7);
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  font-size: 0.9rem;
-  color: #555;
-  border: 1px solid #e0e0e0;
+    .contact-message a {
+      color: #2d5f8b;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .contact-message a:hover {
+      color: #3a7ca5;
+      text-decoration: underline;
+    }
+.stats-chart {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 400px; /* Ajuste conforme necessário */
+  height: 300px; /* Altura fixa para melhor visualização */
 }
-
-.contact-message a {
-  color: #2d5f8b;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.3s ease;
-}
-
-.contact-message a:hover {
-  color: #3a7ca5;
-  text-decoration: underline;
-}
-    
-
     body, html {
       height: 100%;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
       background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
       overflow-x: hidden;
       color: #333;
-      line-height: 1.5;
+      line-height: 1.6;
     }
     
     #app {
@@ -89,7 +95,7 @@
       z-index: 2;
       width: 100%;
       max-width: 100%;
-      background: rgba(255, 255, 255, 0.95);
+      background: rgba(255, 255, 255, 0.98);
       border-radius: 15px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
       overflow: hidden;
@@ -108,6 +114,7 @@
     
     .screen.active {
       display: flex;
+      animation: fadeIn 0.5s ease;
     }
     
     h1, h2, h3 {
@@ -120,7 +127,35 @@
       font-size: 1.8rem;
       margin-bottom: 20px;
     }
-    
+
+    /* Breadcrumbs */
+    .breadcrumbs {
+      display: flex;
+      align-items: center;
+      padding: 10px 15px;
+      font-size: 0.85rem;
+      color: #555;
+      background: rgba(245, 245, 245, 0.8);
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    .breadcrumbs span {
+      margin: 0 5px;
+      color: #777;
+    }
+
+    .breadcrumbs a {
+      color: #2d5f8b;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .breadcrumbs a:hover {
+      color: #4cb5f5;
+    }
+
     /* Tela inicial */
     .home-screen {
       justify-content: center;
@@ -129,7 +164,7 @@
     
     .home-screen p {
       margin-bottom: 25px;
-      color: #555;
+      color: #444;
     }
     
     .home-buttons {
@@ -140,7 +175,9 @@
     }
     
     .home-btn {
-      display: block;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       width: 100%;
       padding: 15px;
       margin: 0;
@@ -156,6 +193,12 @@
     .home-btn:hover {
       background: #3a7ca5;
       transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .home-btn i {
+      margin-right: 10px;
+      font-size: 1.2rem;
     }
     
     .flag {
@@ -192,17 +235,18 @@
     }
     
     .progress-bar {
-      height: 6px;
+      height: 8px;
       background: #e0e0e0;
-      border-radius: 3px;
+      border-radius: 4px;
       margin-bottom: 8px;
       position: relative;
+      overflow: hidden;
     }
     
     .progress-bar-fill {
       height: 100%;
-      background: #4cb5f5;
-      border-radius: 3px;
+      background: linear-gradient(90deg, #4cb5f5, #2d5f8b);
+      border-radius: 4px;
       width: 0%;
       transition: width 0.4s ease;
     }
@@ -211,7 +255,33 @@
       display: block;
       text-align: right;
       font-size: 0.9rem;
-      color: #666;
+      color: #555;
+      font-weight: 500;
+    }
+
+    /* Indicador de perguntas */
+    .question-indicator {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+
+    .question-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #ddd;
+      transition: all 0.3s ease;
+    }
+
+    .question-dot.active {
+      background: #4cb5f5;
+      transform: scale(1.2);
+    }
+
+    .question-dot.answered {
+      background: #2d5f8b;
     }
     
     /* Perguntas */
@@ -224,6 +294,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      color: #333;
     }
     
     .options {
@@ -246,18 +317,28 @@
     
     .option:hover {
       border-color: #4cb5f5;
+      box-shadow: 0 2px 8px rgba(76, 181, 245, 0.2);
+    }
+
+    .option.selected {
+      border-color: #2d5f8b;
+      background-color: #f0f8ff;
+      transform: scale(1.02);
+      box-shadow: 0 2px 8px rgba(45, 95, 139, 0.2);
     }
     
     .option input[type="checkbox"],
     .option input[type="radio"] {
       margin-right: 12px;
       transform: scale(1.2);
+      cursor: pointer;
     }
     
     .option label {
       cursor: pointer;
       width: 100%;
       font-size: 1rem;
+      color: #333;
     }
     
     /* Navegação */
@@ -286,11 +367,23 @@
     
     .nav-btn:hover {
       background: #3a7ca5;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
     
     .nav-btn:disabled {
       background: #ccc;
       cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .nav-btn.back-btn {
+      background: #6c757d;
+    }
+
+    .nav-btn.back-btn:hover {
+      background: #5a6268;
     }
     
     /* Resultados */
@@ -305,6 +398,13 @@
       align-items: center;
       gap: 8px;
       font-size: 1.1rem;
+      color: #2d5f8b;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #e0e0e0;
+    }
+
+    .book-section h3 i {
+      color: #4cb5f5;
     }
     
     .book-grid {
@@ -319,6 +419,12 @@
       overflow: hidden;
       box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
       transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .book-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
     }
     
     .book-cover {
@@ -326,6 +432,14 @@
       background-size: cover;
       background-position: center;
       position: relative;
+      background-color: #f5f5f5;
+    }
+
+    .book-cover.loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f5f5f5;
     }
     
     .book-info {
@@ -344,6 +458,14 @@
       font-size: 0.9rem;
       margin-bottom: 8px;
     }
+
+    .book-reason {
+      font-size: 0.8rem;
+      color: #4cb5f5;
+      margin: 8px 0;
+      font-style: italic;
+      line-height: 1.4;
+    }
     
     .book-meta {
       display: flex;
@@ -354,6 +476,15 @@
     
     .available-badge {
       background: #28a745;
+      color: white;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: bold;
+    }
+
+    .unavailable-badge {
+      background: #dc3545;
       color: white;
       padding: 3px 8px;
       border-radius: 4px;
@@ -386,11 +517,17 @@
     
     .action-btn:hover {
       background: #3a7ca5;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
     
     .more-books-btn {
       margin-top: 15px;
       background: #4cb5f5;
+    }
+
+    .more-books-btn:hover {
+      background: #3aa5e5;
     }
     
     /* Modal */
@@ -409,41 +546,45 @@
     .modal-content {
       background: white;
       margin: 20px auto;
-      padding: 20px;
+      padding: 25px;
       border-radius: 15px;
       max-width: 95%;
       width: 100%;
+      max-width: 600px;
       box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
       position: relative;
       animation: modalFadeIn 0.3s;
     }
-/* Estilo do modal */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 100;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
-}
 
-.modal-content {
-  background-color: white;
-  margin: 10% auto;
-  padding: 20px;
-  border-radius: 10px;
-  width: 90%;
-  max-width: 500px;
-  text-align: center;
-}
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #eee;
+    }
 
-.close-modal {
-  float: right;
-  font-size: 28px;
-  cursor: pointer;
-}    
+    .modal-title {
+      font-size: 1.5rem;
+      color: #2d5f8b;
+      margin: 0;
+    }
+    
+    .close-modal {
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: #aaa;
+      transition: all 0.3s ease;
+      background: none;
+      border: none;
+      padding: 5px;
+    }
+    
+    .close-modal:hover {
+      color: #333;
+      transform: rotate(90deg);
+    }    
 
     @keyframes modalFadeIn {
       from {
@@ -454,20 +595,6 @@
         opacity: 1;
         transform: translateY(0);
       }
-    }
-    
-    .close-modal {
-      position: absolute;
-      top: 15px;
-      right: 20px;
-      font-size: 1.8rem;
-      cursor: pointer;
-      color: #aaa;
-      transition: all 0.3s ease;
-    }
-    
-    .close-modal:hover {
-      color: #333;
     }
     
     .vestibular-tabs {
@@ -519,6 +646,26 @@
       color: #555;
       font-size: 0.85rem;
       margin-top: 5px;
+      line-height: 1.5;
+    }
+
+    .genre-guide-item {
+      margin-bottom: 20px;
+      padding: 15px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      border-left: 4px solid #4cb5f5;
+    }
+
+    .genre-guide-title {
+      font-weight: 600;
+      color: #2d5f8b;
+      margin-bottom: 5px;
+    }
+
+    .genre-guide-desc {
+      font-size: 0.9rem;
+      color: #555;
     }
     
     /* Animações */
@@ -530,10 +677,35 @@
     .fade-in {
       animation: fadeIn 0.5s ease;
     }
+
+    @keyframes slideIn {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .slide-in {
+      animation: slideIn 0.4s ease forwards;
+    }
     
+    /* Loader */
+    .loader {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #2d5f8b;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
     /* Scroll personalizado */
     ::-webkit-scrollbar {
-      width: 5px;
+      width: 6px;
     }
     
     ::-webkit-scrollbar-track {
@@ -582,13 +754,6 @@
       color: #2d5f8b;
     }
 
-    .recommendation-reason {
-      font-size: 0.8rem;
-      color: #4cb5f5;
-      margin-top: 5px;
-      font-style: italic;
-    }
-
     /* Header */
     .app-header {
       padding: 15px;
@@ -604,8 +769,102 @@
     }
 
     .app-header p {
-      color: rgba(255,255,255,0.8);
+      color: rgba(255,255,255,0.9);
       font-size: 0.9rem;
+    }
+
+    /* Guia de gêneros */
+    .genre-guide-container {
+      margin: 20px 0;
+    }
+
+    /* Dicas de leitura */
+    .reading-tip {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-left: 4px solid #4cb5f5;
+    }
+
+    .reading-tip h4 {
+      color: #2d5f8b;
+      margin-bottom: 8px;
+    }
+
+    /* Autor info */
+    .author-info {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    .author-image {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #4cb5f5;
+    }
+
+    .author-details {
+      flex: 1;
+    }
+
+    .author-name {
+      font-weight: 600;
+      color: #2d5f8b;
+      margin-bottom: 5px;
+    }
+
+    .author-bio {
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    /* Compartilhamento */
+    .share-options {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .share-btn {
+      padding: 10px 15px;
+      border-radius: 8px;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .share-btn.whatsapp {
+      background: #25D366;
+    }
+
+    .share-btn.facebook {
+      background: #3b5998;
+    }
+
+    .share-btn.twitter {
+      background: #1DA1F2;
+    }
+
+    .share-btn.instagram {
+      background: #E1306C;
+    }
+
+    .share-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
 
     /* Responsividade para telas pequenas */
@@ -630,6 +889,15 @@
         padding: 10px 15px;
         font-size: 0.9rem;
       }
+
+      .breadcrumbs {
+        font-size: 0.75rem;
+        padding: 8px 10px;
+      }
+
+      .modal-content {
+        padding: 15px;
+      }
     }
 
     @media (min-width: 768px) {
@@ -639,6 +907,15 @@
       
       .top-books {
         grid-template-columns: repeat(2, 1fr);
+      }
+
+      .action-buttons {
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+
+      .action-btn {
+        flex: 1 1 45%;
       }
     }
 
@@ -654,6 +931,72 @@
       .top-books {
         grid-template-columns: repeat(3, 1fr);
       }
+    }
+
+    @media (min-width: 1200px) {
+      #content {
+        max-width: 1100px;
+      }
+      
+      .book-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    /* Acessibilidade */
+    :focus {
+      outline: 3px solid #4cb5f5;
+      outline-offset: 2px;
+    }
+
+    /* Lazy loading */
+    .lazy {
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .lazy.loaded {
+      opacity: 1;
+    }
+/* Guia de Gêneros Expandível */
+.genre-guide-items-container {
+  margin-bottom: 10px;
+}
+
+.hidden-genre {
+  display: none;
+  opacity: 0;
+  height: 0;
+  margin-bottom: 0;
+  padding: 0 15px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.hidden-genre.visible {
+  display: block;
+  opacity: 1;
+  height: auto;
+  margin-bottom: 20px;
+  padding: 15px;
+  animation: fadeIn 0.5s ease;
+}
+
+#toggleGenresBtn {
+  margin-top: 15px;
+  width: 100%;
+  background-color: #4cb5f5;
+  transition: all 0.3s ease;
+}
+
+#toggleGenresBtn:hover {
+  background-color: #3a7ca5;
+  transform: translateY(-2px);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
   </style>
 </head>
@@ -669,6 +1012,11 @@
         <p>Descubra seu próximo livro favorito com nosso quiz personalizado</p>
       </div>
       
+      <!-- Breadcrumbs -->
+      <div class="breadcrumbs" id="breadcrumbs">
+        <a href="#" id="homeBreadcrumb">Home</a>
+      </div>
+      
       <!-- Tela inicial -->
       <div id="home-screen" class="screen active">
         <div class="home-content">
@@ -677,15 +1025,14 @@
           
           <div class="home-buttons">
             <button id="exploreBtn" class="home-btn">
-              🔍 Explorar livros populares
+              <i class="fas fa-chart-line"></i> Explorar livros populares
             </button>
             <button id="startQuizBtn" class="home-btn">
-              🎯 Fazer o quiz de recomendação
+              <i class="fas fa-question-circle"></i> Fazer o quiz de recomendação
             </button>
             <div class="language-selection">
               <h3>Faça o quiz em espanhol:</h3>
               <div class="options">
-                
                 <button class="home-btn" data-lang="es">
                   <span class="flag">🇪🇸</span> Español
                 </button>
@@ -697,127 +1044,138 @@
 
       <!-- Tela de estatísticas -->
       <div id="stats-screen" class="screen">
-  <h2>📚 Os livros mais amados pelos leitores</h2>
-  
-  <div class="top-books">
-    <!-- Livro 1 -->
-    <div class="book-card">
-      <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/id/8264441-M.jpg')"></div>
-      <div class="book-info">
-        <h4>O Pequeno Príncipe</h4>
-        <p>Antoine de Saint-Exupéry</p>
-        <p class="book-description">Clássico atemporal sobre amizade e os valores essenciais da vida.</p>
-        <div class="book-meta">
-          <span>Qualquer idade</span>
-          <span class="available-badge">Disponível</span>
+        <h2><i class="fas fa-chart-line"></i> Os livros mais amados pelos leitores</h2>
+        
+        <div class="stats-container">
+          <h3>Gêneros mais populares</h3>
+          <div class="stats-chart">
+            <canvas id="genreChart"></canvas>
+          </div>
         </div>
-      </div>
-    </div>
-
-    <!-- Livro 2 -->
-    <div class="book-card">
-      <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/id/10414035-M.jpg')"></div>
-      <div class="book-info">
-        <h4>Dom Casmurro</h4>
-        <p>Machado de Assis</p>
-        <p class="book-description">A obra-prima de Machado que questiona: Capitu traiu Bentinho?</p>
-        <div class="book-meta">
-          <span>Ensino Médio</span>
-          <span class="available-badge">Disponível</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Livro 3 -->
-    <div class="book-card">
-      <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/id/8264445-M.jpg')"></div>
-      <div class="book-info">
-        <h4>A Revolução dos Bichos</h4>
-        <p>George Orwell</p>
-        <p class="book-description">Fábula política sobre poder e corrupção na fazenda dos animais.</p>
-        <div class="book-meta">
-          <span>8°-3° ano</span>
-          <span class="available-badge">Disponível</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Livro 4 -->
-    <div class="book-card">
-      <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/id/7222246-M.jpg')"></div>
-      <div class="book-info">
-        <h4>1984</h4>
-        <p>George Orwell</p>
-        <p class="book-description">Distopia sobre vigilância governamental e controle da mente.</p>
-        <div class="book-meta">
-          <span>Ensino Médio</span>
-          <span class="available-badge">Disponível</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Livro 5 -->
-    <div class="book-card">
-      <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/id/8264453-M.jpg')"></div>
-      <div class="book-info">
-        <h4>Harry Potter e a Pedra Filosofal</h4>
-        <p>J.K. Rowling</p>
-        <p class="book-description">O início da jornada do bruxo mais famoso do mundo.</p>
-        <div class="book-meta">
-          <span>Qualquer idade</span>
-          <span class="available-badge">Disponível</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Livro 6 -->
-    <div class="book-card">
-      <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/id/8264443-M.jpg')"></div>
-      <div class="book-info">
-        <h4>Capitães da Areia</h4>
-        <p>Jorge Amado</p>
-        <p class="book-description">A vida de meninos de rua em Salvador nos anos 1930.</p>
-        <div class="book-meta">
-          <span>Ensino Médio</span>
-          <span class="available-badge">Disponível</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Livro 7 -->
-    <div class="book-card">
-      <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/id/8264449-M.jpg')"></div>
-      <div class="book-info">
-        <h4>Vidas Secas</h4>
-        <p>Graciliano Ramos</p>
-        <p class="book-description">A saga de uma família de retirantes no sertão nordestino.</p>
-        <div class="book-meta">
-          <span>Ensino Médio</span>
-          <span class="available-badge">Disponível</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Livro 8 -->
-    <div class="book-card">
-      <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/id/8264769-M.jpg')"></div>
-      <div class="book-info">
-        <h4>O Senhor dos Anéis</h4>
-        <p>J.R.R. Tolkien</p>
-        <p class="book-description">A épica jornada para destruir o Um Anel na Terra-média.</p>
-        <div class="book-meta">
-          <span>8°-3° ano</span>
-          <span class="unavailable-badge">Indisponível</span>
-        </div>
+        
+        <div class="top-books">
+  <!-- Livro 1 - O Pequeno Príncipe -->
+  <div class="book-card">
+    <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/id/8264441-M.jpg')"></div>
+    <div class="book-info">
+      <h4>O Pequeno Príncipe</h4>
+      <p>Antoine de Saint-Exupéry</p>
+      <p class="book-description">Clássico atemporal sobre amizade e os valores essenciais da vida.</p>
+      <div class="book-meta">
+        <span>Qualquer idade</span>
+        <span class="available-badge">Disponível</span>
       </div>
     </div>
   </div>
 
-  <div class="nav-buttons">
-    <button id="backToHomeBtn" class="nav-btn">← Voltar</button>
-    <button id="startFromStatsBtn" class="nav-btn">Fazer quiz →</button>
+  <!-- Livro 2 - Dom Casmurro -->
+  <div class="book-card">
+    <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/id/10414035-M.jpg')"></div>
+    <div class="book-info">
+      <h4>Dom Casmurro</h4>
+      <p>Machado de Assis</p>
+      <p class="book-description">A obra-prima de Machado que questiona: Capitu traiu Bentinho?</p>
+      <div class="book-meta">
+        <span>Ensino Médio</span>
+        <span class="available-badge">Disponível</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Livro 3 - A Revolução dos Bichos -->
+  <div class="book-card">
+    <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/id/8264445-M.jpg')"></div>
+    <div class="book-info">
+      <h4>A Revolução dos Bichos</h4>
+      <p>George Orwell</p>
+      <p class="book-description">Fábula política sobre poder e corrupção na fazenda dos animais.</p>
+      <div class="book-meta">
+        <span>8°-3° ano</span>
+        <span class="available-badge">Disponível</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Livro 4 - 1984 -->
+  <div class="book-card">
+    <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/id/7222246-M.jpg')"></div>
+    <div class="book-info">
+      <h4>1984</h4>
+      <p>George Orwell</p>
+      <p class="book-description">Distopia sobre vigilância governamental e controle da mente.</p>
+      <div class="book-meta">
+        <span>Ensino Médio</span>
+        <span class="available-badge">Disponível</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Livro 5 - Harry Potter e a Pedra Filosofal -->
+  <div class="book-card">
+    <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/id/8264453-M.jpg')"></div>
+    <div class="book-info">
+      <h4>Harry Potter e a Pedra Filosofal</h4>
+      <p>J.K. Rowling</p>
+      <p class="book-description">O início da jornada do bruxo mais famoso do mundo.</p>
+      <div class="book-meta">
+        <span>Qualquer idade</span>
+        <span class="available-badge">Disponível</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Livro 6 - Capitães da Areia -->
+  <div class="book-card">
+    <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/id/8264443-M.jpg')"></div>
+    <div class="book-info">
+      <h4>Capitães da Areia</h4>
+      <p>Jorge Amado</p>
+      <p class="book-description">A vida de meninos de rua em Salvador nos anos 1930.</p>
+      <div class="book-meta">
+        <span>Ensino Médio</span>
+        <span class="available-badge">Disponível</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Livro 7 - Vidas Secas -->
+  <div class="book-card">
+    <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/id/8264449-M.jpg')"></div>
+    <div class="book-info">
+      <h4>Vidas Secas</h4>
+      <p>Graciliano Ramos</p>
+      <p class="book-description">A saga de uma família de retirantes no sertão nordestino.</p>
+      <div class="book-meta">
+        <span>Ensino Médio</span>
+        <span class="available-badge">Disponível</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Livro 8 - O Senhor dos Anéis -->
+  <div class="book-card">
+    <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/id/8264769-M.jpg')"></div>
+    <div class="book-info">
+      <h4>O Senhor dos Anéis</h4>
+      <p>J.R.R. Tolkien</p>
+      <p class="book-description">A épica jornada para destruir o Um Anel na Terra-média.</p>
+      <div class="book-meta">
+        <span>8°-3° ano</span>
+        <span class="unavailable-badge">Indisponível</span>
+      </div>
+    </div>
   </div>
 </div>
+
+        <div class="nav-buttons">
+          <button id="backToHomeBtn" class="nav-btn back-btn">
+            <i class="fas fa-arrow-left"></i> Voltar
+          </button>
+          <button id="startFromStatsBtn" class="nav-btn">
+            Fazer quiz <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
 
       <!-- Quiz -->
       <div id="quiz-screen" class="screen">
@@ -828,17 +1186,21 @@
           <span id="progressText">Pergunta 1/5</span>
         </div>
         
+        <div class="question-indicator" id="questionIndicator">
+          <!-- Pontos serão adicionados por JavaScript -->
+        </div>
+        
         <form id="quizForm">
           <h2 id="questionNumber"></h2>
           <div class="question-text" id="questionText"></div>
           <div class="options" id="optionsContainer"></div>
 
           <div class="nav-buttons">
-            <button type="button" id="prevBtn" class="nav-btn">
-              ← Voltar
+            <button type="button" id="prevBtn" class="nav-btn back-btn">
+              <i class="fas fa-arrow-left"></i> Voltar
             </button>
             <button type="button" id="nextBtn" class="nav-btn">
-              Próximo →
+              Próximo <i class="fas fa-arrow-right"></i>
             </button>
           </div>
         </form>
@@ -846,48 +1208,102 @@
 
       <!-- Resultados -->
       <div id="result-screen" class="screen">
-        <h2 id="resultTitle"></h2>
+        <h2 id="resultTitle"><i class="fas fa-book-open"></i> Livros recomendados para você</h2>
         <div class="result-content">
-          <div class="book-section">
-            <h3>📚 Disponíveis no Leia SP</h3>
-            <div id="availableBooks" class="book-grid"></div>
-          </div>
+          <div id="loadingResults" class="loader" style="display: none;"></div>
           
-          <div class="book-section">
-            <h3>🔍 Outras recomendações (Indisponíveis no Leia SP)</h3>
-            <div id="unavailableBooks" class="book-grid"></div>
+          <div id="resultsContent">
+            <div class="book-section">
+              <h3><i class="fas fa-check-circle"></i> Disponíveis no Leia SP</h3>
+              <div id="availableBooks" class="book-grid"></div>
+            </div>
+            
+            <div class="book-section">
+              <h3><i class="fas fa-search"></i> Outras recomendações (Indisponíveis no Leia SP)</h3>
+              <div id="unavailableBooks" class="book-grid"></div>
+            </div>
+            
+            <div id="fallbackBooks" class="fallback-books" style="display: none;">
+              <h3><i class="fas fa-book"></i> Recomendações gerais</h3>
+              <p class="no-books-message">Não encontramos livros que se encaixem perfeitamente no seu gosto, mas aqui estão algumas excelentes recomendações para qualquer leitor:</p>
+              <div id="fallbackBooksList" class="book-grid"></div>
+            </div>
+            
+            <button id="moreBooksBtn" class="action-btn more-books-btn" style="display: none;">
+              <i class="fas fa-sync-alt"></i> Mais recomendações
+            </button>
           </div>
-          
-          <div id="fallbackBooks" class="fallback-books" style="display: none;">
-            <h3>📖 Recomendações gerais</h3>
-            <p class="no-books-message">Não encontramos livros que se encaixem perfeitamente no seu gosto, mas aqui estão algumas excelentes recomendações para qualquer leitor:</p>
-            <div id="fallbackBooksList" class="book-grid"></div>
+
+          <!-- Guia de Gêneros -->
+          <div class="genre-guide-container" id="genreGuide">
+  <h3><i class="fas fa-info-circle"></i> Guia de Gêneros Literários</h3>
+  <div class="genre-guide-items-container">
+    <!-- Gêneros visíveis inicialmente -->
+    <div class="genre-guide-item">
+      <div class="genre-guide-title">Distopia</div>
+      <div class="genre-guide-desc">Romances que retratam sociedades futuras indesejáveis, muitas vezes com regimes opressivos e controle social extremo. Exemplos: "1984", "Admirável Mundo Novo".</div>
+    </div>
+    <div class="genre-guide-item">
+      <div class="genre-guide-title">Realismo Mágico</div>
+      <div class="genre-guide-desc">Narrativas que misturam o cotidiano com elementos fantásticos, tratados como normais pelos personagens. Exemplos: "Cem Anos de Solidão", "A Casa dos Espíritos".</div>
+    </div>
+    
+    <!-- Gêneros ocultos inicialmente -->
+    <div class="genre-guide-item hidden-genre">
+      <div class="genre-guide-title">Ficção Científica</div>
+      <div class="genre-guide-desc">Explora conceitos científicos e tecnológicos com plausibilidade, muitas vezes em cenários futuros. Exemplos: "Duna", "Fundação".</div>
+    </div>
+    <div class="genre-guide-item hidden-genre">
+      <div class="genre-guide-title">Romance Histórico</div>
+      <div class="genre-guide-desc">Narrativas ficcionais ambientadas em períodos históricos reais, com atenção à precisão dos detalhes. Exemplos: "O Nome da Rosa", "Pillars of the Earth".</div>
+    </div>
+    <div class="genre-guide-item hidden-genre">
+      <div class="genre-guide-title">Fantasia</div>
+      <div class="genre-guide-desc">Mundos imaginários com elementos mágicos e criaturas mitológicas. Exemplos: "O Senhor dos Anéis", "Harry Potter".</div>
+    </div>
+    <div class="genre-guide-item hidden-genre">
+      <div class="genre-guide-title">Suspense</div>
+      <div class="genre-guide-desc">Narrativas que mantêm tensão e expectativa até o final. Exemplos: "O Silêncio dos Inocentes", "Garota Exemplar".</div>
+    </div>
+    <div class="genre-guide-item hidden-genre">
+      <div class="genre-guide-title">Biografia</div>
+      <div class="genre-guide-desc">Relatos sobre a vida de pessoas reais, contando suas histórias e conquistas. Exemplos: "Einstein: Sua Vida, Seu Universo", "Steve Jobs".</div>
+    </div>
+    <div class="genre-guide-item hidden-genre">
+      <div class="genre-guide-title">Poesia</div>
+      <div class="genre-guide-desc">Expressão artística através do ritmo, métrica e linguagem. Exemplos: "Sonetos" de Shakespeare, "Libertinagem" de Manuel Bandeira.</div>
+    </div>
+  </div>
+  <button id="toggleGenresBtn" class="action-btn">
+    <i class="fas fa-plus"></i> Ver mais gêneros
+  </button>
+</div>
+
+          <!-- Dicas de Leitura -->
+          <div class="reading-tip">
+            <h4><i class="fas fa-lightbulb"></i> Dica de Leitura</h4>
+            <p>Estabeleça uma meta realista, como ler 20 minutos por dia. Encontre um local confortável e reserve esse tempo como um momento especial para você.</p>
           </div>
-          
-          <button id="moreBooksBtn" class="action-btn more-books-btn" style="display: none;">
-            🔄 Mais recomendações
-          </button>
         </div>
 
         <div class="action-buttons">
           <button id="vestibularBtn" class="action-btn">
-            📖 Livros para vestibular
+            <i class="fas fa-graduation-cap"></i> Livros para vestibular
           </button>
           <button id="shareBtn" class="action-btn">
-            📤 Compartilhar
+            <i class="fas fa-share-alt"></i> Compartilhar
           </button>
           <button id="restartBtn" class="action-btn">
-            🔄 Refazer quiz
+            <i class="fas fa-redo"></i> Refazer quiz
           </button>
           <button id="backToHomeFromResults" class="action-btn">
-            🏠 Voltar ao início
+            <i class="fas fa-home"></i> Voltar ao início
           </button>
         </div>
 
-<div class="contact-message">
-  <p>📩 Para qualquer problema, sugestão ou avaliação, me contate no Instagram: <a href="https://www.instagram.com/bielcrod" target="_blank">@bielcrod</a></p>
-</div>
-
+        <div class="contact-message">
+          <p><i class="fas fa-envelope"></i> Para qualquer problema, sugestão ou avaliação, me contate no Instagram: <a href="https://www.instagram.com/bielcrod" target="_blank">@bielcrod</a></p>
+        </div>
       </div>
     </div>
   </div>
@@ -895,8 +1311,11 @@
   <!-- Modal Vestibular -->
   <div id="vestibularModal" class="modal">
     <div class="modal-content">
-      <span class="close-modal">&times;</span>
-      <h2>📚 Livros para Vestibular</h2>
+      <div class="modal-header">
+        <h2 class="modal-title"><i class="fas fa-graduation-cap"></i> Livros para Vestibular</h2>
+        <button class="close-modal">&times;</button>
+      </div>
+      
       <div class="vestibular-tabs">
         <button class="tab-btn active" data-tab="fuvest">Fuvest</button>
         <button class="tab-btn" data-tab="comvest">Comvest</button>
@@ -920,8 +1339,10 @@
   <!-- Modal Compartilhar -->
   <div id="shareModal" class="modal">
     <div class="modal-content">
-      <span class="close-modal">&times;</span>
-      <h2>Compartilhe o Questionário</h2>
+      <div class="modal-header">
+        <h2 class="modal-title"><i class="fas fa-share-alt"></i> Compartilhe o Questionário</h2>
+        <button class="close-modal">&times;</button>
+      </div>
       
       <!-- QR Code será gerado aqui -->
       <div id="qrCodeContainer" style="width: 200px; height: 200px; margin: 20px auto;"></div>
@@ -929,19 +1350,44 @@
       <!-- Link copiável -->
       <div style="margin: 20px 0;">
         <input type="text" id="shareableLink" readonly style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
-        <button onclick="copyLink()" class="action-btn" style="margin-top: 10px;">Copiar Link</button>
+        <button onclick="copyLink()" class="action-btn" style="margin-top: 10px;">
+          <i class="fas fa-copy"></i> Copiar Link
+        </button>
       </div>
       
       <!-- Mensagem personalizada -->
       <div style="margin: 20px 0; padding: 15px; background: #f5f5f5; border-radius: 8px;">
         <p style="margin-bottom: 10px;"><strong>Mensagem para compartilhar:</strong></p>
-        <textarea id="shareMessage" rows="4" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">📚 O quiz recomendou livros incríveis para mim! Faça o teste e descubra seu próximo livro favorito: [Link]</textarea>
+        <textarea id="shareMessage" rows="4" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;"></textarea>
       </div>
       
       <!-- Botões de compartilhamento direto -->
-      <div style="display: flex; gap: 10px; justify-content: center;">
-        <button onclick="shareOnWhatsApp()" class="action-btn" style="background: #25D366;">WhatsApp</button>
-        <button onclick="shareOnTwitter()" class="action-btn" style="background: #1DA1F2;">Twitter</button>
+      <div class="share-options">
+        <a href="#" onclick="shareOnWhatsApp()" class="share-btn whatsapp">
+          <i class="fab fa-whatsapp"></i> WhatsApp
+        </a>
+        <a href="#" onclick="shareOnTwitter()" class="share-btn twitter">
+          <i class="fab fa-twitter"></i> Twitter
+        </a>
+        <a href="#" onclick="shareOnFacebook()" class="share-btn facebook">
+          <i class="fab fa-facebook-f"></i> Facebook
+        </a>
+        <a href="#" onclick="shareOnInstagram()" class="share-btn instagram">
+          <i class="fab fa-instagram"></i> Instagram
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Autor -->
+  <div id="authorModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title"><i class="fas fa-user-edit"></i> Sobre o Autor</h2>
+        <button class="close-modal">&times;</button>
+      </div>
+      <div id="authorModalContent">
+        <!-- Preenchido por JavaScript -->
       </div>
     </div>
   </div>
@@ -964,7 +1410,7 @@
         description: "Clássico atemporal que aborda valores humanos essenciais.",
         popularity: 10
       },
-      {
+     {
         id: 1002,
         title: "Dom Casmurro",
         author: "Machado de Assis",
@@ -1026,10 +1472,9 @@
       }
     ];
 
-    // Banco de dados de livros ATUALIZADO com todos os livros do Leia SP
+    // Banco de dados de livros (mantido como estava)
     const booksDatabase = [
-      // Livros do Leia SP (disponíveis)
-      {
+ {
         id: 1,
         title: "A Comédia dos Erros",
         author: "William Shakespeare",
@@ -1140,7 +1585,7 @@
         author: "George Orwell",
         cover: "https://covers.openlibrary.org/b/id/8264445-M.jpg",
         grade: "EM",
-        available: false,
+        available: true,
         type: "estrangeira",
         genres: ["distopia", "politica"],
         tags: ["alegoria", "classico"],
@@ -4029,9 +4474,7 @@
     description: "Clássico infantil sobre Max e sua terra de monstros selvagens.",
     popularity: 7
   }
-    ];
-
-
+];
 
     // Extrair todos os gêneros únicos do banco de dados
     const allGenres = Array.from(new Set(
@@ -4082,7 +4525,8 @@
             { value: "EM", label: "Ensino Médio" },
             { value: "EM", label: "Professor/Outro" }
           ],
-          filterKey: "grade"
+          filterKey: "grade",
+          weight: 25 // Peso maior para esta pergunta
         },
         {
           id: 2,
@@ -4092,7 +4536,8 @@
             { value: "estrangeira", label: "🌐 Estrangeira" },
             { value: "qualquer", label: "📖 Qualquer uma" }
           ],
-          filterKey: "type"
+          filterKey: "type",
+          weight: 15
         },
         {
           id: 3,
@@ -4102,7 +4547,8 @@
             label: genreTranslations.pt[genre] || genre
           })),
           filterKey: "genres",
-          multiple: true
+          multiple: true,
+          weight: 30 // Maior peso para gêneros
         },
         {
           id: 4,
@@ -4120,7 +4566,8 @@
             { value: "inspirar", label: "🧠 Superação" }
           ],
           filterKey: "mood",
-          multiple: true
+          multiple: true,
+          weight: 20
         },
         {
           id: 5,
@@ -4131,11 +4578,12 @@
             { value: "futuro", label: "🚀 Futuro" },
             { value: "todos", label: "🌈 Qualquer época" }
           ],
-          filterKey: "time"
+          filterKey: "time",
+          weight: 10 // Menor peso para esta pergunta
         }
       ],
       es: [
-        {
+       {
           id: 1,
           question: "📚 ¿Cuál es tu grado escolar?",
           options: [
@@ -4201,7 +4649,7 @@
     // Livros para vestibular com descrições completas
     const vestibularBooks = {
       fuvest: [
-        {
+{
   title: "Opúsculo Humanitário",
   author: "Nísia Floresta",
   description: "Publicado em 1853, este ensaio é uma defesa apaixonada pelos direitos das mulheres e pela educação feminina. Nísia Floresta critica a desigualdade de gênero na sociedade brasileira do século XIX, argumentando que a emancipação intelectual das mulheres é essencial para o progresso nacional."
@@ -4246,9 +4694,9 @@
   author: "Djaimilia Pereira de Almeida",
   description: "Romance de 2019 que acompanha um imigrante angolano em Lisboa, refletindo sobre colonialismo, pertencimento e envelhecimento. A autora constrói uma narrativa sensível sobre identidades fragmentadas e a relação entre memória e espaço."
 }
-      ],
-      comvest: [
-        {
+],
+      comvest: [ 
+   {
   title: "Casa Velha",
   author: "Machado de Assis",
   description: "Publicado em 1885, este romance de Machado de Assis explora temas como moralidade, hipocrisia social e relações familiares. A história gira em torno de uma casa que simboliza as tensões entre tradição e mudança, com personagens marcados por segredos e conflitos de interesse."
@@ -4288,9 +4736,9 @@
   author: "Chimamanda Ngozi Adichie",
   description: "Coletânea de contos publicada em 2017, que retrata a vida de mulheres nigerianas em diferentes contextos — tanto na África quanto na diáspora. Adichie aborda temas como imigração, identidade cultural, sexismo e racismo, com uma narrativa afiada e emocionante."
 }
-      ],
-      enem: [
-        {
+ ],
+      enem: [ 
+   {
           title: "O Cortiço",
           author: "Aluísio Azevedo",
           description: "Principal obra do Naturalismo brasileiro, que retrata a vida nos cortiços do Rio de Janeiro no século XIX. O romance mostra como o ambiente influencia os personagens, abordando temas como determinismo social, luxúria e ganância."
@@ -4340,7 +4788,20 @@
           author: "Erico Verissimo",
           description: "Trilogia épica que conta a história do Rio Grande do Sul e do Brasil através das gerações da família Terra Cambará. A obra mistura ficção e história, mostrando a formação da identidade gaúcha e brasileira."
         }
-      ]
+]
+    };
+
+    // Informações sobre autores
+    const authorsInfo = {
+      "Machado de Assis": {
+        image: "https://upload.wikimedia.org/wikipedia/commons/8/8c/Machado_de_Assis_1905.jpg",
+        bio: "Joaquim Maria Machado de Assis (1839-1908) foi um escritor brasileiro, considerado o maior nome da literatura nacional. Fundador da Academia Brasileira de Letras, suas obras como 'Dom Casmurro' e 'Memórias Póstumas de Brás Cubas' são clássicos da literatura mundial."
+      },
+      "Clarice Lispector": {
+        image: "https://upload.wikimedia.org/wikipedia/commons/5/5e/Clarice_Lispector_%281965%29_01.jpg",
+        bio: "Clarice Lispector (1920-1977) foi uma escritora e jornalista brasileira nascida na Ucrânia. Conhecida por seu estilo introspectivo e inovador, é autora de obras como 'A Hora da Estrela' e 'Perto do Coração Selvagem'."
+      },
+      // ... outros autores
     };
 
     const elements = {
@@ -4355,6 +4816,7 @@
       nextBtn: document.getElementById('nextBtn'),
       progressBar: document.getElementById('progressBar'),
       progressText: document.getElementById('progressText'),
+      questionIndicator: document.getElementById('questionIndicator'),
       resultTitle: document.getElementById('resultTitle'),
       availableBooks: document.getElementById('availableBooks'),
       unavailableBooks: document.getElementById('unavailableBooks'),
@@ -4362,7 +4824,7 @@
       shareBtn: document.getElementById('shareBtn'),
       restartBtn: document.getElementById('restartBtn'),
       vestibularModal: document.getElementById('vestibularModal'),
-      closeModal: document.querySelector('.close-modal'),
+      closeModal: document.querySelectorAll('.close-modal'),
       langButtons: document.querySelectorAll('.lang-btn'),
       fallbackBooks: document.getElementById('fallbackBooks'),
       fallbackBooksList: document.getElementById('fallbackBooksList'),
@@ -4372,8 +4834,17 @@
       startFromStatsBtn: document.getElementById('startFromStatsBtn'),
       backToHomeFromResults: document.getElementById('backToHomeFromResults'),
       moreBooksBtn: document.getElementById('moreBooksBtn'),
-      topBooksList: document.getElementById('topBooksList'),
-      shareModal: document.getElementById('shareModal')
+      topBooksList: document.querySelector('.top-books'),
+      shareModal: document.getElementById('shareModal'),
+      shareableLink: document.getElementById('shareableLink'),
+      shareMessage: document.getElementById('shareMessage'),
+      qrCodeContainer: document.getElementById('qrCodeContainer'),
+      breadcrumbs: document.getElementById('breadcrumbs'),
+      homeBreadcrumb: document.getElementById('homeBreadcrumb'),
+      loadingResults: document.getElementById('loadingResults'),
+      resultsContent: document.getElementById('resultsContent'),
+      authorModal: document.getElementById('authorModal'),
+      authorModalContent: document.getElementById('authorModalContent')
     };
 
     // Estado da aplicação
@@ -4383,13 +4854,18 @@
       answers: [],
       filteredBooks: [],
       displayedBooksCount: 6,
-      lastRecommendedBook: null
+      lastRecommendedBook: null,
+      currentScreen: 'home',
+      breadcrumbs: {
+        home: { name: 'Home', element: elements.homeBreadcrumb }
+      }
     };
 
     // Inicialização
     function init() {
       setupEventListeners();
       loadRandomBackground();
+      updateBreadcrumbs();
       
       // Verificar se há parâmetros na URL para compartilhamento
       const urlParams = new URLSearchParams(window.location.search);
@@ -4453,6 +4929,62 @@
           e.target.style.display = 'none';
         }
       });
+
+      // Lazy loading para imagens
+      setupLazyLoading();
+    }
+
+    // Configurar lazy loading para imagens
+    function setupLazyLoading() {
+      const lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
+
+      if ("IntersectionObserver" in window) {
+        let lazyImageObserver = new IntersectionObserver(function(entries, observer) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              let lazyImage = entry.target;
+              lazyImage.src = lazyImage.dataset.src;
+              lazyImage.classList.remove("lazy");
+              lazyImage.classList.add("loaded");
+              lazyImageObserver.unobserve(lazyImage);
+            }
+          });
+        });
+
+        lazyImages.forEach(function(lazyImage) {
+          lazyImageObserver.observe(lazyImage);
+        });
+      }
+    }
+
+    // Atualizar breadcrumbs
+    function updateBreadcrumbs() {
+      elements.breadcrumbs.innerHTML = '';
+      
+      // Sempre começa com Home
+      const homeCrumb = document.createElement('a');
+      homeCrumb.href = '#';
+      homeCrumb.textContent = 'Home';
+      homeCrumb.addEventListener('click', goToHomeScreen);
+      elements.breadcrumbs.appendChild(homeCrumb);
+      
+      // Adiciona outras páginas conforme a navegação
+      if (state.currentScreen === 'stats') {
+        elements.breadcrumbs.innerHTML += ' <span>></span> ';
+        const statsCrumb = document.createElement('span');
+        statsCrumb.textContent = 'Livros Populares';
+        elements.breadcrumbs.appendChild(statsCrumb);
+      } else if (state.currentScreen === 'quiz') {
+        elements.breadcrumbs.innerHTML += ' <span>></span> ';
+        const quizCrumb = document.createElement('span');
+        quizCrumb.textContent = 'Quiz';
+        elements.breadcrumbs.appendChild(quizCrumb);
+      } else if (state.currentScreen === 'results') {
+        elements.breadcrumbs.innerHTML += ' <span>></span> ';
+        const resultsCrumb = document.createElement('span');
+        resultsCrumb.textContent = 'Resultados';
+        elements.breadcrumbs.appendChild(resultsCrumb);
+      }
     }
 
     // Navegação entre telas
@@ -4460,12 +4992,16 @@
       document.querySelector('.screen.active').classList.remove('active');
       elements.homeScreen.classList.add('active');
       loadRandomBackground();
+      state.currentScreen = 'home';
+      updateBreadcrumbs();
     }
 
     function showStatsScreen() {
       elements.homeScreen.classList.remove('active');
       elements.statsScreen.classList.add('active');
       updateStatsScreen();
+      state.currentScreen = 'stats';
+      updateBreadcrumbs();
     }
 
     // Atualizar tela de estatísticas
@@ -4477,10 +5013,12 @@
       displayTopBooks();
     }
 
-
     // Gerar gráfico de gêneros
     function generateGenreChart() {
-      const ctx = document.getElementById('genreChart').getContext('2d');
+      const ctx = document.createElement('canvas');
+      ctx.id = 'genreChart';
+      document.querySelector('.stats-chart').innerHTML = '';
+      document.querySelector('.stats-chart').appendChild(ctx);
       
       // Contar ocorrências de cada gênero
       const genreCounts = {};
@@ -4535,13 +5073,48 @@
             y: {
               beginAtZero: true
             }
+          },
+          plugins: {
+            legend: {
+              display: false
+            }
           }
         }
       });
     }
 
     // Mostrar livros mais populares
-    
+    function displayTopBooks() {
+      elements.topBooksList.innerHTML = '';
+      
+      // Ordenar livros por popularidade
+      const topBooks = [...booksDatabase]
+        .sort((a, b) => (b.popularity || 0) - (a.popularity || 0))
+        .slice(0, 8);
+      
+      topBooks.forEach(book => {
+        const bookCard = document.createElement('div');
+        bookCard.className = 'book-card fade-in';
+        
+        bookCard.innerHTML = `
+          <div class="book-cover lazy" data-src="${book.cover || 'https://via.placeholder.com/150x200?text=Sem+Capa'}"></div>
+          <div class="book-info">
+            <h4 class="book-title">${book.title}</h4>
+            <p class="book-author">${book.author}</p>
+            ${book.description ? `<p class="book-description">${book.description}</p>` : ''}
+            <div class="book-meta">
+              <span>${book.grade === 'EF1' ? '6°-7° ano' : book.grade === 'EF2' ? '8°-9° ano' : 'Ensino Médio'}</span>
+              ${book.available ? '<span class="available-badge">Disponível</span>' : '<span class="unavailable-badge">Indisponível</span>'}
+            </div>
+          </div>
+        `;
+        
+        elements.topBooksList.appendChild(bookCard);
+      });
+      
+      // Configurar lazy loading para as novas imagens
+      setupLazyLoading();
+    }
 
     // Começar o quiz
     function startQuiz() {
@@ -4550,6 +5123,8 @@
       state.currentQuestion = 0;
       state.answers = [];
       loadQuestion(state.currentQuestion);
+      state.currentScreen = 'quiz';
+      updateBreadcrumbs();
     }
 
     // Carregar pergunta
@@ -4559,6 +5134,9 @@
       
       // Atualizar progresso
       updateProgress(index + 1, questions.length);
+      
+      // Atualizar indicador de perguntas
+      updateQuestionIndicator(index, questions.length);
       
       // Exibir pergunta
       elements.questionText.textContent = question.question;
@@ -4593,8 +5171,20 @@
           } else {
             state.answers[index] = option.value;
           }
+          
+          // Atualizar indicador de perguntas
+          updateQuestionIndicator(index, questions.length);
+          
+          // Atualizar estado do botão próximo
           elements.nextBtn.disabled = !state.answers[index] || 
             (question.multiple && state.answers[index].length === 0);
+            
+          // Adicionar classe selected à opção
+          if (input.checked) {
+            optionElement.classList.add('selected');
+          } else {
+            optionElement.classList.remove('selected');
+          }
         });
         
         const label = document.createElement('label');
@@ -4604,12 +5194,35 @@
         optionElement.appendChild(input);
         optionElement.appendChild(label);
         elements.optionsContainer.appendChild(optionElement);
+        
+        // Adicionar classe selected se já estiver marcado
+        if (input.checked) {
+          optionElement.classList.add('selected');
+        }
       });
       
       // Atualizar botões de navegação
       elements.prevBtn.disabled = index === 0;
       elements.nextBtn.disabled = !state.answers[index] || 
         (question.multiple && state.answers[index].length === 0);
+    }
+
+    // Atualizar indicador de perguntas
+    function updateQuestionIndicator(currentIndex, totalQuestions) {
+      elements.questionIndicator.innerHTML = '';
+      
+      for (let i = 0; i < totalQuestions; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'question-dot';
+        
+        if (i === currentIndex) {
+          dot.classList.add('active');
+        } else if (state.answers[i]) {
+          dot.classList.add('answered');
+        }
+        
+        elements.questionIndicator.appendChild(dot);
+      }
     }
 
     // Atualizar barra de progresso
@@ -4652,45 +5265,125 @@
     // Sistema de recomendação melhorado
     function calculateBookScore(book, filters) {
       let score = 0;
+      const questions = quizQuestions[state.currentLanguage];
 
-      // 1. Gênero literário (40% de peso relativo)
+      // 1. Gênero literário (maior peso)
       if (filters.genres?.length > 0 && book.genres) {
-        const matchingGenres = book.genres.filter(g => filters.genres.includes(g)).length;
-        score += (matchingGenres / filters.genres.length) * 40;
+        // Priorizar livros que combinam com múltiplos gêneros selecionados
+        const matchingGenres = book.genres.filter(g => filters.genres.includes(g));
+        const genreWeight = questions.find(q => q.filterKey === 'genres').weight;
+        
+        // Pontuar mais se combinar com vários gêneros
+        score += (matchingGenres.length / filters.genres.length) * genreWeight;
+        
+        // Bônus adicional se combinar com pelo menos 2 gêneros
+        if (matchingGenres.length >= 2) {
+          score += 10;
+        }
       }
 
-      // 2. Faixa etária (25% de peso relativo)
+      // 2. Faixa etária (peso médio)
       if (book.grade === filters.grade) {
-        score += 25; // Match exato
+        const gradeWeight = questions.find(q => q.filterKey === 'grade').weight;
+        score += gradeWeight; // Match exato
       } else if (
         (filters.grade === 'EF2' && book.grade === 'EF1') ||
         (filters.grade === 'EM' && book.grade === 'EF2')
       ) {
-        score += 15; // Faixa próxima
+        score += 10; // Faixa próxima
       }
 
-      // 3. Compatibilidade com humor (25% de peso relativo)
+      // 3. Compatibilidade com humor (peso médio)
       if (filters.mood?.length > 0 && book.mood) {
+        const moodWeight = questions.find(q => q.filterKey === 'mood').weight;
         const moodMatch = filters.mood.some(selectedMood => 
           Array.isArray(book.mood) 
             ? book.mood.includes(selectedMood)
             : book.mood === selectedMood
         );
-        if (moodMatch) score += 30; // Pontuação única para qualquer match
+        if (moodMatch) score += moodWeight;
       }
 
-      // 4. Tipo de literatura (10% de peso relativo)
+      // 4. Tipo de literatura (menor peso)
       if (filters.type !== 'qualquer' && book.type === filters.type) {
-        score += 20; // Match exato
+        const typeWeight = questions.find(q => q.filterKey === 'type').weight;
+        score += typeWeight; // Match exato
       }
 
-      // 5. Popularidade (5% de peso relativo)
+      // 5. Popularidade (pequeno bônus)
       score += (book.popularity || 5) * 0.5; // Converte 1-10 para 0.5-5
 
       // 6. Disponibilidade (Bônus absoluto)
-      if (book.available) score += 1;
+      if (book.available) score += 5;
 
       return score;
+    }
+
+    // Obter motivo da recomendação
+    function getRecommendationReason(book, filters) {
+      const reasons = [];
+      const questions = quizQuestions[state.currentLanguage];
+      
+      // Gênero
+      if (filters.genres?.length > 0 && book.genres) {
+        const matchingGenres = book.genres.filter(g => filters.genres.includes(g));
+        if (matchingGenres.length > 0) {
+          const genreLabels = matchingGenres.map(g => genreTranslations[state.currentLanguage][g] || g);
+          reasons.push(`combina com seu gosto por ${genreLabels.join(', ')}`);
+        }
+      }
+      
+      // Faixa etária
+      if (book.grade === filters.grade) {
+        reasons.push(`indicado para sua faixa etária`);
+      }
+      
+      // Humor/experiência
+      if (filters.mood?.length > 0 && book.mood) {
+        const matchingMoods = Array.isArray(book.mood) 
+          ? book.mood.filter(m => filters.mood.includes(m))
+          : filters.mood.includes(book.mood) ? [book.mood] : [];
+        
+        if (matchingMoods.length > 0) {
+          const moodTranslations = {
+            "emocionar": "emocionante",
+            "surpreender": "surpreendente",
+            "refletir": "reflexivo",
+            "rir": "divertido",
+            "aventura": "aventureiro",
+            "acalmar": "calmante",
+            "assustar": "assustador",
+            "perturbar": "intenso",
+            "divertir": "divertido",
+            "inspirar": "inspirador"
+          };
+          
+          const moodLabels = matchingMoods.map(m => moodTranslations[m] || m);
+          reasons.push(`oferece uma experiência ${moodLabels.join(' e ')}`);
+        }
+      }
+      
+      // Tipo de literatura
+      if (filters.type !== 'qualquer' && book.type === filters.type) {
+        reasons.push(`do tipo ${filters.type === 'brasileira' ? 'literatura brasileira' : 'literatura estrangeira'}`);
+      }
+      
+      // Se não encontrou razões específicas, usar uma mensagem genérica
+      if (reasons.length === 0) {
+        return state.currentLanguage === 'pt' 
+          ? 'Recomendado com base em livros populares' 
+          : 'Recomendado basado en libros populares';
+      }
+      
+      // Formatar a mensagem final
+      let message = state.currentLanguage === 'pt' ? 'Recomendado porque ' : 'Recomendado porque ';
+      if (reasons.length === 1) {
+        message += reasons[0];
+      } else {
+        message += reasons.slice(0, -1).join(', ') + ' e ' + reasons[reasons.length - 1];
+      }
+      
+      return message;
     }
 
     function getRecommendedBooks(filters) {
@@ -4708,6 +5401,7 @@
       // Calcula score para cada livro
       candidates.forEach(book => {
         book.relevanceScore = calculateBookScore(book, filters);
+        book.recommendationReason = getRecommendationReason(book, filters);
       });
 
       // Ordena por score (decrescente)
@@ -4716,7 +5410,7 @@
 
     function getFallbackRecommendations(filters) {
       // 1. Tenta relaxar os filtros gradualmente
-      const relaxedFilters = {...filters, type: 'qualquer', mood: 'ambos', time: 'todos'};
+      const relaxedFilters = {...filters, type: 'qualquer', mood: ['emocionar', 'divertir'], time: 'todos'};
       let fallbacks = getRecommendedBooks(relaxedFilters);
       
       // 2. Se ainda vazio, pega os mais populares do perfil demográfico
@@ -4734,70 +5428,84 @@
     function showResults() {
       document.querySelector('.screen.active').classList.remove('active');
       elements.resultScreen.classList.add('active');
+      state.currentScreen = 'results';
+      updateBreadcrumbs();
       
-      // Filtrar livros com base nas respostas
-      const questions = quizQuestions[state.currentLanguage];
-      const filters = {
-        grade: state.answers[0],
-        type: state.answers[1],
-        genres: state.answers[2] || [],
-        mood: state.answers[3],
-        time: state.answers[4]
-      };
+      // Mostrar loader enquanto processa
+      elements.loadingResults.style.display = 'block';
+      elements.resultsContent.style.display = 'none';
+      
+      // Usar setTimeout para dar tempo da animação de transição
+      setTimeout(() => {
+        // Filtrar livros com base nas respostas
+        const questions = quizQuestions[state.currentLanguage];
+        const filters = {
+          grade: state.answers[0],
+          type: state.answers[1],
+          genres: state.answers[2] || [],
+          mood: state.answers[3],
+          time: state.answers[4]
+        };
 
-      // Obter recomendações principais
-      state.filteredBooks = getRecommendedBooks(filters);
-      state.displayedBooksCount = 6; // Resetar contador
-      
-      // Se poucos resultados, complementa com fallback
-      if (state.filteredBooks.length < 6) {
-        const fallbacks = getFallbackRecommendations(filters)
-          .filter(fb => !state.filteredBooks.some(b => b.id === fb.id));
+        // Obter recomendações principais
+        state.filteredBooks = getRecommendedBooks(filters);
+        state.displayedBooksCount = 6; // Resetar contador
         
-        state.filteredBooks = [...state.filteredBooks, ...fallbacks];
-      }
-      
-      // Armazenar o último livro recomendado para compartilhamento
-      if (state.filteredBooks.length > 0) {
-        state.lastRecommendedBook = state.filteredBooks[0];
-      }
-      
-      // Exibir livros disponíveis
-      const availableBooks = state.filteredBooks.filter(book => book.available);
-      displayBooks(availableBooks.slice(0, state.displayedBooksCount), elements.availableBooks, true);
-      
-      // Exibir livros não disponíveis
-      const unavailableBooks = state.filteredBooks.filter(book => !book.available);
-      displayBooks(unavailableBooks.slice(0, state.displayedBooksCount), elements.unavailableBooks, false);
-      
-      // Mostrar fallback se não houver livros
-      if (availableBooks.length === 0 && unavailableBooks.length === 0) {
-        elements.fallbackBooks.style.display = 'block';
-        
-        // Atualizar a mensagem de fallback de acordo com o idioma
-        const fallbackMessage = elements.fallbackBooks.querySelector('.no-books-message');
-        if (fallbackMessage) {
-          fallbackMessage.textContent = state.currentLanguage === 'pt' 
-            ? 'Não encontramos livros que se encaixem perfeitamente no seu gosto, mas aqui estão algumas excelentes recomendações para qualquer leitor:' 
-            : 'No encontramos libros que se ajusten perfectamente a tus gustos, pero aquí hay algunas excelentes recomendaciones para cualquier lector:';
+        // Se poucos resultados, complementa com fallback
+        if (state.filteredBooks.length < 6) {
+          const fallbacks = getFallbackRecommendations(filters)
+            .filter(fb => !state.filteredBooks.some(b => b.id === fb.id));
+          
+          state.filteredBooks = [...state.filteredBooks, ...fallbacks];
         }
         
-        displayBooks(fallbackBooks, elements.fallbackBooksList, true);
-      } else {
-        elements.fallbackBooks.style.display = 'none';
-      }
+        // Armazenar o último livro recomendado para compartilhamento
+        if (state.filteredBooks.length > 0) {
+          state.lastRecommendedBook = state.filteredBooks[0];
+        }
+        
       
-      // Mostrar botão "Mais recomendações" se houver mais livros
-      if (state.filteredBooks.length > state.displayedBooksCount) {
-        elements.moreBooksBtn.style.display = 'block';
-      } else {
-        elements.moreBooksBtn.style.display = 'none';
-      }
-      
-      // Atualizar título principal
-      elements.resultTitle.textContent = state.currentLanguage === 'pt' 
-        ? 'Livros recomendados para você' 
-        : 'Libros recomendados para ti';
+        // Exibir livros disponíveis
+        const availableBooks = state.filteredBooks.filter(book => book.available);
+        displayBooks(availableBooks.slice(0, state.displayedBooksCount), elements.availableBooks, true);
+        
+        // Exibir livros não disponíveis
+        const unavailableBooks = state.filteredBooks.filter(book => !book.available);
+        displayBooks(unavailableBooks.slice(0, state.displayedBooksCount), elements.unavailableBooks, false);
+        
+        // Mostrar fallback se não houver livros
+        if (availableBooks.length === 0 && unavailableBooks.length === 0) {
+          elements.fallbackBooks.style.display = 'block';
+          
+          // Atualizar a mensagem de fallback de acordo com o idioma
+          const fallbackMessage = elements.fallbackBooks.querySelector('.no-books-message');
+          if (fallbackMessage) {
+            fallbackMessage.textContent = state.currentLanguage === 'pt' 
+              ? 'Não encontramos livros que se encaixem perfeitamente no seu gosto, mas aqui estão algumas excelentes recomendações para qualquer leitor:' 
+              : 'No encontramos libros que se ajusten perfectamente a tus gustos, pero aquí hay algunas excelentes recomendaciones para cualquier lector:';
+          }
+          
+          displayBooks(fallbackBooks, elements.fallbackBooksList, true);
+        } else {
+          elements.fallbackBooks.style.display = 'none';
+        }
+        
+        // Mostrar botão "Mais recomendações" se houver mais livros
+        if (state.filteredBooks.length > state.displayedBooksCount) {
+          elements.moreBooksBtn.style.display = 'block';
+        } else {
+          elements.moreBooksBtn.style.display = 'none';
+        }
+        
+        // Atualizar título principal
+        elements.resultTitle.textContent = state.currentLanguage === 'pt' 
+          ? 'Livros recomendados para você' 
+          : 'Libros recomendados para ti';
+        
+        // Esconder loader e mostrar conteúdo
+        elements.loadingResults.style.display = 'none';
+        elements.resultsContent.style.display = 'block';
+      }, 500); // Pequeno delay para melhor experiência
     }
 
     // Carregar mais livros
@@ -4834,22 +5542,56 @@
         bookCard.className = 'book-card fade-in';
         
         bookCard.innerHTML = `
-          <div class="book-cover" style="background-image: url('${book.cover || 'https://via.placeholder.com/150x200?text=Sem+Capa'}')"></div>
+          <div class="book-cover lazy" data-src="${book.cover || 'https://via.placeholder.com/150x200?text=Sem+Capa'}"></div>
           <div class="book-info">
             <h4 class="book-title">${book.title}</h4>
             <p class="book-author">${book.author}</p>
+            ${book.recommendationReason ? `<p class="book-reason">${book.recommendationReason}</p>` : ''}
             ${book.description ? `<p class="book-description">${book.description}</p>` : ''}
             <div class="book-meta">
               <span>${book.grade === 'EF1' ? (state.currentLanguage === 'pt' ? '6°-7° ano' : '6°-7° grado') : 
                 book.grade === 'EF2' ? (state.currentLanguage === 'pt' ? '8°-9° ano' : '8°-9° grado') : 
                 (state.currentLanguage === 'pt' ? 'Ensino Médio' : 'Escuela secundaria')}</span>
-              ${isAvailable ? '<span class="available-badge">' + (state.currentLanguage === 'pt' ? 'Disponível' : 'Disponible') + '</span>' : ''}
+              ${isAvailable ? '<span class="available-badge">' + (state.currentLanguage === 'pt' ? 'Disponível' : 'Disponible') + '</span>' : 
+               '<span class="unavailable-badge">' + (state.currentLanguage === 'pt' ? 'Indisponível' : 'No disponible') + '</span>'}
             </div>
           </div>
         `;
         
+        // Adicionar evento de clique para mostrar informações do autor
+        const authorElement = bookCard.querySelector('.book-author');
+        if (authorElement && authorsInfo[book.author]) {
+          authorElement.style.cursor = 'pointer';
+          authorElement.style.textDecoration = 'underline';
+          authorElement.addEventListener('click', (e) => {
+            e.preventDefault();
+            showAuthorModal(book.author);
+          });
+        }
+        
         container.appendChild(bookCard);
       });
+      
+      // Configurar lazy loading para as novas imagens
+      setupLazyLoading();
+    }
+
+    // Mostrar modal de autor
+    function showAuthorModal(authorName) {
+      const author = authorsInfo[authorName];
+      if (!author) return;
+      
+      elements.authorModalContent.innerHTML = `
+        <div class="author-info">
+          <img src="${author.image}" alt="${authorName}" class="author-image">
+          <div class="author-details">
+            <h3 class="author-name">${authorName}</h3>
+            <p class="author-bio">${author.bio}</p>
+          </div>
+        </div>
+      `;
+      
+      elements.authorModal.style.display = 'block';
     }
 
     // Mostrar modal de livros para vestibular
@@ -4910,15 +5652,15 @@
       
       // Atualizar mensagem com o livro recomendado
       const shareMessage = document.getElementById('shareMessage');
-if (state.lastRecommendedBook) {
-  shareMessage.value = state.currentLanguage === 'pt' 
-    ? `📚 O quiz recomendou "${state.lastRecommendedBook.title}" para mim! Faça o teste e descubra seu próximo livro favorito: https://bielcrod.github.io/ache-seu-livro/`
-    : `📚 ¡El quiz recomendó "${state.lastRecommendedBook.title}" para mí! Haz la prueba y descubre tu próximo libro favorito: https://bielcrod.github.io/ache-seu-livro/`;
-} else {
-  shareMessage.value = state.currentLanguage === 'pt' 
-    ? `📚 Descubra seu próximo livro favorito com este quiz de recomendação: https://bielcrod.github.io/ache-seu-livro/`
-    : `📚 Descubre tu próximo libro favorito con este quiz de recomendación: https://bielcrod.github.io/ache-seu-livro/`;
-}
+      if (state.lastRecommendedBook) {
+        shareMessage.value = state.currentLanguage === 'pt' 
+          ? `📚 O quiz recomendou "${state.lastRecommendedBook.title}" para mim! Faça o teste e descubra seu próximo livro favorito: ${shareUrl}`
+          : `📚 ¡El quiz recomendó "${state.lastRecommendedBook.title}" para mí! Haz la prueba y descubre tu próximo libro favorito: ${shareUrl}`;
+      } else {
+        shareMessage.value = state.currentLanguage === 'pt' 
+          ? `📚 Descubra seu próximo livro favorito com este quiz de recomendação: ${shareUrl}`
+          : `📚 Descubre tu próximo libro favorito con este quiz de recomendación: ${shareUrl}`;
+      }
       
       // Gerar QR Code
       const qrCodeContainer = document.getElementById('qrCodeContainer');
@@ -4930,8 +5672,8 @@ if (state.lastRecommendedBook) {
 
     // Gerar link compartilhável
     function generateShareableLink() {
-  return "https://bielcrod.github.io/ache-seu-livro/";
-}
+      return "https://bielcrod.github.io/ache-seu-livro/";
+    }
 
     // Copiar link para área de transferência
     function copyLink() {
@@ -4945,28 +5687,42 @@ if (state.lastRecommendedBook) {
     }
 
     // Compartilhar no WhatsApp
-   function shareOnWhatsApp() {
-  const shareUrl = "https://bielcrod.github.io/ache-seu-livro/"; // Link fixo
-  const bookTitle = state.lastRecommendedBook ? `"${state.lastRecommendedBook.title}"` : "um livro incrível";
-  
-  const message = state.currentLanguage === 'pt' 
-    ? `📚 O quiz recomendou ${bookTitle} para mim! Faça o teste e descubra seu próximo livro favorito: ${shareUrl}`
-    : `📚 ¡El quiz recomendó ${bookTitle} para mí! Haz la prueba y descubre tu próximo libro favorito: ${shareUrl}`;
-  
-  window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
-}
+    function shareOnWhatsApp() {
+      const shareUrl = generateShareableLink();
+      const bookTitle = state.lastRecommendedBook ? `"${state.lastRecommendedBook.title}"` : "um livro incrível";
+      
+      const message = state.currentLanguage === 'pt' 
+        ? `📚 O quiz recomendou ${bookTitle} para mim! Faça o teste e descubra seu próximo livro favorito: ${shareUrl}`
+        : `📚 ¡El quiz recomendó ${bookTitle} para mí! Haz la prueba y descubre tu próximo libro favorito: ${shareUrl}`;
+      
+      window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+    }
 
     // Compartilhar no Twitter
     function shareOnTwitter() {
-  const shareUrl = "https://bielcrod.github.io/ache-seu-livro/"; // Link fixo
-  const bookTitle = state.lastRecommendedBook ? `"${state.lastRecommendedBook.title}"` : "um livro incrível";
-  
-  const message = state.currentLanguage === 'pt' 
-    ? `📚 Descobri ${bookTitle} com este quiz de recomendações literárias! Faça você também: ${shareUrl}`
-    : `📚 ¡Descubrí ${bookTitle} con este quiz de recomendaciones literarias! Pruébalo tú también: ${shareUrl}`;
-  
-  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}`, '_blank');
-}
+      const shareUrl = generateShareableLink();
+      const bookTitle = state.lastRecommendedBook ? `"${state.lastRecommendedBook.title}"` : "um livro incrível";
+      
+      const message = state.currentLanguage === 'pt' 
+        ? `📚 Descobri ${bookTitle} com este quiz de recomendações literárias! Faça você também: ${shareUrl}`
+        : `📚 ¡Descubrí ${bookTitle} con este quiz de recomendaciones literarias! Pruébalo tú también: ${shareUrl}`;
+      
+      window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}`, '_blank');
+    }
+
+    // Compartilhar no Facebook
+    function shareOnFacebook() {
+      const shareUrl = generateShareableLink();
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank');
+    }
+
+    // Compartilhar no Instagram
+    function shareOnInstagram() {
+      alert(state.currentLanguage === 'pt' 
+        ? 'Copie o link e compartilhe diretamente no Instagram!' 
+        : '¡Copia el enlace y comparte directamente en Instagram!');
+      copyLink();
+    }
 
     // Reiniciar quiz
     function restartQuiz() {
@@ -4975,6 +5731,8 @@ if (state.lastRecommendedBook) {
       document.querySelector('.screen.active').classList.remove('active');
       elements.quizScreen.classList.add('active');
       loadQuestion(state.currentQuestion);
+      state.currentScreen = 'quiz';
+      updateBreadcrumbs();
     }
 
     // Carregar background aleatório
@@ -4992,10 +5750,80 @@ if (state.lastRecommendedBook) {
 
     // Iniciar aplicação quando o DOM estiver carregado
     document.addEventListener('DOMContentLoaded', init);
+
+function generateGenreChart() {
+  const ctx = document.getElementById('genreChart').getContext('2d');
+  
+  // Dados baseados na análise do banco de dados
+  const data = {
+    labels: ['Infantil', 'Romance', 'Fantasia', 'Clássicos', 'Drama', 'Outros'],
+    datasets: [{
+      data: [19, 18, 14, 13, 12, 124], // Valores reais (Outros = total - soma dos 5 principais)
+      backgroundColor: [
+        '#FF6384',  // Rosa (Infantil)
+        '#36A2EB',  // Azul (Romance)
+        '#FFCE56',  // Amarelo (Fantasia)
+        '#4BC0C0',  // Turquesa (Clássicos)
+        '#9966FF',  // Roxo (Drama)
+        '#C9CBCF'   // Cinza (Outros)
+      ]
+    }]
+  };
+
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: data,
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom'
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const total = context.dataset.data.reduce((a, b) => a + b, 0);
+              const value = context.raw;
+              const percentage = Math.round((value / total) * 100);
+              return `${context.label}: ${value} livros (${percentage}%)`;
+            }
+          }
+        }
+      }
+    }
+  });
+}
+function toggleGenres() {
+  const hiddenGenres = document.querySelectorAll('.hidden-genre');
+  const btn = document.getElementById('toggleGenresBtn');
+  let allVisible = true;
+  
+  hiddenGenres.forEach(genre => {
+    if (!genre.classList.contains('visible')) {
+      allVisible = false;
+    }
+  });
+  
+  if (allVisible) {
+    // Esconder todos
+    hiddenGenres.forEach(genre => {
+      genre.classList.remove('visible');
+    });
+    btn.innerHTML = '<i class="fas fa-plus"></i> Ver mais gêneros';
+  } else {
+    // Mostrar todos
+    hiddenGenres.forEach(genre => {
+      genre.classList.add('visible');
+    });
+    btn.innerHTML = '<i class="fas fa-minus"></i> Ver menos';
+  }
+}
+document.getElementById('toggleGenresBtn').addEventListener('click', toggleGenres);
+
+
   </script>
 </body>
 </html>
-
 
 
 
