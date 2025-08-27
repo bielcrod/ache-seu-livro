@@ -9,7 +9,42 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     /* Reset e estilos base */
-    * {
+    .home-contact-message {
+      text-align: center;
+      margin: 25px 15px 0;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      font-size: 0.9rem;
+      color: #333;
+      border: 1px solid #e0e0e0;
+    }
+
+    .home-contact-message a {
+      color: #2d5f8b;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .home-contact-message a:hover {
+      color: #3a7ca5;
+      text-decoration: underline;
+    }
+    
+    /* Ajuste para o gráfico de estatísticas */
+    .stats-chart {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto;
+      width: 100%;
+      max-width: 400px;
+      height: 300px;
+    }   
+
+ * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
@@ -1257,7 +1292,10 @@
               </div>
             </div>
           </div>
-        </div>
+                 <div class="home-contact-message">
+            <p><i class="fas fa-info-circle"></i> Para problemas, sugestões ou avaliações, entre em contato no Instagram: <a href="https://www.instagram.com/bielcrod" target="_blank">@bielcrod</a></p>
+          </div>        
+</div>
       </div>
 
       <!-- Tela de estatísticas -->
@@ -7707,16 +7745,16 @@ function generateGenreChart() {
   
   // Dados baseados na análise do banco de dados
   const data = {
-    labels: ['Infantil', 'Romance', 'Fantasia', 'Clássicos', 'Drama', 'Outros'],
+    labels: ['Romance', 'Drama', 'Poesia','Infantil', 'Aventura', 'Outros'],
     datasets: [{
-      data: [19, 18, 14, 13, 12, 124], // Valores reais (Outros = total - soma dos 5 principais)
+      data: [85, 51, 28, 23, 23, 92], // Valores reais (Outros = total - soma dos 5 principais)
       backgroundColor: [
-        '#FF6384',  // Rosa (Infantil)
-        '#36A2EB',  // Azul (Romance)
-        '#FFCE56',  // Amarelo (Fantasia)
-        '#4BC0C0',  // Turquesa (Clássicos)
-        '#9966FF',  // Roxo (Drama)
-        '#C9CBCF'   // Cinza (Outros)
+        '#FF6384',  // Rosa 
+        '#36A2EB',  // Azul 
+        '#FFCE56',  // Amarelo 
+        '#4BC0C0',  // Turquesa 
+        '#9966FF',  // Roxo 
+        '#C9CBCF'   // Cinza 
       ]
     }]
   };
@@ -8392,6 +8430,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
+
 
 
 
