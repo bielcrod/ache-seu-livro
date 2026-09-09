@@ -10,6 +10,120 @@ const allGenres = Array.from(new Set(
     .concat(fallbackBooks.flatMap(book => book.genres || []))
 )).filter(Boolean);
 
+// ===== Log de debug (só aparece se DEBUG_MODE = true) =====
+const DEBUG_MODE = false;
+function debugLog(...args) {
+  if (DEBUG_MODE) console.log(...args);
+}
+
+// ===== Capas de livro: busca a capa correta na API do Open Library =====
+const COVER_CACHE_KEY = 'acheSeuLivro_coverCache';
+const PLACEHOLDER_COVER = 'https://via.placeholder.com/150x200?text=Sem+Capa';
+
+function getCoverCache() {
+  try {
+    return JSON.parse(localStorage.getItem(COVER_CACHE_KEY)) || {};
+  } catch (e) {
+    console.error('Erro ao ler cache de capas:', e);
+    return {};
+  }
+}
+
+function saveCoverToCache(bookId, url) {
+  try {
+    const cache = getCoverCache();
+    cache[bookId] = url;
+    localStorage.setItem(COVER_CACHE_KEY, JSON.stringify(cache));
+  } catch (e) {
+    console.error('Erro ao salvar cache de capas:', e);
+  }
+}
+
+// Encontra um livro pelo id em qualquer uma das duas listas de livros
+function findBookById(id) {
+  const numId = Number(id);
+  try {
+    return booksDatabase.find(b => b.id === numId) || fallbackBooks.find(b => b.id === numId);
+  } catch (e) {
+    console.error('Erro ao procurar livro por id:', e);
+    return null;
+  }
+}
+
+// Busca a capa correta de um livro na API de busca do Open Library,
+// usando cache em localStorage para não repetir a requisição.
+async function fetchCorrectCover(book) {
+  const cache = getCoverCache();
+  if (cache[book.id]) return cache[book.id];
+
+  try {
+    const query = encodeURIComponent(`${book.title} ${book.author}`);
+    const response = await fetch(`https://openlibrary.org/search.json?q=${query}&fields=cover_i&limit=1`);
+    if (!response.ok) throw new Error(`Open Library respondeu ${response.status}`);
+
+    const data = await response.json();
+    const coverId = data.docs && data.docs[0] && data.docs[0].cover_i;
+    const url = coverId
+      ? `https://covers.openlibrary.org/b/id/${coverId}-M.jpg`
+      : (book.cover || PLACEHOLDER_COVER);
+
+    saveCoverToCache(book.id, url);
+    return url;
+  } catch (e) {
+    console.error(`Não foi possível buscar a capa de "${book.title}":`, e);
+    return book.cover || PLACEHOLDER_COVER;
+  }
+}
+
+// ===== Favoritos (localStorage) =====
+const FAVORITES_KEY = 'acheSeuLivro_favorites';
+
+function getFavorites() {
+  try {
+    return JSON.parse(localStorage.getItem(FAVORITES_KEY)) || [];
+  } catch (e) {
+    console.error('Erro ao ler favoritos:', e);
+    return [];
+  }
+}
+
+function isFavorite(bookId) {
+  return getFavorites().includes(Number(bookId));
+}
+
+function toggleFavorite(bookId) {
+  bookId = Number(bookId);
+  try {
+    let favs = getFavorites();
+    if (favs.includes(bookId)) {
+      favs = favs.filter(id => id !== bookId);
+    } else {
+      favs.push(bookId);
+    }
+    localStorage.setItem(FAVORITES_KEY, JSON.stringify(favs));
+    return favs.includes(bookId);
+  } catch (e) {
+    console.error('Erro ao salvar favorito:', e);
+    return isFavorite(bookId);
+  }
+}
+
+function handleFavoriteClick(event, btn, bookId) {
+  event.stopPropagation();
+  const nowFavorite = toggleFavorite(bookId);
+  btn.classList.toggle('active', nowFavorite);
+  btn.setAttribute('aria-label', nowFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos');
+}
+
+function favoriteButtonHtml(bookId) {
+  const active = isFavorite(bookId) ? 'active' : '';
+  return `<button class="favorite-btn ${active}" data-book-id="${bookId}"
+            onclick="handleFavoriteClick(event, this, ${bookId})"
+            aria-label="${active ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}">
+            <i class="fas fa-heart"></i>
+          </button>`;
+}
+
 const genreTranslations = {
   pt: {
     "drama": "drama", "comedia": "comédia", "autoajuda": "autoajuda", "psicologia": "psicologia",
@@ -409,20 +523,43 @@ function preprocessData() {
     }
   });
   
-  console.log("Dados pré-processados para otimização");
+  debugLog("Dados pré-processados para otimização");
 }
 
 // Inicialização
 function init() {
-  setupEventListeners();
-  loadRandomBackground();
-  updateBreadcrumbs();
-  preprocessData(); // Adicionar esta linha para pré-processar os dados
-  
+  try {
+    setupEventListeners();
+  } catch (e) {
+    console.error('Erro ao configurar os botões da página:', e);
+  }
+
+  try {
+    loadRandomBackground();
+  } catch (e) {
+    console.error('Erro ao carregar imagem de fundo:', e);
+  }
+
+  try {
+    updateBreadcrumbs();
+  } catch (e) {
+    console.error('Erro ao atualizar navegação:', e);
+  }
+
+  try {
+    preprocessData(); // Adicionar esta linha para pré-processar os dados
+  } catch (e) {
+    console.error('Erro ao pré-processar os dados dos livros:', e);
+  }
+
   // Verificar se há parâmetros na URL para compartilhamento
-  const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.has('source') && urlParams.get('source') === 'shared') {
-    // Pode adicionar lógica especial para quando o usuário vem de um link compartilhado
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('source') && urlParams.get('source') === 'shared') {
+      // Pode adicionar lógica especial para quando o usuário vem de um link compartilhado
+    }
+  } catch (e) {
+    console.error('Erro ao ler parâmetros da URL:', e);
   }
 }
 
@@ -520,6 +657,15 @@ function setupLibraryEventListeners() {
     });
   });
   
+  // Event listener para filtro de favoritos
+  const favoritesFilterOption = document.getElementById('favoritesFilterOption');
+  if (favoritesFilterOption) {
+    favoritesFilterOption.addEventListener('click', function() {
+      this.classList.toggle('selected');
+      updateLibraryFilters();
+    });
+  }
+
   // Event listeners para ordenação
   document.querySelectorAll('.sort-btn').forEach(btn => {
     btn.addEventListener('click', function() {
@@ -545,28 +691,48 @@ function setupLibraryEventListeners() {
 function setupLazyLoading() {
   const lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
 
+  function loadImage(lazyImage) {
+    lazyImage.src = lazyImage.dataset.src;
+
+    // Remove classe de loading do container
+    lazyImage.parentElement.classList.remove("loading");
+
+    // Adiciona classe quando carregar
+    lazyImage.onload = function() {
+      lazyImage.classList.add("loaded");
+    };
+
+    // Fallback para erro
+    lazyImage.onerror = function() {
+      this.src = PLACEHOLDER_COVER;
+      this.parentElement.classList.remove("loading");
+    };
+
+    // Busca a capa correta na API do Open Library em segundo plano
+    // (o ID salvo no books-data.js às vezes aponta pra capa errada)
+    try {
+      const bookId = lazyImage.dataset.bookId;
+      if (bookId) {
+        const book = findBookById(bookId);
+        if (book) {
+          fetchCorrectCover(book).then(correctUrl => {
+            if (correctUrl && correctUrl !== lazyImage.src) {
+              lazyImage.src = correctUrl;
+            }
+          });
+        }
+      }
+    } catch (e) {
+      console.error('Erro ao tentar corrigir capa:', e);
+    }
+  }
+
   if ("IntersectionObserver" in window) {
     let lazyImageObserver = new IntersectionObserver(function(entries, observer) {
       entries.forEach(function(entry) {
         if (entry.isIntersecting) {
-          let lazyImage = entry.target;
-          lazyImage.src = lazyImage.dataset.src;
-          
-          // Remove classe de loading do container
-          lazyImage.parentElement.classList.remove("loading");
-          
-          // Adiciona classe quando carregar
-          lazyImage.onload = function() {
-            lazyImage.classList.add("loaded");
-          };
-          
-          // Fallback para erro
-          lazyImage.onerror = function() {
-            this.src = 'https://via.placeholder.com/150x200?text=Sem+Capa';
-            this.parentElement.classList.remove("loading");
-          };
-          
-          lazyImageObserver.unobserve(lazyImage);
+          loadImage(entry.target);
+          lazyImageObserver.unobserve(entry.target);
         }
       });
     }, {
@@ -579,12 +745,7 @@ function setupLazyLoading() {
     });
   } else {
     // Fallback para navegadores sem IntersectionObserver
-    lazyImages.forEach(function(lazyImage) {
-      lazyImage.src = lazyImage.dataset.src;
-      lazyImage.onerror = function() {
-        this.src = 'https://via.placeholder.com/150x200?text=Sem+Capa';
-      };
-    });
+    lazyImages.forEach(loadImage);
   }
 }
 
@@ -736,9 +897,11 @@ function displayTopBooks() {
     bookCard.innerHTML = `
       <div class="book-cover loading">
         <img class="lazy" 
-             data-src="${book.cover || 'https://via.placeholder.com/150x200?text=Sem+Capa'}" 
+             data-src="${book.cover || 'https://via.placeholder.com/150x200?text=Sem+Capa'}"
+             data-book-id="${book.id}"
              alt="Capa do livro: ${book.title}"
              onerror="this.onerror=null;this.src='https://via.placeholder.com/150x200?text=Sem+Capa'">
+        ${favoriteButtonHtml(book.id)}
       </div>
       <div class="book-info">
         <h4 class="book-title">${book.title}</h4>
@@ -1247,6 +1410,16 @@ function showResults() {
       // Esconder loader e mostrar conteúdo
       elements.loadingResults.style.display = 'none';
       elements.resultsContent.style.display = 'block';
+    }).catch(error => {
+      console.error('Erro ao calcular recomendações do quiz:', error);
+      elements.loadingResults.style.display = 'none';
+      elements.resultsContent.style.display = 'block';
+      elements.resultTitle.textContent = state.currentLanguage === 'pt'
+        ? 'Ops! Algo deu errado ao gerar suas recomendações.'
+        : '¡Ups! Algo salió mal al generar tus recomendaciones.';
+      // Mostra a lista geral de fallback pra o aluno não ficar sem nada
+      elements.fallbackBooks.style.display = 'block';
+      displayBooks(fallbackBooks, elements.fallbackBooksList, true);
     });
   }, 100);
 }
@@ -1287,9 +1460,11 @@ function displayBooks(books, container, isAvailable) {
     bookCard.innerHTML = `
       <div class="book-cover loading">
         <img class="lazy" 
-             data-src="${book.cover || 'https://via.placeholder.com/150x200?text=Sem+Capa'}" 
+             data-src="${book.cover || 'https://via.placeholder.com/150x200?text=Sem+Capa'}"
+             data-book-id="${book.id}"
              alt="Capa do livro: ${book.title}"
              onerror="this.onerror=null;this.src='https://via.placeholder.com/150x200?text=Sem+Capa'">
+        ${favoriteButtonHtml(book.id)}
       </div>
       <div class="book-info">
         <h4 class="book-title">${book.title}</h4>
@@ -1410,11 +1585,15 @@ function showShareModal() {
   }
   
   // Gerar QR Code
-  const qrCodeContainer = document.getElementById('qrCodeContainer');
-  qrCodeContainer.innerHTML = '';
-  QRCode.toCanvas(qrCodeContainer, shareUrl, { width: 200 }, (error) => {
-    if (error) console.error('Erro ao gerar QR Code:', error);
-  });
+  try {
+    const qrCodeContainer = document.getElementById('qrCodeContainer');
+    qrCodeContainer.innerHTML = '';
+    QRCode.toCanvas(qrCodeContainer, shareUrl, { width: 200 }, (error) => {
+      if (error) console.error('Erro ao gerar QR Code:', error);
+    });
+  } catch (e) {
+    console.error('Erro ao gerar QR Code (biblioteca indisponível?):', e);
+  }
 }
 
 // Gerar link compartilhável
@@ -1574,7 +1753,7 @@ function debounce(func, wait) {
 
 // Atualizar filtros
 function updateLibraryFilters() {
-  console.log("Atualizando filtros...");
+  debugLog("Atualizando filtros...");
   
   // Obter filtros selecionados
   libraryState.filters.search = elements.librarySearch.value.toLowerCase();
@@ -1589,7 +1768,7 @@ function updateLibraryFilters() {
     }
   });
   
-  console.log("Gêneros selecionados:", libraryState.filters.genres);
+  debugLog("Gêneros selecionados:", libraryState.filters.genres);
   
   // Obter disponibilidade selecionada
   const availabilityOptions = document.querySelectorAll('.filter-option[data-availability]');
@@ -1611,6 +1790,10 @@ function updateLibraryFilters() {
     }
   });
   
+  // Obter filtro de favoritos
+  const favoritesFilterOption = document.getElementById('favoritesFilterOption');
+  libraryState.filters.favoritesOnly = !!(favoritesFilterOption && favoritesFilterOption.classList.contains('selected'));
+
   // Obter ordenação selecionada
   const sortOptions = document.querySelectorAll('.sort-btn');
   libraryState.filters.sort = 'popularity';
@@ -1621,7 +1804,7 @@ function updateLibraryFilters() {
     }
   });
   
-  console.log("Filtros aplicados:", libraryState.filters);
+  debugLog("Filtros aplicados:", libraryState.filters);
   
   // Resetar para a primeira página
   libraryState.currentPage = 1;
@@ -1631,7 +1814,17 @@ function updateLibraryFilters() {
 }
 
 function filterLibraryBooks() {
-  console.log("Filtrando livros com:", libraryState.filters);
+  try {
+    filterLibraryBooksUnsafe();
+  } catch (e) {
+    console.error('Erro ao filtrar a biblioteca:', e);
+    if (elements.resultsCount) elements.resultsCount.textContent = 'Não foi possível carregar os livros. Tente recarregar a página.';
+    if (elements.libraryBooks) elements.libraryBooks.innerHTML = '';
+  }
+}
+
+function filterLibraryBooksUnsafe() {
+  debugLog("Filtrando livros com:", libraryState.filters);
   
   let filtered = [...booksDatabase];
   
@@ -1657,6 +1850,12 @@ function filterLibraryBooks() {
     });
   }
   
+  // Aplicar filtro de favoritos
+  if (libraryState.filters.favoritesOnly) {
+    const favs = getFavorites();
+    filtered = filtered.filter(book => favs.includes(book.id));
+  }
+
   // Aplicar filtro de disponibilidade
   if (libraryState.filters.availability !== 'all') {
     filtered = filtered.filter(book => 
@@ -1688,7 +1887,7 @@ function filterLibraryBooks() {
       break;
   }
   
-  console.log("Livros filtrados:", filtered.length);
+  debugLog("Livros filtrados:", filtered.length);
   
   // Calcular paginação
   libraryState.totalPages = Math.ceil(filtered.length / libraryState.itemsPerPage);
@@ -1732,9 +1931,11 @@ function displayLibraryBooks(books) {
     bookCard.innerHTML = `
       <div class="book-cover loading">
         <img class="lazy" 
-             data-src="${book.cover || 'https://via.placeholder.com/150x200?text=Sem+Capa'}" 
+             data-src="${book.cover || 'https://via.placeholder.com/150x200?text=Sem+Capa'}"
+             data-book-id="${book.id}"
              alt="Capa do livro: ${book.title}"
              onerror="this.onerror=null;this.src='https://via.placeholder.com/150x200?text=Sem+Capa'">
+        ${favoriteButtonHtml(book.id)}
       </div>
       <div class="book-info">
         <h4 class="book-title">${book.title}</h4>
@@ -1807,6 +2008,9 @@ function resetLibraryFilters() {
   document.querySelector('.filter-option[data-availability="all"]').classList.add('selected');
   document.querySelector('.filter-option[data-grade="all"]').classList.add('selected');
   document.querySelector('.sort-btn[data-sort="popularity"]').classList.add('active');
+
+  const favoritesFilterOption = document.getElementById('favoritesFilterOption');
+  if (favoritesFilterOption) favoritesFilterOption.classList.remove('selected');
   
   updateLibraryFilters();
 }

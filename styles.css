@@ -460,6 +460,53 @@
 .book-cover img.loaded {
   opacity: 1;
 }
+
+/* Botão de favoritar (coração) sobre a capa do livro */
+.favorite-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  transition: transform 0.15s ease, background 0.15s ease;
+  padding: 0;
+}
+
+.favorite-btn:hover {
+  transform: scale(1.1);
+  background: rgba(255, 255, 255, 1);
+}
+
+.favorite-btn i {
+  color: #ccc;
+  font-size: 15px;
+  transition: color 0.15s ease;
+}
+
+.favorite-btn.active i {
+  color: #e63950;
+}
+
+/* Opção "Somente favoritos" no filtro da biblioteca */
+.filter-option[data-favorites] {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.filter-option[data-favorites].selected {
+  background-color: #e63950;
+  color: #fff;
+  border-color: #e63950;
+}
     
     .book-info {
       padding: 15px;
