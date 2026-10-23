@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ache seu livro 📚</title>
   <meta name="description" content="Descubra seu próximo livro favorito com um quiz de recomendação ou explore a biblioteca completa. Um projeto de leitura do CECA, Casimiro de Abreu.">
 
@@ -10,6 +10,8 @@
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#2d5f8b">
 
   <!-- Compartilhamento (WhatsApp, Instagram, Twitter/X, Facebook...) -->
   <meta property="og:type" content="website">
@@ -23,8 +25,8 @@
   <meta name="twitter:description" content="Descubra seu próximo livro favorito com um quiz de recomendação ou explore a biblioteca completa.">
   <meta name="twitter:image" content="https://bielcrod.github.io/ache-seu-livro/assets/og-image.png">
 
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -50,6 +52,9 @@
         <div class="home-content">
           <h2>Bem-vindo ao Ache seu Livro!</h2>
           <p>Encontre recomendações perfeitas de livros baseadas no seu gosto pessoal.</p>
+
+          <div id="bookOfWeek" class="book-of-week" role="button" tabindex="0" aria-label="Ver o livro da semana"></div>
+          <p id="readingProgress" class="reading-progress"></p>
           
           <div class="home-buttons">
 <button id="startQuizBtn" class="home-btn" style="background-color: #29b6f6; color: white;">
@@ -94,123 +99,8 @@
         </div>
         
         <div class="top-books">
-  <!-- Livro 1 - O Pequeno Príncipe -->
-  <div class="book-card">
-    <div class="book-cover loading">
-  <img class="lazy" 
-       data-src="https://covers.openlibrary.org/b/id/8264441-M.jpg" 
-       alt="Capa do livro: O Pequeno Príncipe"
-       onerror="this.onerror=null;this.src='https://via.placeholder.com/150x200?text=Sem+Capa'">
-</div>
-    <div class="book-info">
-      <h4>O Pequeno Príncipe</h4>
-      <p>Antoine de Saint-Exupéry</p>
-      <p class="book-description">Clássico atemporal sobre amizade e os valores essenciais da vida.</p>
-      <div class="book-meta">
-        <span>Qualquer idade</span>
-        <span class="available-badge">Disponível</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Livro 2 - Dom Casmurro -->
-  <div class="book-card">
-    <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/id/10414035-M.jpg')"></div>
-    <div class="book-info">
-      <h4>Dom Casmurro</h4>
-      <p>Machado de Assis</p>
-      <p class="book-description">A obra-prima de Machado que questiona: Capitu traiu Bentinho?</p>
-      <div class="book-meta">
-        <span>Ensino Médio</span>
-        <span class="available-badge">Disponível</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Livro 3 - A Revolução dos Bichos -->
-  <div class="book-card">
-    <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/id/8264445-M.jpg')"></div>
-    <div class="book-info">
-      <h4>A Revolução dos Bichos</h4>
-      <p>George Orwell</p>
-      <p class="book-description">Fábula política sobre poder e corrupção na fazenda dos animais.</p>
-      <div class="book-meta">
-        <span>8°-3° ano</span>
-        <span class="available-badge">Disponível</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Livro 4 - 1984 -->
-  <div class="book-card">
-    <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/id/7222246-M.jpg')"></div>
-    <div class="book-info">
-      <h4>1984</h4>
-      <p>George Orwell</p>
-      <p class="book-description">Distopia sobre vigilância governamental e controle da mente.</p>
-      <div class="book-meta">
-        <span>Ensino Médio</span>
-        <span class="available-badge">Disponível</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Livro 5 - Harry Potter e a Pedra Filosofal -->
-  <div class="book-card">
-    <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/id/8264453-M.jpg')"></div>
-    <div class="book-info">
-      <h4>Harry Potter e a Pedra Filosofal</h4>
-      <p>J.K. Rowling</p>
-      <p class="book-description">O início da jornada do bruxo mais famoso do mundo.</p>
-      <div class="book-meta">
-        <span>Qualquer idade</span>
-        <span class="available-badge">Disponível</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Livro 6 - Capitães da Areia -->
-  <div class="book-card">
-    <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/id/8264443-M.jpg')"></div>
-    <div class="book-info">
-      <h4>Capitães da Areia</h4>
-      <p>Jorge Amado</p>
-      <p class="book-description">A vida de meninos de rua em Salvador nos anos 1930.</p>
-      <div class="book-meta">
-        <span>Ensino Médio</span>
-        <span class="available-badge">Disponível</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Livro 7 - Vidas Secas -->
-  <div class="book-card">
-    <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/id/8264449-M.jpg')"></div>
-    <div class="book-info">
-      <h4>Vidas Secas</h4>
-      <p>Graciliano Ramos</p>
-      <p class="book-description">A saga de uma família de retirantes no sertão nordestino.</p>
-      <div class="book-meta">
-        <span>Ensino Médio</span>
-        <span class="available-badge">Disponível</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Livro 8 - O Senhor dos Anéis -->
-  <div class="book-card">
-    <div class="book-cover" style="background-image: url('https://covers.openlibrary.org/b/id/8264769-M.jpg')"></div>
-    <div class="book-info">
-      <h4>O Senhor dos Anéis</h4>
-      <p>J.R.R. Tolkien</p>
-      <p class="book-description">A épica jornada para destruir o Um Anel na Terra-média.</p>
-      <div class="book-meta">
-        <span>8°-3° ano</span>
-        <span class="unavailable-badge">Indisponível</span>
-      </div>
-    </div>
-  </div>
-</div>
+          <!-- Preenchido por JavaScript (os 10 livros mais populares) -->
+        </div>
 
         <div class="nav-buttons">
           <button id="backToHomeBtn" class="nav-btn back-btn">
@@ -389,10 +279,13 @@
           </div>
           
           <div class="filter-group">
-            <h4>Favoritos</h4>
+            <h4>Minha lista</h4>
             <div class="filter-options">
               <div class="filter-option" data-favorites="only" id="favoritesFilterOption">
                 <i class="fas fa-heart"></i> Somente favoritos
+              </div>
+              <div class="filter-option" data-read="only" id="readFilterOption">
+                <i class="fas fa-check"></i> Já li
               </div>
             </div>
           </div>
@@ -480,18 +373,23 @@
         <textarea id="shareMessage" rows="4" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;"></textarea>
       </div>
       
+      <!-- Compartilhar pelo próprio celular (aparece só quando o navegador suporta) -->
+      <button id="nativeShareBtn" class="action-btn" style="display: none; width: 100%; margin-bottom: 15px;">
+        <i class="fas fa-share-nodes"></i> Compartilhar…
+      </button>
+
       <!-- Botões de compartilhamento direto -->
       <div class="share-options">
-        <a href="#" onclick="shareOnWhatsApp()" class="share-btn whatsapp">
+        <a href="#" onclick="shareOnWhatsApp(); return false;" class="share-btn whatsapp">
           <i class="fab fa-whatsapp"></i> WhatsApp
         </a>
-        <a href="#" onclick="shareOnTwitter()" class="share-btn twitter">
+        <a href="#" onclick="shareOnTwitter(); return false;" class="share-btn twitter">
           <i class="fab fa-twitter"></i> Twitter
         </a>
-        <a href="#" onclick="shareOnFacebook()" class="share-btn facebook">
+        <a href="#" onclick="shareOnFacebook(); return false;" class="share-btn facebook">
           <i class="fab fa-facebook-f"></i> Facebook
         </a>
-        <a href="#" onclick="shareOnInstagram()" class="share-btn instagram">
+        <a href="#" onclick="shareOnInstagram(); return false;" class="share-btn instagram">
           <i class="fab fa-instagram"></i> Instagram
         </a>
       </div>
@@ -506,6 +404,19 @@
         <button class="close-modal">&times;</button>
       </div>
       <div id="authorModalContent">
+        <!-- Preenchido por JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Detalhes do Livro -->
+  <div id="bookModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="bookModalTitle"></h2>
+        <button class="close-modal" aria-label="Fechar">&times;</button>
+      </div>
+      <div id="bookModalContent">
         <!-- Preenchido por JavaScript -->
       </div>
     </div>

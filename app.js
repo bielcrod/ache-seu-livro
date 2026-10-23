@@ -18,7 +18,7 @@ function debugLog(...args) {
 
 // ===== Capas de livro: busca a capa correta na API do Open Library =====
 const COVER_CACHE_KEY = 'acheSeuLivro_coverCache';
-const PLACEHOLDER_COVER = 'https://via.placeholder.com/150x200?text=Sem+Capa';
+const PLACEHOLDER_COVER = 'assets/sem-capa.svg';
 
 function getCoverCache() {
   try {
@@ -75,16 +75,75 @@ async function fetchCorrectCover(book) {
   }
 }
 
-// ===== Favoritos (localStorage) =====
-const FAVORITES_KEY = 'acheSeuLivro_favorites';
+// ===== Utilitários =====
+const SITE_URL = 'https://bielcrod.github.io/ache-seu-livro/';
 
-function getFavorites() {
+// Alguns campos dos livros às vezes são texto e às vezes lista ("EM" ou ["EF2", "EM"])
+function asArray(value) {
+  if (value === undefined || value === null || value === '') return [];
+  return Array.isArray(value) ? value : [value];
+}
+
+// Remove acentos e deixa minúsculo, pra busca achar "revolucao" em "Revolução"
+function normalizeText(text) {
+  return String(text || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+}
+
+function escapeHtml(text) {
+  return String(text ?? '').replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  })[c]);
+}
+
+function gradeLabel(book) {
+  const labels = {
+    pt: { EF1: '6°-7° ano', EF2: '8°-9° ano', EM: 'Ensino Médio' },
+    es: { EF1: '6°-7° grado', EF2: '8°-9° grado', EM: 'Escuela secundaria' }
+  };
+  const lang = labels[state.currentLanguage] || labels.pt;
+  const grades = asArray(book.grade);
+  return grades.length ? grades.map(g => lang[g] || g).join(' / ') : lang.EM;
+}
+
+// Literatura portuguesa conta como "estrangeira" no quiz
+function matchesType(book, type) {
+  if (!type || type === 'qualquer') return true;
+  if (type === 'estrangeira') return book.type !== 'brasileira';
+  return book.type === type;
+}
+
+// ===== Listas salvas no navegador (favoritos e livros lidos) =====
+const FAVORITES_KEY = 'acheSeuLivro_favorites';
+const READ_KEY = 'acheSeuLivro_read';
+
+function getIdList(key) {
   try {
-    return JSON.parse(localStorage.getItem(FAVORITES_KEY)) || [];
+    return JSON.parse(localStorage.getItem(key)) || [];
   } catch (e) {
-    console.error('Erro ao ler favoritos:', e);
+    console.error('Erro ao ler lista salva:', e);
     return [];
   }
+}
+
+function toggleIdInList(key, bookId) {
+  bookId = Number(bookId);
+  try {
+    let ids = getIdList(key);
+    if (ids.includes(bookId)) {
+      ids = ids.filter(id => id !== bookId);
+    } else {
+      ids.push(bookId);
+    }
+    localStorage.setItem(key, JSON.stringify(ids));
+    return ids.includes(bookId);
+  } catch (e) {
+    console.error('Erro ao salvar lista:', e);
+    return getIdList(key).includes(bookId);
+  }
+}
+
+function getFavorites() {
+  return getIdList(FAVORITES_KEY);
 }
 
 function isFavorite(bookId) {
@@ -92,27 +151,35 @@ function isFavorite(bookId) {
 }
 
 function toggleFavorite(bookId) {
-  bookId = Number(bookId);
-  try {
-    let favs = getFavorites();
-    if (favs.includes(bookId)) {
-      favs = favs.filter(id => id !== bookId);
-    } else {
-      favs.push(bookId);
-    }
-    localStorage.setItem(FAVORITES_KEY, JSON.stringify(favs));
-    return favs.includes(bookId);
-  } catch (e) {
-    console.error('Erro ao salvar favorito:', e);
-    return isFavorite(bookId);
-  }
+  return toggleIdInList(FAVORITES_KEY, bookId);
+}
+
+function getReadBooks() {
+  return getIdList(READ_KEY);
+}
+
+function isRead(bookId) {
+  return getReadBooks().includes(Number(bookId));
+}
+
+function toggleRead(bookId) {
+  return toggleIdInList(READ_KEY, bookId);
+}
+
+// Atualiza todos os corações do mesmo livro na tela (cards e modal)
+function syncFavoriteButtons(bookId) {
+  const fav = isFavorite(bookId);
+  document.querySelectorAll(`.favorite-btn[data-book-id="${Number(bookId)}"]`).forEach(btn => {
+    btn.classList.toggle('active', fav);
+    btn.setAttribute('aria-label', fav ? 'Remover dos favoritos' : 'Adicionar aos favoritos');
+  });
 }
 
 function handleFavoriteClick(event, btn, bookId) {
   event.stopPropagation();
-  const nowFavorite = toggleFavorite(bookId);
-  btn.classList.toggle('active', nowFavorite);
-  btn.setAttribute('aria-label', nowFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos');
+  toggleFavorite(bookId);
+  syncFavoriteButtons(bookId);
+  renderReadingProgress();
 }
 
 function favoriteButtonHtml(bookId) {
@@ -122,6 +189,311 @@ function favoriteButtonHtml(bookId) {
             aria-label="${active ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}">
             <i class="fas fa-heart"></i>
           </button>`;
+}
+
+// ===== Card de livro (usado no quiz, nos populares e na biblioteca) =====
+function createBookCard(book) {
+  const pt = state.currentLanguage === 'pt';
+  const card = document.createElement('div');
+  card.className = 'book-card fade-in';
+  card.tabIndex = 0;
+  card.setAttribute('role', 'button');
+  card.setAttribute('aria-label', `${pt ? 'Ver detalhes de' : 'Ver detalles de'} ${book.title}`);
+
+  card.innerHTML = `
+    <div class="book-cover loading">
+      <img class="lazy"
+           data-src="${escapeHtml(book.cover || PLACEHOLDER_COVER)}"
+           data-book-id="${book.id}"
+           alt="Capa do livro: ${escapeHtml(book.title)}"
+           onerror="this.onerror=null;this.src='assets/sem-capa.svg'">
+      ${favoriteButtonHtml(book.id)}
+      ${isRead(book.id) ? `<span class="read-badge"><i class="fas fa-check"></i> ${pt ? 'Lido' : 'Leído'}</span>` : ''}
+    </div>
+    <div class="book-info">
+      <h4 class="book-title">${escapeHtml(book.title)}</h4>
+      <p class="book-author">${escapeHtml(book.author)}</p>
+      ${book.recommendationReason ? `<p class="book-reason">${escapeHtml(book.recommendationReason)}</p>` : ''}
+      ${book.description ? `<p class="book-description">${escapeHtml(book.description)}</p>` : ''}
+      <div class="book-meta">
+        <span>${gradeLabel(book)}</span>
+        ${book.available
+          ? `<span class="available-badge">${pt ? 'Disponível' : 'Disponible'}</span>`
+          : `<span class="unavailable-badge">${pt ? 'Indisponível' : 'No disponible'}</span>`}
+      </div>
+    </div>
+  `;
+
+  const authorElement = card.querySelector('.book-author');
+  if (authorsInfo[book.author]) {
+    authorElement.classList.add('clickable');
+    authorElement.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showAuthorModal(book.author);
+    });
+  }
+
+  card.addEventListener('click', () => showBookModal(book.id));
+  card.addEventListener('keydown', (e) => {
+    if (e.target === card && (e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      showBookModal(book.id);
+    }
+  });
+
+  return card;
+}
+
+// ===== Detalhes do livro =====
+function getSimilarBooks(book, limit = 4) {
+  const genres = asArray(book.genres);
+  const tags = asArray(book.tags);
+
+  return booksDatabase
+    .filter(other => other.id !== book.id)
+    .map(other => {
+      let score = asArray(other.genres).filter(g => genres.includes(g)).length * 2;
+      score += asArray(other.tags).filter(t => tags.includes(t)).length;
+      if (other.author === book.author) score += 1;
+      return { book: other, score };
+    })
+    .filter(item => item.score > 0)
+    .sort((a, b) => b.score - a.score || (b.book.popularity || 0) - (a.book.popularity || 0))
+    .slice(0, limit)
+    .map(item => item.book);
+}
+
+function bookLink(book) {
+  return `${SITE_URL}?livro=${book.id}`;
+}
+
+function showBookModal(bookId) {
+  const book = findBookById(bookId);
+  if (!book) return;
+  const pt = state.currentLanguage === 'pt';
+  const lang = genreTranslations[state.currentLanguage] || genreTranslations.pt;
+  const read = isRead(book.id);
+
+  elements.bookModalTitle.textContent = book.title;
+
+  const genreChips = asArray(book.genres)
+    .map(g => `<span class="genre-chip">${escapeHtml(lang[g] || g)}</span>`)
+    .join('');
+
+  const similar = getSimilarBooks(book);
+  const similarHtml = similar.map(s => `
+    <button class="similar-book" data-book-id="${s.id}">
+      <img src="${escapeHtml(s.cover || PLACEHOLDER_COVER)}" data-book-id="${s.id}" alt=""
+           onerror="this.onerror=null;this.src='assets/sem-capa.svg'">
+      <span>${escapeHtml(s.title)}</span>
+    </button>`).join('');
+
+  elements.bookModalContent.innerHTML = `
+    <div class="book-detail">
+      <div class="book-detail-cover">
+        <img src="${escapeHtml(book.cover || PLACEHOLDER_COVER)}" alt="Capa do livro: ${escapeHtml(book.title)}"
+             onerror="this.onerror=null;this.src='assets/sem-capa.svg'">
+      </div>
+      <div class="book-detail-info">
+        <p class="book-detail-author">${escapeHtml(book.author)}</p>
+        <div class="book-meta">
+          <span>${gradeLabel(book)}</span>
+          ${book.available
+            ? `<span class="available-badge">${pt ? 'Disponível no Leia SP' : 'Disponible en Leia SP'}</span>`
+            : `<span class="unavailable-badge">${pt ? 'Indisponível no Leia SP' : 'No disponible en Leia SP'}</span>`}
+        </div>
+        <div class="genre-chips">${genreChips}</div>
+        ${book.description ? `<p class="book-detail-description">${escapeHtml(book.description)}</p>` : ''}
+      </div>
+    </div>
+    <div class="book-detail-actions">
+      <button class="action-btn favorite-toggle ${isFavorite(book.id) ? 'active' : ''}" id="detailFavoriteBtn">
+        <i class="fas fa-heart"></i> <span></span>
+      </button>
+      <button class="action-btn read-toggle ${read ? 'active' : ''}" id="detailReadBtn">
+        <i class="fas fa-check"></i> <span></span>
+      </button>
+      <button class="action-btn" id="detailShareBtn">
+        <i class="fas fa-share-alt"></i> ${pt ? 'Compartilhar' : 'Compartir'}
+      </button>
+    </div>
+    ${similar.length ? `
+      <h3 class="similar-title">${pt ? 'Se você gostar, leia também' : 'Si te gusta, lee también'}</h3>
+      <div class="similar-books">${similarHtml}</div>` : ''}
+  `;
+
+  const favBtn = document.getElementById('detailFavoriteBtn');
+  const readBtn = document.getElementById('detailReadBtn');
+  const updateButtons = () => {
+    const fav = isFavorite(book.id);
+    const done = isRead(book.id);
+    favBtn.classList.toggle('active', fav);
+    favBtn.querySelector('span').textContent = fav
+      ? (pt ? 'Favorito' : 'Favorito')
+      : (pt ? 'Favoritar' : 'Agregar a favoritos');
+    readBtn.classList.toggle('active', done);
+    readBtn.querySelector('span').textContent = done
+      ? (pt ? 'Já li' : 'Ya lo leí')
+      : (pt ? 'Marcar como lido' : 'Marcar como leído');
+  };
+  updateButtons();
+
+  favBtn.addEventListener('click', () => {
+    toggleFavorite(book.id);
+    syncFavoriteButtons(book.id);
+    updateButtons();
+    refreshAfterListChange();
+  });
+  readBtn.addEventListener('click', () => {
+    toggleRead(book.id);
+    updateButtons();
+    refreshAfterListChange();
+  });
+  document.getElementById('detailShareBtn').addEventListener('click', () => shareBook(book));
+
+  elements.bookModalContent.querySelectorAll('.similar-book').forEach(btn => {
+    btn.addEventListener('click', () => showBookModal(btn.dataset.bookId));
+  });
+
+  // Corrige as capas (inclusive dos livros parecidos) pela Open Library
+  elements.bookModalContent.querySelectorAll('img[data-book-id]').forEach(img => {
+    const similarBook = findBookById(img.dataset.bookId);
+    if (similarBook) fetchCorrectCover(similarBook).then(url => { if (url) img.src = url; });
+  });
+  fetchCorrectCover(book).then(url => {
+    const cover = elements.bookModalContent.querySelector('.book-detail-cover img');
+    if (url && cover) cover.src = url;
+  });
+
+  elements.bookModal.style.display = 'block';
+  elements.bookModal.scrollTop = 0;
+}
+
+// Depois de favoritar/marcar como lido, atualiza o que estiver aberto
+function refreshAfterListChange() {
+  renderReadingProgress();
+  if (state.currentScreen === 'library' && elements.libraryBooks.children.length > 0) {
+    filterLibraryBooks();
+  }
+}
+
+async function shareBook(book) {
+  const pt = state.currentLanguage === 'pt';
+  const url = bookLink(book);
+  const text = pt
+    ? `📚 Olha esse livro que achei no Ache seu Livro: "${book.title}", de ${book.author}.`
+    : `📚 Mira este libro que encontré en Ache seu Livro: "${book.title}", de ${book.author}.`;
+
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: book.title, text, url });
+      return;
+    } catch (e) {
+      if (e.name === 'AbortError') return; // a pessoa cancelou
+    }
+  }
+  const copied = await copyText(`${text} ${url}`);
+  alert(copied
+    ? (pt ? 'Link do livro copiado!' : '¡Enlace del libro copiado!')
+    : url);
+}
+
+async function copyText(text) {
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch (e) {
+    console.error('Erro ao copiar com a área de transferência:', e);
+  }
+  try {
+    const temp = document.createElement('textarea');
+    temp.value = text;
+    temp.setAttribute('readonly', '');
+    temp.style.position = 'fixed';
+    temp.style.opacity = '0';
+    document.body.appendChild(temp);
+    temp.select();
+    const ok = document.execCommand('copy');
+    temp.remove();
+    return ok;
+  } catch (e) {
+    console.error('Erro ao copiar:', e);
+    return false;
+  }
+}
+
+// ===== Tela inicial: livro da semana e progresso de leitura =====
+function getBookOfTheWeek() {
+  const candidates = booksDatabase
+    .filter(book => book.available && (book.popularity || 0) >= 7)
+    .sort((a, b) => a.id - b.id);
+  if (candidates.length === 0) return null;
+  // Muda toda semana, e é o mesmo livro pra todo mundo na mesma semana
+  const week = Math.floor(Date.now() / (7 * 24 * 60 * 60 * 1000));
+  return candidates[week % candidates.length];
+}
+
+function renderBookOfTheWeek() {
+  const container = elements.bookOfWeek;
+  if (!container) return;
+  const book = getBookOfTheWeek();
+  if (!book) {
+    container.style.display = 'none';
+    return;
+  }
+
+  container.innerHTML = `
+    <img src="${escapeHtml(book.cover || PLACEHOLDER_COVER)}" alt="Capa do livro: ${escapeHtml(book.title)}"
+         onerror="this.onerror=null;this.src='assets/sem-capa.svg'">
+    <div class="book-of-week-info">
+      <span class="book-of-week-label"><i class="fas fa-star"></i> Livro da semana</span>
+      <h3>${escapeHtml(book.title)}</h3>
+      <p>${escapeHtml(book.author)}</p>
+      <span class="book-of-week-link">Ver detalhes <i class="fas fa-arrow-right"></i></span>
+    </div>
+  `;
+  container.onclick = () => showBookModal(book.id);
+  container.onkeydown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      showBookModal(book.id);
+    }
+  };
+
+  fetchCorrectCover(book).then(url => {
+    const img = container.querySelector('img');
+    if (url && img) img.src = url;
+  });
+}
+
+function renderReadingProgress() {
+  const container = elements.readingProgress;
+  if (!container) return;
+  const readCount = getReadBooks().filter(id => findBookById(id)).length;
+  const favCount = getFavorites().filter(id => findBookById(id)).length;
+
+  if (readCount === 0 && favCount === 0) {
+    container.innerHTML = '<i class="fas fa-book-open"></i> Abra um livro e marque "Já li" para acompanhar suas leituras aqui.';
+    return;
+  }
+
+  const parts = [];
+  if (readCount > 0) parts.push(`<strong>${readCount}</strong> livro${readCount > 1 ? 's' : ''} lido${readCount > 1 ? 's' : ''}`);
+  if (favCount > 0) parts.push(`<strong>${favCount}</strong> favorito${favCount > 1 ? 's' : ''}`);
+  container.innerHTML = `<i class="fas fa-trophy"></i> Sua estante: ${parts.join(' · ')} — <a href="#" id="openMyListLink">ver minha lista</a>`;
+
+  document.getElementById('openMyListLink').addEventListener('click', (e) => {
+    e.preventDefault();
+    showLibraryScreen();
+    resetLibraryFilters();
+    const option = document.getElementById(readCount > 0 ? 'readFilterOption' : 'favoritesFilterOption');
+    if (option) {
+      option.classList.add('selected');
+      updateLibraryFilters();
+    }
+  });
 }
 
 const genreTranslations = {
@@ -137,7 +509,10 @@ const genreTranslations = {
     "matematica": "matemática", "fisica": "física", "medico": "médico", "jornalismo": "jornalismo",
     "quadrinhos": "quadrinhos", "educativo": "educativo", "cultura": "cultura", "mitologia": "mitologia",
     "pre-modernismo": "pré-modernismo", "modernismo": "modernismo", "barroco": "barroco",
-    "parnasianismo": "parnasianismo", "romantismo": "romantismo"
+    "parnasianismo": "parnasianismo", "romantismo": "romantismo",
+    "psicologico": "psicológico", "ficcao": "ficção", "ciencia": "ciência", "esporte": "esporte",
+    "regionalismo": "regionalismo", "historia": "história", "ensaio": "ensaio", "epico": "épico",
+    "terror": "terror", "crime": "crime", "realismo-magico": "realismo mágico", "familiar": "família"
   },
   es: {
     "drama": "drama", "comedia": "comedia", "autoajuda": "autoayuda", "psicologia": "psicología",
@@ -151,7 +526,10 @@ const genreTranslations = {
     "matematica": "matemáticas", "fisica": "física", "medico": "médico", "jornalismo": "periodismo",
     "quadrinhos": "cómics", "educativo": "educativo", "cultura": "cultura", "mitologia": "mitología",
     "pre-modernismo": "pre-modernismo", "modernismo": "modernismo", "barroco": "barroco",
-    "parnasianismo": "parnasianismo", "romantismo": "romanticismo"
+    "parnasianismo": "parnasianismo", "romantismo": "romanticismo",
+    "psicologico": "psicológico", "ficcao": "ficción", "ciencia": "ciencia", "esporte": "deporte",
+    "regionalismo": "regionalismo", "historia": "historia", "ensaio": "ensayo", "epico": "épico",
+    "terror": "terror", "crime": "crimen", "realismo-magico": "realismo mágico", "familiar": "familia"
   }
 };
 
@@ -184,12 +562,13 @@ const quizQuestions = {
     {
       id: 3,
       question: "📖 Quais gêneros você mais gosta? (Selecione até 4)",
-      options: allGenres.map(genre => ({
+      options: [...allGenres].sort((a, b) => (genreTranslations.pt[a] || a).localeCompare(genreTranslations.pt[b] || b)).map(genre => ({
         value: genre,
         label: genreTranslations.pt[genre] || genre
       })),
       filterKey: "genres",
       multiple: true,
+      maxSelections: 4,
       weight: 30 // Maior peso para gêneros
     },
     {
@@ -209,6 +588,7 @@ const quizQuestions = {
       ],
       filterKey: "mood",
       multiple: true,
+      maxSelections: 3,
       weight: 30
     },
     {
@@ -249,12 +629,13 @@ const quizQuestions = {
     {
       id: 3,
       question: "📖 ¿Qué géneros te gustan más? (Selecciona hasta 4)",
-      options: allGenres.map(genre => ({
+      options: [...allGenres].sort((a, b) => (genreTranslations.pt[a] || a).localeCompare(genreTranslations.pt[b] || b)).map(genre => ({
         value: genre,
         label: genreTranslations.es[genre] || genre
       })),
       filterKey: "genres",
-      multiple: true
+      multiple: true,
+      maxSelections: 4
     },
     {
       id: 4,
@@ -272,7 +653,8 @@ const quizQuestions = {
         { value: "inspirar", label: "🧠 Superación" }
       ],
       filterKey: "mood",
-      multiple: true
+      multiple: true,
+      maxSelections: 3
     },
     {
       id: 5,
@@ -294,7 +676,7 @@ const vestibularBooks = {
 {
   title: "Opúsculo Humanitário",
   author: "Nísia Floresta",
-  description: "Publicado em 1853, este ensaio é uma defesa apaixonada pelos direitos das mulheres e pela educação feminina. Nísia Floresta critica a desigualdade de gênero na sociedade brasileira do século XIX, argumentando que a emancipación intelectual das mulheres é essencial para o progresso nacional."
+  description: "Publicado em 1853, este ensaio é uma defesa apaixonada pelos direitos das mulheres e pela educação feminina. Nísia Floresta critica a desigualdade de gênero na sociedade brasileira do século XIX, argumentando que a emancipação intelectual das mulheres é essencial para o progresso nacional."
 },
 {
   title: "Nebulosas",
@@ -329,7 +711,7 @@ const vestibularBooks = {
 {
   title: "Canção para ninar menino grande",
   author: "Conceição Evaristo",
-  description: "Publicado em 2018, este romance aborda a violência urbana e o luto materno a partir da história de um jovem negro assassinado. A narrativa mescla poesia e prosa, explorando memória, dolor e resistência na periferia brasileira."
+  description: "Publicado em 2018, este romance aborda a violência urbana e o luto materno a partir da história de um jovem negro assassinado. A narrativa mescla poesia e prosa, explorando memória, dor e resistência na periferia brasileira."
 },
 {
   title: "A visão das plantas",
@@ -494,7 +876,13 @@ const elements = {
   genreFilters: document.getElementById('genreFilters'),
   libraryBooks: document.getElementById('libraryBooks'),
   resultsCount: document.getElementById('resultsCount'),
-  pagination: document.getElementById('pagination')
+  pagination: document.getElementById('pagination'),
+  bookModal: document.getElementById('bookModal'),
+  bookModalTitle: document.getElementById('bookModalTitle'),
+  bookModalContent: document.getElementById('bookModalContent'),
+  bookOfWeek: document.getElementById('bookOfWeek'),
+  readingProgress: document.getElementById('readingProgress'),
+  nativeShareBtn: document.getElementById('nativeShareBtn')
 };
 
 // Estado da aplicação
@@ -516,7 +904,7 @@ function preprocessData() {
   // Criar índice de gêneros para busca mais rápida
   booksDatabase.forEach((book, index) => {
     if (book.genres) {
-      book.genres.forEach(genre => {
+      asArray(book.genres).forEach(genre => {
         if (!genreIndex[genre]) genreIndex[genre] = [];
         genreIndex[genre].push(index);
       });
@@ -552,14 +940,28 @@ function init() {
     console.error('Erro ao pré-processar os dados dos livros:', e);
   }
 
-  // Verificar se há parâmetros na URL para compartilhamento
+  try {
+    renderBookOfTheWeek();
+    renderReadingProgress();
+  } catch (e) {
+    console.error('Erro ao montar a tela inicial:', e);
+  }
+
+  // Link compartilhado de um livro: ?livro=123 abre os detalhes dele
   try {
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('source') && urlParams.get('source') === 'shared') {
-      // Pode adicionar lógica especial para quando o usuário vem de um link compartilhado
+    if (urlParams.has('livro')) {
+      showBookModal(urlParams.get('livro'));
     }
   } catch (e) {
     console.error('Erro ao ler parâmetros da URL:', e);
+  }
+
+  // Permite instalar o site no celular e abrir sem internet
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(e => {
+      console.error('Erro ao registrar o service worker:', e);
+    });
   }
 }
 
@@ -621,6 +1023,38 @@ function setupEventListeners() {
     }
   });
 
+  // Fechar modal com a tecla Esc
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal').forEach(modal => {
+        modal.style.display = 'none';
+      });
+    }
+  });
+
+  // Abas do modal de vestibular (configuradas uma vez só)
+  setupVestibularTabs();
+
+  // Botão de compartilhar do próprio celular (só aparece se o navegador suportar)
+  if (elements.nativeShareBtn) {
+    if (navigator.share) {
+      elements.nativeShareBtn.style.display = 'flex';
+      elements.nativeShareBtn.addEventListener('click', async () => {
+        try {
+          await navigator.share({
+            title: 'Ache seu livro',
+            text: elements.shareMessage.value,
+            url: generateShareableLink()
+          });
+        } catch (e) {
+          if (e.name !== 'AbortError') console.error('Erro ao compartilhar:', e);
+        }
+      });
+    } else {
+      elements.nativeShareBtn.style.display = 'none';
+    }
+  }
+
   // Lazy loading para imagens
   setupLazyLoading();
 }
@@ -657,14 +1091,16 @@ function setupLibraryEventListeners() {
     });
   });
   
-  // Event listener para filtro de favoritos
-  const favoritesFilterOption = document.getElementById('favoritesFilterOption');
-  if (favoritesFilterOption) {
-    favoritesFilterOption.addEventListener('click', function() {
-      this.classList.toggle('selected');
-      updateLibraryFilters();
-    });
-  }
+  // Event listeners para filtros de favoritos e de livros lidos
+  ['favoritesFilterOption', 'readFilterOption'].forEach(id => {
+    const option = document.getElementById(id);
+    if (option) {
+      option.addEventListener('click', function() {
+        this.classList.toggle('selected');
+        updateLibraryFilters();
+      });
+    }
+  });
 
   // Event listeners para ordenação
   document.querySelectorAll('.sort-btn').forEach(btn => {
@@ -761,40 +1197,37 @@ function updateBreadcrumbs() {
   elements.breadcrumbs.appendChild(homeCrumb);
   
   // Adiciona outras páginas conforme a navegação
-  if (state.currentScreen === 'stats') {
-    elements.breadcrumbs.innerHTML += ' <span>></span> ';
-    const statsCrumb = document.createElement('span');
-    statsCrumb.textContent = 'Livros Populares';
-    elements.breadcrumbs.appendChild(statsCrumb);
-  } else if (state.currentScreen === 'quiz') {
-    elements.breadcrumbs.innerHTML += ' <span>></span> ';
-    const quizCrumb = document.createElement('span');
-    quizCrumb.textContent = 'Quiz';
-    elements.breadcrumbs.appendChild(quizCrumb);
-  } else if (state.currentScreen === 'results') {
-    elements.breadcrumbs.innerHTML += ' <span>></span> ';
-    const resultsCrumb = document.createElement('span');
-    resultsCrumb.textContent = 'Resultados';
-    elements.breadcrumbs.appendChild(resultsCrumb);
-  } else if (state.currentScreen === 'library') {
-    elements.breadcrumbs.innerHTML += ' <span>></span> ';
-    const libraryCrumb = document.createElement('span');
-    libraryCrumb.textContent = 'Biblioteca';
-    elements.breadcrumbs.appendChild(libraryCrumb);
+  // (com appendChild: usar innerHTML += apagava o clique do link "Home")
+  const screenNames = {
+    stats: 'Livros Populares',
+    quiz: 'Quiz',
+    results: 'Resultados',
+    library: 'Biblioteca'
+  };
+  const name = screenNames[state.currentScreen];
+  if (name) {
+    const separator = document.createElement('span');
+    separator.textContent = ' > ';
+    elements.breadcrumbs.appendChild(separator);
+    const crumb = document.createElement('span');
+    crumb.textContent = name;
+    elements.breadcrumbs.appendChild(crumb);
   }
 }
 
 // Navegação entre telas
-function goToHomeScreen() {
+function goToHomeScreen(e) {
+  if (e && e.preventDefault) e.preventDefault();
   document.querySelector('.screen.active').classList.remove('active');
   elements.homeScreen.classList.add('active');
   loadRandomBackground();
   state.currentScreen = 'home';
   updateBreadcrumbs();
+  renderReadingProgress();
 }
 
 function showStatsScreen() {
-  elements.homeScreen.classList.remove('active');
+  document.querySelector('.screen.active').classList.remove('active');
   elements.statsScreen.classList.add('active');
   updateStatsScreen();
   state.currentScreen = 'stats';
@@ -812,6 +1245,8 @@ function updateStatsScreen() {
 }
 
 // Gerar gráfico de gêneros
+let genreChartInstance = null;
+
 function generateGenreChart() {
   const ctx = document.createElement('canvas');
   ctx.id = 'genreChart';
@@ -822,7 +1257,7 @@ function generateGenreChart() {
   const genreCounts = {};
   booksDatabase.forEach(book => {
     if (book.genres) {
-      book.genres.forEach(genre => {
+      asArray(book.genres).forEach(genre => {
         genreCounts[genre] = (genreCounts[genre] || 0) + (book.popularity || 5);
       });
     }
@@ -837,11 +1272,12 @@ function generateGenreChart() {
   const data = sortedGenres.map(([_, count]) => count);
   
   // Destruir gráfico anterior se existir
-  if (window.genreChart) {
-    window.genreChart.destroy();
+  // (não dá pra usar window.genreChart: o navegador já usa esse nome pro <canvas id="genreChart">)
+  if (genreChartInstance) {
+    genreChartInstance.destroy();
   }
   
-  window.genreChart = new Chart(ctx, {
+  genreChartInstance = new Chart(ctx, {
     type: 'bar',
     data: {
       labels: labels,
@@ -891,30 +1327,7 @@ function displayTopBooks() {
     .slice(0, 10);
   
   topBooks.forEach(book => {
-    const bookCard = document.createElement('div');
-    bookCard.className = 'book-card fade-in';
-    
-    bookCard.innerHTML = `
-      <div class="book-cover loading">
-        <img class="lazy" 
-             data-src="${book.cover || 'https://via.placeholder.com/150x200?text=Sem+Capa'}"
-             data-book-id="${book.id}"
-             alt="Capa do livro: ${book.title}"
-             onerror="this.onerror=null;this.src='https://via.placeholder.com/150x200?text=Sem+Capa'">
-        ${favoriteButtonHtml(book.id)}
-      </div>
-      <div class="book-info">
-        <h4 class="book-title">${book.title}</h4>
-        <p class="book-author">${book.author}</p>
-        ${book.description ? `<p class="book-description">${book.description}</p>` : ''}
-        <div class="book-meta">
-          <span>${book.grade === 'EF1' ? '6°-7° ano' : book.grade === 'EF2' ? '8°-9° ano' : 'Ensino Médio'}</span>
-          ${book.available ? '<span class="available-badge">Disponível</span>' : '<span class="unavailable-badge">Indisponível</span>'}
-        </div>
-      </div>
-    `;
-    
-    elements.topBooksList.appendChild(bookCard);
+    elements.topBooksList.appendChild(createBookCard(book));
   });
   
   // Configurar lazy loading para as novas imagens
@@ -982,10 +1395,27 @@ function loadQuestion(index) {
     
     // Event listener para o elemento de opção inteiro
     optionElement.addEventListener('click', (e) => {
+      // Clique direto na caixinha: o navegador já marcou/desmarcou sozinho.
+      // Clique no texto ou no cartão: impede o clique duplicado do <label> e alterna aqui.
+      const clickedInput = e.target === input;
+      if (!clickedInput) e.preventDefault();
+
       // Se for questão de múltipla escolha (checkbox)
       if (question.multiple) {
-        input.checked = !input.checked; // Alterna o estado
-        
+        if (!clickedInput) input.checked = !input.checked; // Alterna o estado
+
+        // Respeita o limite ("Selecione até 4")
+        if (input.checked && question.maxSelections) {
+          const checkedCount = document.querySelectorAll(`input[name="answer-${question.id}"]:checked`).length;
+          if (checkedCount > question.maxSelections) {
+            input.checked = false;
+            alert(state.currentLanguage === 'pt'
+              ? `Você pode escolher até ${question.maxSelections} opções.`
+              : `Puedes elegir hasta ${question.maxSelections} opciones.`);
+            return;
+          }
+        }
+
         // Atualiza a seleção visual
         if (input.checked) {
           optionElement.classList.add('selected');
@@ -1124,19 +1554,43 @@ function goToPreviousQuestion() {
 
 
 // Sistema de recomendação melhorado
+
+// Pesos de cada pergunta (ficam só nas perguntas em português;
+// antes o quiz em espanhol ficava sem peso e a pontuação virava NaN)
+function getQuestionWeight(filterKey) {
+  const question = quizQuestions.pt.find(q => q.filterKey === filterKey);
+  return (question && question.weight) || 0;
+}
+
+// Experiências parecidas contam como a mesma coisa
+// (nenhum livro usa "rir", mas vários usam "divertir")
+const MOOD_ALIASES = {
+  rir: ['divertir'],
+  divertir: ['rir'],
+  surpreender: ['intrigar'],
+  perturbar: ['chocar']
+};
+
+function getMatchingMoods(book, selectedMoods) {
+  const bookMoods = asArray(book.mood);
+  return asArray(selectedMoods).filter(mood =>
+    bookMoods.includes(mood) || (MOOD_ALIASES[mood] || []).some(alias => bookMoods.includes(alias))
+  );
+}
+
 function calculateBookScore(book, filters) {
   let score = 0;
-  const questions = quizQuestions[state.currentLanguage];
+  const bookGenres = asArray(book.genres);
+  const bookGrades = asArray(book.grade);
 
   // 1. Gênero literário (maior peso)
-  if (filters.genres?.length > 0 && book.genres) {
+  if (filters.genres?.length > 0 && bookGenres.length > 0) {
     // Priorizar livros que combinam com múltiplos gêneros selecionados
-    const matchingGenres = book.genres.filter(g => filters.genres.includes(g));
-    const genreWeight = questions.find(q => q.filterKey === 'genres').weight;
-    
+    const matchingGenres = bookGenres.filter(g => filters.genres.includes(g));
+
     // Pontuar mais se combinar com vários gêneros
-    score += (matchingGenres.length / filters.genres.length) * genreWeight;
-    
+    score += (matchingGenres.length / filters.genres.length) * getQuestionWeight('genres');
+
     // Bônus adicional se combinar com pelo menos 2 gêneros
     if (matchingGenres.length >= 2) {
       score += 10;
@@ -1144,37 +1598,34 @@ function calculateBookScore(book, filters) {
   }
 
   // 2. Faixa etária (peso médio)
-  if (book.grade === filters.grade) {
-    const gradeWeight = questions.find(q => q.filterKey === 'grade').weight;
-    score += gradeWeight; // Match exato
+  if (bookGrades.includes(filters.grade)) {
+    score += getQuestionWeight('grade'); // Match exato
   } else if (
-    (filters.grade === 'EF2' && book.grade === 'EF1') ||
-    (filters.grade === 'EM' && book.grade === 'EF2')
+    (filters.grade === 'EF2' && bookGrades.includes('EF1')) ||
+    (filters.grade === 'EM' && bookGrades.includes('EF2'))
   ) {
     score += 10; // Faixa próxima
   }
 
   // 3. Compatibilidade com humor (peso médio)
-  if (filters.mood?.length > 0 && book.mood) {
-    const moodWeight = questions.find(q => q.filterKey === 'mood').weight;
-    const moodMatch = filters.mood.some(selectedMood => 
-      Array.isArray(book.mood) 
-        ? book.mood.includes(selectedMood)
-        : book.mood === selectedMood
-    );
-    if (moodMatch) score += moodWeight;
+  if (getMatchingMoods(book, filters.mood).length > 0) {
+    score += getQuestionWeight('mood');
   }
 
   // 4. Tipo de literatura (menor peso)
-  if (filters.type !== 'qualquer' && book.type === filters.type) {
-    const typeWeight = questions.find(q => q.filterKey === 'type').weight;
-    score += typeWeight; // Match exato
+  if (filters.type !== 'qualquer' && matchesType(book, filters.type)) {
+    score += getQuestionWeight('type'); // Match exato
   }
 
-  // 5. Popularidade (pequeno bônus)
+  // 5. Época da história (essa resposta antes era ignorada)
+  if (filters.time && filters.time !== 'todos' && asArray(book.time).includes(filters.time)) {
+    score += getQuestionWeight('time');
+  }
+
+  // 6. Popularidade (pequeno bônus)
   score += (book.popularity || 5) * 0.1; // Converte 1-10 para 0.5-5
 
-  // 6. Disponibilidade (Bônus absoluto)
+  // 7. Disponibilidade (Bônus absoluto)
   if (book.available) score += 1;
 
   return score;
@@ -1182,83 +1633,88 @@ function calculateBookScore(book, filters) {
 
 // Obter motivo da recomendação
 function getRecommendationReason(book, filters) {
+  const pt = state.currentLanguage === 'pt';
   const reasons = [];
-  const questions = quizQuestions[state.currentLanguage];
-  
+
   // Gênero
-  if (filters.genres?.length > 0 && book.genres) {
-    const matchingGenres = book.genres.filter(g => filters.genres.includes(g));
+  if (filters.genres?.length > 0) {
+    const matchingGenres = asArray(book.genres).filter(g => filters.genres.includes(g));
     if (matchingGenres.length > 0) {
       const genreLabels = matchingGenres.map(g => genreTranslations[state.currentLanguage][g] || g);
-      reasons.push(`combina com seu gosto por ${genreLabels.join(', ')}`);
+      reasons.push(pt
+        ? `combina com seu gosto por ${genreLabels.join(', ')}`
+        : `combina con tu gusto por ${genreLabels.join(', ')}`);
     }
   }
-  
+
   // Faixa etária
-  if (book.grade === filters.grade) {
-    reasons.push(`indicado para sua faixa etária`);
+  if (asArray(book.grade).includes(filters.grade)) {
+    reasons.push(pt ? 'é indicado para sua série' : 'es adecuado para tu grado');
   }
-  
+
   // Humor/experiência
-  if (filters.mood?.length > 0 && book.mood) {
-    const matchingMoods = Array.isArray(book.mood) 
-      ? book.mood.filter(m => filters.mood.includes(m))
-      : filters.mood.includes(book.mood) ? [book.mood] : [];
-    
-    if (matchingMoods.length > 0) {
-      const moodTranslations = {
-        "emocionar": "emocionante",
-        "surpreender": "surpreendente",
-        "refletir": "reflexivo",
-        "rir": "divertido",
-        "aventura": "aventureiro",
-        "acalmar": "calmante",
-        "assustar": "assustador",
-        "perturbar": "intenso",
-        "divertir": "divertido",
-        "inspirar": "inspirador"
-      };
-      
-      const moodLabels = matchingMoods.map(m => moodTranslations[m] || m);
-      reasons.push(`oferece uma experiência ${moodLabels.join(' e ')}`);
+  const matchingMoods = getMatchingMoods(book, filters.mood);
+  if (matchingMoods.length > 0) {
+    const moodTranslations = {
+      pt: {
+        emocionar: 'emocionante', surpreender: 'surpreendente', refletir: 'reflexiva',
+        rir: 'divertida', aventura: 'aventureira', acalmar: 'leve', assustar: 'assustadora',
+        perturbar: 'intensa', divertir: 'divertida', inspirar: 'inspiradora'
+      },
+      es: {
+        emocionar: 'emocionante', surpreender: 'sorprendente', refletir: 'reflexiva',
+        rir: 'divertida', aventura: 'aventurera', acalmar: 'ligera', assustar: 'aterradora',
+        perturbar: 'intensa', divertir: 'divertida', inspirar: 'inspiradora'
+      }
+    };
+    const translations = moodTranslations[state.currentLanguage] || moodTranslations.pt;
+    const moodLabels = Array.from(new Set(matchingMoods.map(m => translations[m] || m)));
+    reasons.push(pt
+      ? `oferece uma experiência ${moodLabels.join(' e ')}`
+      : `ofrece una experiencia ${moodLabels.join(' y ')}`);
+  }
+
+  // Tipo de literatura
+  if (filters.type !== 'qualquer' && matchesType(book, filters.type)) {
+    if (filters.type === 'brasileira') {
+      reasons.push(pt ? 'é literatura brasileira' : 'es literatura brasileña');
+    } else {
+      reasons.push(pt ? 'é literatura estrangeira' : 'es literatura extranjera');
     }
   }
-  
-  // Tipo de literatura
-  if (filters.type !== 'qualquer' && book.type === filters.type) {
-    reasons.push(`do tipo ${filters.type === 'brasileira' ? 'literatura brasileira' : 'literatura estrangeira'}`);
-  }
-  
+
   // Se não encontrou razões específicas, usar uma mensagem genérica
   if (reasons.length === 0) {
-    return state.currentLanguage === 'pt' 
-      ? 'Recomendado com base em livros populares' 
+    return pt
+      ? 'Recomendado com base em livros populares'
       : 'Recomendado basado en libros populares';
   }
-  
+
   // Formatar a mensagem final
-  let message = state.currentLanguage === 'pt' ? 'Recomendado porque ' : 'Recomendado porque ';
+  const and = pt ? ' e ' : ' y ';
+  let message = 'Recomendado porque ';
   if (reasons.length === 1) {
     message += reasons[0];
   } else {
-    message += reasons.slice(0, -1).join(', ') + ' e ' + reasons[reasons.length - 1];
+    message += reasons.slice(0, -1).join(', ') + and + reasons[reasons.length - 1];
   }
-  
+
   return message;
 }
 
 // FUNÇÃO OTIMIZADA - Substitui a versão anterior
 function getRecommendedBooks(filters) {
   // Verificar se podemos usar resultados em cache
-  if (lastFilters && cachedResults && JSON.stringify(lastFilters) === JSON.stringify(filters)) {
+  const filtersKey = JSON.stringify({ ...filters, lang: state.currentLanguage });
+  if (lastFilters === filtersKey && cachedResults) {
     return cachedResults;
   }
-  
-  lastFilters = {...filters};
-  
+
+  lastFilters = filtersKey;
+
   // 1. Filtro inicial usando índices para melhor performance
   let candidateIndexes = new Set();
-  
+
   // Filtro por gênero (se especificado) - uso do índice
   if (filters.genres && filters.genres.length > 0) {
     filters.genres.forEach(genre => {
@@ -1270,42 +1726,43 @@ function getRecommendedBooks(filters) {
     // Se não há filtro de gênero, considerar todos os livros inicialmente
     booksDatabase.forEach((_, idx) => candidateIndexes.add(idx));
   }
-  
+
   // Converter Set para array
   let candidates = Array.from(candidateIndexes).map(idx => booksDatabase[idx]);
-  
+
   // 2. Aplicar outros filtros de forma eficiente
   candidates = candidates.filter(book => {
-    // Filtro de faixa etária
-    if (filters.grade === 'EF1' && book.grade === 'EM') return false;
-    
+    // Filtro de faixa etária: 6°-7° ano não recebe livro só de Ensino Médio
+    const grades = asArray(book.grade);
+    if (filters.grade === 'EF1' && grades.length > 0 && grades.every(g => g === 'EM')) return false;
+
     // Filtro de tipo de literatura
-    if (filters.type !== 'qualquer' && book.type !== filters.type) return false;
-    
+    if (!matchesType(book, filters.type)) return false;
+
     return true;
   });
 
   // 3. Calcular scores apenas para os candidatos (não para todos os livros)
   candidates.forEach(book => {
     // Usar cache de scores se disponível
-    const cacheKey = `${book.id}_${JSON.stringify(filters)}`;
-    
-    if (!precomputedScores[cacheKey]) {
+    const cacheKey = `${book.id}_${filtersKey}`;
+
+    if (precomputedScores[cacheKey] === undefined) {
       book.relevanceScore = calculateBookScore(book, filters);
       precomputedScores[cacheKey] = book.relevanceScore;
     } else {
       book.relevanceScore = precomputedScores[cacheKey];
     }
-    
+
     book.recommendationReason = getRecommendationReason(book, filters);
   });
 
   // 4. Ordenar por score (decrescente)
   const sortedCandidates = candidates.sort((a, b) => b.relevanceScore - a.relevanceScore);
-  
+
   // Armazenar em cache
   cachedResults = sortedCandidates;
-  
+
   return sortedCandidates;
 }
 
@@ -1313,15 +1770,15 @@ function getFallbackRecommendations(filters) {
   // 1. Tenta relaxar os filtros gradualmente
   const relaxedFilters = {...filters, type: 'qualquer', mood: ['emocionar', 'divertir'], time: 'todos'};
   let fallbacks = getRecommendedBooks(relaxedFilters);
-  
+
   // 2. Se ainda vazio, pega os mais populares do perfil demográfico
   if (fallbacks.length < 5) {
     fallbacks = booksDatabase
-      .filter(book => book.grade === filters.grade || !filters.grade)
+      .filter(book => !filters.grade || asArray(book.grade).includes(filters.grade))
       .sort((a, b) => (b.popularity || 0) - (a.popularity || 0))
       .slice(0, 8);
   }
-  
+
   return fallbacks;
 }
 
@@ -1454,44 +1911,7 @@ function displayBooks(books, container, isAvailable) {
   }
   
   books.forEach(book => {
-    const bookCard = document.createElement('div');
-    bookCard.className = 'book-card fade-in';
-    
-    bookCard.innerHTML = `
-      <div class="book-cover loading">
-        <img class="lazy" 
-             data-src="${book.cover || 'https://via.placeholder.com/150x200?text=Sem+Capa'}"
-             data-book-id="${book.id}"
-             alt="Capa do livro: ${book.title}"
-             onerror="this.onerror=null;this.src='https://via.placeholder.com/150x200?text=Sem+Capa'">
-        ${favoriteButtonHtml(book.id)}
-      </div>
-      <div class="book-info">
-        <h4 class="book-title">${book.title}</h4>
-        <p class="book-author">${book.author}</p>
-        ${book.recommendationReason ? `<p class="book-reason">${book.recommendationReason}</p>` : ''}
-        ${book.description ? `<p class="book-description">${book.description}</p>` : ''}
-        <div class="book-meta">
-          <span>${book.grade === 'EF1' ? (state.currentLanguage === 'pt' ? '6°-7° ano' : '6°-7° grado') : 
-            book.grade === 'EF2' ? (state.currentLanguage === 'pt' ? '8°-9° ano' : '8°-9° grado') : 
-            (state.currentLanguage === 'pt' ? 'Ensino Médio' : 'Escuela secundaria')}</span>
-          ${isAvailable ? '<span class="available-badge">' + (state.currentLanguage === 'pt' ? 'Disponível' : 'Disponible') + '</span>' : 
-           '<span class="unavailable-badge">' + (state.currentLanguage === 'pt' ? 'Indisponível' : 'No disponible') + '</span>'}
-        </div>
-      </div>
-    `;
-    
-    // Adiciona evento de clique para informações do autor (se existir)
-    const authorElement = bookCard.querySelector('.book-author');
-    if (authorElement && authorsInfo[book.author]) {
-      authorElement.style.cursor = 'pointer';
-      authorElement.addEventListener('click', (e) => {
-        e.preventDefault();
-        showAuthorModal(book.author);
-      });
-    }
-    
-    container.appendChild(bookCard);
+    container.appendChild(createBookCard(book));
   });
   
   // Ativa o lazy loading para as novas imagens
@@ -1524,15 +1944,26 @@ function showVestibularModal() {
   fillVestibularList('fuvest');
   fillVestibularList('comvest');
   fillVestibularList('enem');
-  
-  // Configurar tabs
-  setupVestibularTabs();
 }
+
+// Avisos de cada aba: as listas mudam de um ano pro outro
+const vestibularNotes = {
+  fuvest: 'As leituras obrigatórias mudam com o tempo. Confira sempre a lista oficial no site da <a href="https://www.fuvest.br" target="_blank" rel="noopener">Fuvest</a>.',
+  comvest: 'As leituras obrigatórias mudam com o tempo. Confira sempre a lista oficial no site da <a href="https://www.comvest.unicamp.br" target="_blank" rel="noopener">Comvest</a>.',
+  enem: 'O ENEM não tem lista oficial de leituras obrigatórias. Estes são clássicos que costumam ajudar na prova.'
+};
 
 function fillVestibularList(type) {
   const container = document.getElementById(type);
   container.innerHTML = '';
-  
+
+  if (vestibularNotes[type]) {
+    const note = document.createElement('p');
+    note.className = 'vestibular-note';
+    note.innerHTML = `<i class="fas fa-info-circle"></i> ${vestibularNotes[type]}`;
+    container.appendChild(note);
+  }
+
   const books = vestibularBooks[type];
   const list = document.createElement('ul');
   list.className = 'vestibular-list';
@@ -1588,7 +2019,9 @@ function showShareModal() {
   try {
     const qrCodeContainer = document.getElementById('qrCodeContainer');
     qrCodeContainer.innerHTML = '';
-    QRCode.toCanvas(qrCodeContainer, shareUrl, { width: 200 }, (error) => {
+    const qrCanvas = document.createElement('canvas');
+    qrCodeContainer.appendChild(qrCanvas);
+    QRCode.toCanvas(qrCanvas, shareUrl, { width: 200 }, (error) => {
       if (error) console.error('Erro ao gerar QR Code:', error);
     });
   } catch (e) {
@@ -1598,18 +2031,16 @@ function showShareModal() {
 
 // Gerar link compartilhável
 function generateShareableLink() {
-  return "https://bielcrod.github.io/ache-seu-livro/";
+  return SITE_URL;
 }
 
 // Copiar link para área de transferência
-function copyLink() {
-  const shareUrl = document.getElementById('shareableLink');
-  shareUrl.select();
-  document.execCommand('copy');
-  
-  alert(state.currentLanguage === 'pt' 
-    ? 'Link copiado para a área de transferência!' 
-    : '¡Enlace copiado al portapapeles!');
+async function copyLink() {
+  const copied = await copyText(document.getElementById('shareableLink').value);
+
+  alert(copied
+    ? (state.currentLanguage === 'pt' ? 'Link copiado para a área de transferência!' : '¡Enlace copiado al portapapeles!')
+    : (state.currentLanguage === 'pt' ? 'Não deu para copiar. Selecione o link e copie manualmente.' : 'No se pudo copiar. Selecciona el enlace y cópialo manualmente.'));
 }
 
 // Compartilhar no WhatsApp
@@ -1720,8 +2151,8 @@ const libraryState = {
 // Inicialização da biblioteca
 function initLibrary() {
   // Preencher filtros de gênero
-  const allGenres = Array.from(new Set(booksDatabase.flatMap(book => book.genres || [])))
-    .sort();
+  const allGenres = Array.from(new Set(booksDatabase.flatMap(book => asArray(book.genres))))
+    .sort((a, b) => (genreTranslations.pt[a] || a).localeCompare(genreTranslations.pt[b] || b));
   
   elements.genreFilters.innerHTML = '';
   allGenres.forEach(genre => {
@@ -1756,7 +2187,7 @@ function updateLibraryFilters() {
   debugLog("Atualizando filtros...");
   
   // Obter filtros selecionados
-  libraryState.filters.search = elements.librarySearch.value.toLowerCase();
+  libraryState.filters.search = normalizeText(elements.librarySearch.value.trim());
   
   // CORREÇÃO COMPLETA: Obter gêneros selecionados
   libraryState.filters.genres = [];
@@ -1793,6 +2224,8 @@ function updateLibraryFilters() {
   // Obter filtro de favoritos
   const favoritesFilterOption = document.getElementById('favoritesFilterOption');
   libraryState.filters.favoritesOnly = !!(favoritesFilterOption && favoritesFilterOption.classList.contains('selected'));
+  const readFilterOption = document.getElementById('readFilterOption');
+  libraryState.filters.readOnly = !!(readFilterOption && readFilterOption.classList.contains('selected'));
 
   // Obter ordenação selecionada
   const sortOptions = document.querySelectorAll('.sort-btn');
@@ -1832,19 +2265,17 @@ function filterLibraryBooksUnsafe() {
   if (libraryState.filters.search) {
     const searchTerm = libraryState.filters.search;
     filtered = filtered.filter(book => 
-      book.title.toLowerCase().includes(searchTerm) ||
-      book.author.toLowerCase().includes(searchTerm) ||
-      (book.description && book.description.toLowerCase().includes(searchTerm))
+      normalizeText(book.title).includes(searchTerm) ||
+      normalizeText(book.author).includes(searchTerm) ||
+      normalizeText(book.description).includes(searchTerm)
     );
   }
   
   // CORREÇÃO COMPLETA: Aplicar filtro de gênero
   if (libraryState.filters.genres && libraryState.filters.genres.length > 0) {
     filtered = filtered.filter(book => {
-      if (!book.genres || !Array.isArray(book.genres)) return false;
-      
       // Verifica se o livro tem PELO MENOS UM dos gêneros selecionados
-      return book.genres.some(bookGenre => 
+      return asArray(book.genres).some(bookGenre => 
         libraryState.filters.genres.includes(bookGenre)
       );
     });
@@ -1856,6 +2287,12 @@ function filterLibraryBooksUnsafe() {
     filtered = filtered.filter(book => favs.includes(book.id));
   }
 
+  // Aplicar filtro de livros lidos
+  if (libraryState.filters.readOnly) {
+    const readIds = getReadBooks();
+    filtered = filtered.filter(book => readIds.includes(book.id));
+  }
+
   // Aplicar filtro de disponibilidade
   if (libraryState.filters.availability !== 'all') {
     filtered = filtered.filter(book => 
@@ -1865,21 +2302,16 @@ function filterLibraryBooksUnsafe() {
   
   // Aplicar filtro de faixa etária
   if (libraryState.filters.grade !== 'all') {
-    filtered = filtered.filter(book => {
-      if (Array.isArray(book.grade)) {
-        return book.grade.includes(libraryState.filters.grade);
-      }
-      return book.grade === libraryState.filters.grade;
-    });
+    filtered = filtered.filter(book => asArray(book.grade).includes(libraryState.filters.grade));
   }
   
   // Aplicar ordenação
   switch (libraryState.filters.sort) {
     case 'title':
-      filtered.sort((a, b) => a.title.localeCompare(b.title));
+      filtered.sort((a, b) => a.title.localeCompare(b.title, 'pt-BR'));
       break;
     case 'author':
-      filtered.sort((a, b) => a.author.localeCompare(b.author));
+      filtered.sort((a, b) => a.author.localeCompare(b.author, 'pt-BR'));
       break;
     case 'popularity':
     default:
@@ -1898,7 +2330,7 @@ function filterLibraryBooksUnsafe() {
   const paginatedBooks = filtered.slice(startIndex, endIndex);
   
   // Atualizar contador de resultados
-  elements.resultsCount.textContent = `${filtered.length} livro(s) encontrado(s)`;
+  elements.resultsCount.textContent = filtered.length === 1 ? '1 livro encontrado' : `${filtered.length} livros encontrados`;
   
   // Exibir livros
   displayLibraryBooks(paginatedBooks);
@@ -1925,30 +2357,7 @@ function displayLibraryBooks(books) {
   }
   
   books.forEach(book => {
-    const bookCard = document.createElement('div');
-    bookCard.className = 'book-card fade-in';
-    
-    bookCard.innerHTML = `
-      <div class="book-cover loading">
-        <img class="lazy" 
-             data-src="${book.cover || 'https://via.placeholder.com/150x200?text=Sem+Capa'}"
-             data-book-id="${book.id}"
-             alt="Capa do livro: ${book.title}"
-             onerror="this.onerror=null;this.src='https://via.placeholder.com/150x200?text=Sem+Capa'">
-        ${favoriteButtonHtml(book.id)}
-      </div>
-      <div class="book-info">
-        <h4 class="book-title">${book.title}</h4>
-        <p class="book-author">${book.author}</p>
-        ${book.description ? `<p class="book-description">${book.description}</p>` : ''}
-        <div class="book-meta">
-          <span>${book.grade === 'EF1' ? '6°-7° ano' : book.grade === 'EF2' ? '8°-9° ano' : 'Ensino Médio'}</span>
-          ${book.available ? '<span class="available-badge">Disponível</span>' : '<span class="unavailable-badge">Indisponível</span>'}
-        </div>
-      </div>
-    `;
-    
-    elements.libraryBooks.appendChild(bookCard);
+    elements.libraryBooks.appendChild(createBookCard(book));
   });
   
   setupLazyLoading();
@@ -1967,6 +2376,7 @@ function updatePagination() {
     prevBtn.addEventListener('click', () => {
       libraryState.currentPage--;
       filterLibraryBooks();
+      scrollToLibraryResults();
     });
     elements.pagination.appendChild(prevBtn);
   }
@@ -1981,6 +2391,7 @@ function updatePagination() {
     pageBtn.addEventListener('click', () => {
       libraryState.currentPage = i;
       filterLibraryBooks();
+      scrollToLibraryResults();
     });
     elements.pagination.appendChild(pageBtn);
   }
@@ -1992,25 +2403,30 @@ function updatePagination() {
     nextBtn.addEventListener('click', () => {
       libraryState.currentPage++;
       filterLibraryBooks();
+      scrollToLibraryResults();
     });
     elements.pagination.appendChild(nextBtn);
   }
+}
+
+function scrollToLibraryResults() {
+  const target = elements.resultsCount;
+  if (target && target.scrollIntoView) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // Resetar filtros
 function resetLibraryFilters() {
   elements.librarySearch.value = '';
   
-  elements.genreFilters.querySelectorAll('.filter-option').forEach(opt => {
+  // Desmarca tudo antes (antes ficavam duas opções marcadas ao mesmo tempo)
+  document.querySelectorAll('#library-screen .filter-option').forEach(opt => {
     opt.classList.remove('selected');
   });
+  document.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active'));
   
   document.querySelector('.filter-option[data-availability="all"]').classList.add('selected');
   document.querySelector('.filter-option[data-grade="all"]').classList.add('selected');
   document.querySelector('.sort-btn[data-sort="popularity"]').classList.add('active');
-
-  const favoritesFilterOption = document.getElementById('favoritesFilterOption');
-  if (favoritesFilterOption) favoritesFilterOption.classList.remove('selected');
   
   updateLibraryFilters();
 }

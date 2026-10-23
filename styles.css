@@ -1226,3 +1226,269 @@
   border-color: #2d5f8b;
   box-shadow: 0 2px 5px rgba(45, 95, 139, 0.3);
 }
+
+/* ===== Cards clicáveis ===== */
+.book-card {
+  cursor: pointer;
+}
+
+.book-card:focus-visible {
+  outline: 3px solid #4cb5f5;
+  outline-offset: 2px;
+}
+
+.book-author.clickable {
+  cursor: pointer;
+  text-decoration: underline dotted;
+}
+
+.read-badge {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background: #2e7d32;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 12px;
+}
+
+/* ===== Modal de detalhes do livro ===== */
+.book-detail {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.book-detail-cover {
+  flex: 0 0 130px;
+}
+
+.book-detail-cover img {
+  width: 130px;
+  height: 190px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  background: #f5f5f5;
+}
+
+.book-detail-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.book-detail .book-meta {
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.book-detail-author {
+  font-weight: 600;
+  color: #2d5f8b;
+  margin-bottom: 8px;
+}
+
+.book-detail-description {
+  margin-top: 12px;
+  color: #444;
+}
+
+.genre-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.genre-chip {
+  background: #e8eef4;
+  color: #2d5f8b;
+  font-size: 0.8rem;
+  padding: 3px 10px;
+  border-radius: 12px;
+}
+
+.book-detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.book-detail-actions .action-btn {
+  flex: 1 1 150px;
+  padding: 12px;
+}
+
+.book-detail-actions .favorite-toggle.active,
+.book-detail-actions .favorite-toggle.active:hover {
+  background: #e63950;
+}
+
+.book-detail-actions .read-toggle.active,
+.book-detail-actions .read-toggle.active:hover {
+  background: #2e7d32;
+}
+
+.similar-title {
+  font-size: 1.1rem;
+  color: #2d5f8b;
+  margin-bottom: 10px;
+}
+
+.similar-books {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.similar-book {
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  font: inherit;
+  font-size: 0.8rem;
+  color: #333;
+  padding: 0;
+}
+
+.similar-book img {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: 6px;
+  background: #f5f5f5;
+  margin-bottom: 4px;
+  transition: transform 0.2s ease;
+}
+
+.similar-book:hover img {
+  transform: translateY(-3px);
+}
+
+@media (max-width: 480px) {
+  .book-detail {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .book-detail .book-meta,
+  .book-detail .genre-chips {
+    justify-content: center;
+  }
+
+  .similar-books {
+    gap: 6px;
+  }
+}
+
+/* ===== Tela inicial: livro da semana e progresso ===== */
+.book-of-week {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin: 20px 0 10px;
+  padding: 12px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  text-align: left;
+  transition: transform 0.2s ease;
+}
+
+.book-of-week:hover {
+  transform: translateY(-3px);
+}
+
+.book-of-week:focus-visible {
+  outline: 3px solid #4cb5f5;
+  outline-offset: 2px;
+}
+
+.book-of-week img {
+  width: 70px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 6px;
+  flex-shrink: 0;
+  background: #f5f5f5;
+}
+
+.book-of-week-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #e67e22;
+  letter-spacing: 0.5px;
+}
+
+.book-of-week-info {
+  text-align: left;
+}
+
+.book-of-week h3 {
+  text-align: left;
+  font-size: 1.05rem;
+  color: #2d5f8b;
+  margin: 2px 0;
+}
+
+.book-of-week p {
+  font-size: 0.9rem;
+  color: #555;
+  margin: 0;
+}
+
+.book-of-week-link {
+  font-size: 0.85rem;
+  color: #29b6f6;
+  font-weight: 600;
+}
+
+.reading-progress {
+  font-size: 0.9rem;
+  color: #444;
+  background: rgba(255, 255, 255, 0.7);
+  padding: 10px 12px;
+  border-radius: 10px;
+}
+
+.reading-progress a {
+  color: #2d5f8b;
+  font-weight: 600;
+}
+
+/* Opção "Já li" no filtro da biblioteca */
+.filter-option[data-read] {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.filter-option[data-read].selected {
+  background-color: #2e7d32;
+  color: #fff;
+  border-color: #2e7d32;
+}
+
+/* Aviso nas abas de vestibular */
+.vestibular-note {
+  background: #fff8e1;
+  border-left: 4px solid #f9a825;
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  margin-bottom: 15px;
+}
+
+.vestibular-note a {
+  color: #2d5f8b;
+  font-weight: 600;
+}

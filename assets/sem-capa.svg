@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="150" height="200" viewBox="0 0 150 200">
+  <rect width="150" height="200" fill="#e8eef4"/>
+  <rect x="45" y="60" width="60" height="70" rx="4" fill="none" stroke="#2d5f8b" stroke-width="4"/>
+  <line x1="75" y1="60" x2="75" y2="130" stroke="#2d5f8b" stroke-width="3"/>
+  <text x="75" y="160" font-family="Segoe UI, Roboto, sans-serif" font-size="14" fill="#2d5f8b" text-anchor="middle">Sem capa</text>
+</svg>
