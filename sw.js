@@ -1,6 +1,6 @@
 // Service worker do Ache seu Livro: guarda os arquivos do site para abrir mesmo sem internet.
 // Sempre tenta a internet primeiro (pra nunca mostrar versão velha) e usa o que está guardado só se falhar.
-const CACHE_NAME = 'ache-seu-livro-v1';
+const CACHE_NAME = 'ache-seu-livro-v2';
 const APP_FILES = [
   './',
   'index.html',

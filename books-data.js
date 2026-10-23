@@ -90,6 +90,8 @@
     genres: ["teatro", "comedia"],
     tags: ["classico", "teatro"],
     mood: ["surpreender"],
+    tamanho: "curto",
+    vibes: ["engracado", "leve"],
     time: ["passado"],
     description: "Uma das primeiras comédias de Shakespeare, cheia de confusões e identidades trocadas.",
     popularity: 6
@@ -105,6 +107,8 @@
     genres: ["psicologico"],
     tags: ["vulnerabilidade", "crescimento-pessoal"],
     mood: ["emocionar"],
+    tamanho: "medio",
+    vibes: ["inspirador", "reflexivo"],
     time: ["presente"],
     description: "Um estudo sobre vulnerabilidade, coragem e autenticidade.",
     popularity: 7
@@ -120,6 +124,8 @@
     genres: ["poesia", "classico"],
     tags: ["religiao", "filosofia"],
     mood: ["emocionar"],
+    tamanho: "longo",
+    vibes: ["reflexivo"],
     time: ["passado"],
     description: "Obra-prima da literatura mundial que descreve a jornada de Dante pelo Inferno, Purgatório e Paraíso.",
     popularity: 8
@@ -135,6 +141,8 @@
     genres: ["romance", "classico"],
     tags: ["romantismo", "literatura-brasileira"],
     mood: ["emocionar"],
+    tamanho: "medio",
+    vibes: ["romantico", "leve"],
     time: ["passado"],
     description: "Primeiro romance romântico brasileiro, que conta a história de um amor juvenil.",
     popularity: 6
@@ -150,6 +158,8 @@
     genres: ["romance", "classico"],
     tags: ["realismo", "literatura-brasileira"],
     mood: ["emocionar"],
+    tamanho: "medio",
+    vibes: ["romantico", "misterio", "reflexivo"],
     time: ["passado"],
     description: "Clássico da literatura brasileira que explora ciúme e ambiguidade.",
     popularity: 9
@@ -165,6 +175,8 @@
     genres: ["infantil", "filosofia"],
     tags: ["classico", "fabulas"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["emocionante", "reflexivo", "leve"],
     time: ["fantasia"],
     description: "Clássico atemporal que aborda valores humanos essenciais.",
     popularity: 10
@@ -180,6 +192,8 @@
     genres: ["romance", "social"],
     tags: ["bahia", "literatura-brasileira"],
     mood: ["emocionar"],
+    tamanho: "medio",
+    vibes: ["emocionante", "aventura"],
     time: ["passado"],
     description: "Romance sobre um grupo de meninos de rua em Salvador.",
     popularity: 9
@@ -195,6 +209,8 @@
     genres: ["distopia", "politica"],
     tags: ["alegoria", "classico"],
     mood: ["surpreender"],
+    tamanho: "curto",
+    vibes: ["reflexivo"],
     time: ["fantasia"],
     description: "Fábula política sobre poder e corrupção.",
     popularity: 9
@@ -210,6 +226,8 @@
     genres: ["infantil", "humor"],
     tags: ["infantil", "brasil"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["engracado", "leve"],
     time: ["presente"],
     description: "Clássico da literatura infantil brasileira sobre as travessuras de um menino.",
     popularity: 7
@@ -225,6 +243,8 @@
     genres: ["romance", "realismo"],
     tags: ["nordeste", "literatura-brasileira"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["emocionante", "pesado"],
     time: ["passado"],
     description: "Retrato da vida difícil de uma família de retirantes no Nordeste.",
     popularity: 9
@@ -240,6 +260,8 @@
     genres: ["conto", "classico"],
     tags: ["psicologia", "literatura-brasileira"],
     mood: ["surpreender"],
+    tamanho: "curto",
+    vibes: ["engracado", "reflexivo"],
     time: ["passado"],
     description: "Conto que questiona os limites entre sanidade e loucura.",
     popularity: 7
@@ -255,6 +277,8 @@
     genres: ["fantasia", "aventura"],
     tags: ["magia", "infantojuvenil"],
     mood: ["surpreender"],
+    tamanho: "medio",
+    vibes: ["aventura", "misterio"],
     time: ["fantasia"],
     description: "Primeiro livro da famosa série sobre o jovem bruxo Harry Potter.",
     popularity: 9
@@ -270,6 +294,8 @@
     genres: ["romance"],
     tags: ["realismo", "literatura-brasileira"],
     mood: ["emocionar"],
+    tamanho: "medio",
+    vibes: ["pesado"],
     time: ["passado"],
     description: "Romance naturalista sobre a vida nos cortiços cariocas.",
     popularity: 7
@@ -285,6 +311,8 @@
     genres: ["romance", "existencialismo"],
     tags: ["filosofia", "literatura-brasileira"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["emocionante", "reflexivo"],
     time: ["presente"],
     description: "Último romance da autora, sobre a vida de uma datilógrafa.",
     popularity: 7
@@ -300,6 +328,8 @@
     genres: ["romance"],
     tags: ["romantismo", "literatura-brasileira"],
     mood: ["emocionar"],
+    tamanho: "medio",
+    vibes: ["aventura", "romantico"],
     time: ["passado"],
     description: "Romance indianista que retrata o amor entre o índio Peri e a branca Ceci.",
     popularity: 6
@@ -315,6 +345,8 @@
     genres: ["classico", "existencialismo"],
     tags: ["absurdo", "transformacao"],
     mood: ["surpreender"],
+    tamanho: "curto",
+    vibes: ["reflexivo", "pesado"],
     time: ["presente"],
     description: "Conta a história de Gregor Samsa que acorda transformado em um inseto monstruoso.",
     popularity: 8
@@ -330,6 +362,8 @@
     genres: ["romance", "gotico"],
     tags: ["romantismo", "terror"],
     mood: ["surpreender"],
+    tamanho: "curto",
+    vibes: ["assustador", "pesado"],
     time: ["passado"],
     description: "Contos sombrios que misturam elementos do Romantismo com o Gótico.",
     popularity: 6
@@ -345,6 +379,8 @@
     genres: ["aventura", "classico"],
     tags: ["viagem", "aventura"],
     mood: ["surpreender"],
+    tamanho: "medio",
+    vibes: ["aventura", "leve"],
     time: ["passado"],
     description: "A clássica aventura de Phileas Fogg em sua jornada ao redor do mundo.",
     popularity: 7
@@ -360,6 +396,8 @@
     genres: ["classico", "aventura"],
     tags: ["cavaleiro", "aventura"],
     mood: ["emocionar"],
+    tamanho: "longo",
+    vibes: ["engracado", "aventura"],
     time: ["passado"],
     description: "A história do fidalgo que enlouquece lendo romances de cavalaria.",
     popularity: 9
@@ -375,6 +413,8 @@
     genres: ["romance"],
     tags: ["romantismo", "indio"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["romantico", "emocionante"],
     time: ["passado"],
     description: "Romance indianista que conta a história de amor entre Iracema e Martim.",
     popularity: 7
@@ -390,6 +430,8 @@
     genres: ["distopia", "ficcao"],
     tags: ["política", "futuro"],
     mood: ["surpreender"],
+    tamanho: "medio",
+    vibes: ["pesado", "reflexivo"],
     time: ["futuro"],
     description: "Clássico distópico sobre vigilância governamental e controle da mente.",
     popularity: 10
@@ -405,6 +447,8 @@
     genres: ["ciencia"],
     tags: ["universo", "cosmologia"],
     mood: ["surpreender"],
+    tamanho: "medio",
+    vibes: ["reflexivo"],
     time: ["presente"],
     description: "Introdução acessível aos conceitos mais complexos da cosmologia.",
     popularity: 8
@@ -420,6 +464,8 @@
     genres: ["memoir", "drama"],
     tags: ["biografia", "familia"],
     mood: ["emocionar"],
+    tamanho: "medio",
+    vibes: ["emocionante", "engracado"],
     time: ["presente"],
     description: "Memórias de um jovem que cria seu irmão mais novo após a morte dos parents.",
     popularity: 6
@@ -435,6 +481,8 @@
     genres: ["memoir", "guerra"],
     tags: ["africa", "sobrevivencia"],
     mood: ["emocionar"],
+    tamanho: "medio",
+    vibes: ["pesado", "inspirador"],
     time: ["presente"],
     description: "Relato autobiográfico de um ex-criança soldado em Serra Leoa.",
     popularity: 7
@@ -450,6 +498,8 @@
     genres: ["aventura", "infantil"],
     tags: ["orfas", "mistério"],
     mood: ["surpreender"],
+    tamanho: "curto",
+    vibes: ["engracado", "misterio"],
     time: ["fantasia"],
     description: "Primeiro livro da série Desventuras em Série sobre três órfãos desafortunados.",
     popularity: 7
@@ -465,6 +515,8 @@
     genres: ["ficcao-cientifica", "fantasia"],
     tags: ["viagem-no-tempo", "aventura"],
     mood: ["surpreender"],
+    tamanho: "medio",
+    vibes: ["aventura"],
     time: ["futuro"],
     description: "Clássico da ficção científica juvenil sobre viagem no tempo e espaço.",
     popularity: 7
@@ -480,6 +532,8 @@
     genres: ["fantasia", "infantil"],
     tags: ["classico", "aventura"],
     mood: ["surpreender"],
+    tamanho: "medio",
+    vibes: ["engracado", "leve"],
     time: ["fantasia"],
     description: "As duas obras clássicas de Carroll sobre o mundo mágico de Alice.",
     popularity: 8
@@ -495,6 +549,8 @@
     genres: ["jornalismo", "politica"],
     tags: ["watergate", "investigacao"],
     mood: ["surpreender"],
+    tamanho: "medio",
+    vibes: ["misterio"],
     time: ["passado"],
     description: "Relato da investigação que ledou ao impeachment do presidente Nixon.",
     popularity: 7
@@ -510,6 +566,8 @@
     genres: ["memoir", "drama"],
     tags: ["infancia", "pobreza"],
     mood: ["emocionar"],
+    tamanho: "medio",
+    vibes: ["emocionante", "engracado"],
     time: ["passado"],
     description: "Memórias da infância pobre do autor na Irlanda dos anos 1930-40.",
     popularity: 7
@@ -525,6 +583,8 @@
     genres: ["infantil", "drama"],
     tags: ["adolescencia", "crescimento"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["leve", "emocionante"],
     time: ["presente"],
     description: "Clássico juvenil sobre as dúvidas e descobertas da adolescência.",
     popularity: 6
@@ -540,6 +600,8 @@
     genres: ["romance", "drama"],
     tags: ["musica", "sequestro"],
     mood: ["emocionar"],
+    tamanho: "medio",
+    vibes: ["romantico", "emocionante"],
     time: ["presente"],
     description: "História de um sequestro em uma festa diplomática na América do Sul.",
     popularity: 6
@@ -555,6 +617,8 @@
     genres: ["romance", "historico"],
     tags: ["escravidao", "fantasma"],
     mood: ["emocionar"],
+    tamanho: "medio",
+    vibes: ["pesado", "emocionante"],
     time: ["passado"],
     description: "Romance premiado sobre os traumas da escravidão nos EUA.",
     popularity: 8
@@ -570,6 +634,8 @@
     genres: ["esporte", "aventura"],
     tags: ["corrida", "superacao"],
     mood: ["emocionar"],
+    tamanho: "medio",
+    vibes: ["inspirador", "aventura"],
     time: ["presente"],
     description: "Investigação sobre tribos que correm longas distâncias e segredos da corrida.",
     popularity: 7
@@ -585,6 +651,8 @@
     genres: ["romance", "drama"],
     tags: ["haiti", "imigracao"],
     mood: ["emocionar"],
+    tamanho: "medio",
+    vibes: ["emocionante", "pesado"],
     time: ["presente"],
     description: "História de uma jovem haitiana que se muda para Nova York.",
     popularity: 6
@@ -600,6 +668,8 @@
     genres: ["satira", "guerra"],
     tags: ["segunda-guerra", "absurdo"],
     mood: ["surpreender"],
+    tamanho: "longo",
+    vibes: ["engracado", "reflexivo"],
     time: ["passado"],
     description: "Sátira clássica sobre a burocracia militar durante a Segunda Guerra.",
     popularity: 7
@@ -615,6 +685,8 @@
     genres: ["infantil", "fantasia"],
     tags: ["aventura", "doces"],
     mood: ["surpreender"],
+    tamanho: "curto",
+    vibes: ["engracado", "leve"],
     time: ["fantasia"],
     description: "A mágica história de Charlie Bucket e sua visita à fábrica de Willy Wonka.",
     popularity: 8
@@ -630,6 +702,8 @@
     genres: ["infantil", "drama"],
     tags: ["amizade", "animais"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["emocionante", "leve"],
     time: ["fantasia"],
     description: "Comovente história de amizade entre um porco e uma aranha.",
     popularity: 8
@@ -645,6 +719,8 @@
     genres: ["romance", "ficcao"],
     tags: ["etiopia", "medicina"],
     mood: ["emocionar"],
+    tamanho: "longo",
+    vibes: ["emocionante"],
     time: ["presente"],
     description: "História de um médico indiano que trabalha na Etiópia.",
     popularity: 6
@@ -660,6 +736,8 @@
     genres: ["infantil", "humor"],
     tags: ["escola", "adolescencia"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["engracado", "leve"],
     time: ["presente"],
     description: "As desventuras hilárias de Greg Heffley na escola e em casa.",
     popularity: 7
@@ -675,6 +753,8 @@
     genres: ["ficcao-cientifica", "aventura"],
     tags: ["duna", "futuro"],
     mood: ["surpreender"],
+    tamanho: "medio",
+    vibes: ["aventura", "reflexivo"],
     time: ["futuro"],
     description: "Continuação da saga de Duna, explorando o destino dos filhos de Paul Atreides.",
     popularity: 7
@@ -690,6 +770,8 @@
     genres: ["ficcao", "filosofia"],
     tags: ["objetivismo", "capitalismo"],
     mood: ["surpreender"],
+    tamanho: "longo",
+    vibes: ["reflexivo"],
     time: ["futuro"],
     description: "Romance filosófico que explora temas de individualismo e liberdade.",
     popularity: 7
@@ -705,6 +787,8 @@
     genres: ["fantasia", "infantil"],
     tags: ["sequencia", "aventura"],
     mood: ["surpreender"],
+    tamanho: "curto",
+    vibes: ["engracado", "leve"],
     time: ["fantasia"],
     description: "Sequência de Alice no País das Maravilhas, com mais aventuras fantásticas.",
     popularity: 7
@@ -720,6 +804,8 @@
     genres: ["poesia"],
     tags: ["parnasianismo", "sonetos"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["emocionante"],
     time: ["passado"],
     description: "Coletânea de poemas do principal expoente do Parnasianismo no Brasil.",
     popularity: 6
@@ -735,6 +821,8 @@
     genres: ["romance", "modernismo"],
     tags: ["modernismo", "educacao"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["romantico", "reflexivo"],
     time: ["passado"],
     description: "Romance modernista sobre educação e relações afetivas.",
     popularity: 6
@@ -750,6 +838,8 @@
     genres: ["filosofia"],
     tags: ["classico", "grecia"],
     mood: ["surpreender"],
+    tamanho: "curto",
+    vibes: ["reflexivo"],
     time: ["passado"],
     description: "Defesa de Sócrates perante o tribunal ateniense que o condenou à morte.",
     popularity: 7
@@ -765,6 +855,8 @@
     genres: ["romance", "ficcao"],
     tags: ["romantismo", "portugal"],
     mood: ["emocionar"],
+    tamanho: "medio",
+    vibes: ["romantico", "reflexivo"],
     time: ["passado"],
     description: "Clássico da literatura portuguesa que mistura narrativa de viagem e ficção.",
     popularity: 7
@@ -780,6 +872,8 @@
     genres: ["conto", "regionalismo"],
     tags: ["sertao", "infancia"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["emocionante"],
     time: ["passado"],
     description: "Conto que faz parte de 'Corpo de Baile', sobre a infância no sertão.",
     popularity: 6
@@ -795,6 +889,8 @@
     genres: ["politica", "historia"],
     tags: ["conflito", "dialogo"],
     mood: ["surpreender"],
+    tamanho: "medio",
+    vibes: ["reflexivo"],
     time: ["presente"],
     description: "Reflexão sobre o conflito israelense-palestino em forma de cartas.",
     popularity: 5
@@ -810,6 +906,8 @@
     genres: ["biografia", "memoir"],
     tags: ["feminismo", "ancestralidade"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["emocionante", "inspirador"],
     time: ["presente"],
     description: "Reflexões sobre ancestralidade, memória e identidade negra.",
     popularity: 6
@@ -825,6 +923,8 @@
     genres: ["educativo", "ecologia"],
     tags: ["meio-ambiente", "sustentabilidade"],
     mood: ["surpreender"],
+    tamanho: "curto",
+    vibes: ["leve", "reflexivo"],
     time: ["presente"],
     description: "Guia infantil sobre os impactos do plástico e como reduzir seu uso.",
     popularity: 4
@@ -840,6 +940,8 @@
     genres: ["conto", "realismo"],
     tags: ["critica-social", "portugal"],
     mood: ["surpreender"],
+    tamanho: "medio",
+    vibes: ["reflexivo"],
     time: ["passado"],
     description: "Coletânea de contos do mestre do Realismo português.",
     popularity: 6
@@ -855,6 +957,8 @@
     genres: ["conto", "modernismo"],
     tags: ["critica-social", "racial"],
     mood: ["emocionar"],
+    tamanho: "medio",
+    vibes: ["reflexivo", "engracado"],
     time: ["passado"],
     description: "Contos que retratam a sociedade brasileira do início do século XX.",
     popularity: 5
@@ -870,6 +974,8 @@
     genres: ["conto", "modernismo"],
     tags: ["brasil", "diversidade"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["reflexivo"],
     time: ["passado"],
     description: "Contos modernistas que exploram a diversidade cultural brasileira.",
     popularity: 5
@@ -885,6 +991,8 @@
     genres: ["biografia", "tecnologia"],
     tags: ["inovacao", "empreendedorismo"],
     mood: ["surpreender"],
+    tamanho: "longo",
+    vibes: ["inspirador"],
     time: ["presente"],
     description: "Biografia do visionário por trás da Tesla e SpaceX.",
     popularity: 7
@@ -900,6 +1008,7 @@
     genres: ["ensaio", "cultura"],
     tags: ["identidade", "brasilidade"],
     mood: ["surpreender"],
+    vibes: ["reflexivo"],
     time: ["presente"],
     description: "Reflexão sobre o que define a identidade cultural brasileira.",
     popularity: 4
@@ -915,6 +1024,8 @@
     genres: ["educativo", "ciencia"],
     tags: ["pre-historia", "animais"],
     mood: ["surpreender"],
+    tamanho: "curto",
+    vibes: ["leve"],
     time: ["passado"],
     description: "Guia ilustrado sobre os dinossauros e o mundo pré-histórico.",
     popularity: 4
@@ -930,6 +1041,8 @@
     genres: ["poesia", "romantismo"],
     tags: ["abolicao", "natureza"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["romantico", "emocionante"],
     time: ["passado"],
     description: "Principal obra poética do 'Poeta dos Escravos'.",
     popularity: 6
@@ -945,6 +1058,8 @@
     genres: ["poesia", "modernismo"],
     tags: ["heteronimos", "filosofia"],
     mood: ["surpreender"],
+    tamanho: "medio",
+    vibes: ["reflexivo"],
     time: ["passado"],
     description: "Poemas de Fernando Pessoa sob diversos heterônimos.",
     popularity: 6
@@ -975,6 +1090,8 @@
     genres: ["drama", "tragedia"],
     tags: ["classico", "vinganca"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["pesado", "reflexivo", "misterio"],
     time: ["passado"],
     description: "A mais famosa tragédia de Shakespeare sobre vingança e loucura.",
     popularity: 9
@@ -990,6 +1107,8 @@
     genres: ["fantasia", "aventura"],
     tags: ["magia", "torneio"],
     mood: ["surpreender"],
+    tamanho: "longo",
+    vibes: ["aventura", "misterio"],
     time: ["fantasia"],
     description: "Quarto livro da saga, onde Harry participa do Torneio Tribruxo.",
     popularity: 8
@@ -1005,6 +1124,8 @@
     genres: ["fantasia", "aventura"],
     tags: ["magia", "memorias"],
     mood: ["emocionar"],
+    tamanho: "longo",
+    vibes: ["aventura", "emocionante"],
     time: ["fantasia"],
     description: "Sexto livro da saga, com revelações sobre o passado de Voldemort.",
     popularity: 8
@@ -1020,6 +1141,8 @@
     genres: ["fantasia", "aventura"],
     tags: ["magia", "fuga"],
     mood: ["surpreender"],
+    tamanho: "medio",
+    vibes: ["aventura", "misterio"],
     time: ["fantasia"],
     description: "Terceiro livro da saga, com a fuga de Sirius Black de Azkaban.",
     popularity: 8
@@ -1035,6 +1158,8 @@
     genres: ["fantasia", "aventura"],
     tags: ["magia", "busca"],
     mood: ["emocionar"],
+    tamanho: "longo",
+    vibes: ["aventura", "emocionante"],
     time: ["fantasia"],
     description: "Sétimo e último livro da saga, com a batalha final contra Voldemort.",
     popularity: 8
@@ -1050,6 +1175,8 @@
     genres: ["epico", "classico"],
     tags: ["grecia", "guerra"],
     mood: ["emocionar"],
+    tamanho: "longo",
+    vibes: ["aventura", "pesado"],
     time: ["passado"],
     description: "Poema épico sobre a Guerra de Troia e a ira de Aquiles.",
     popularity: 8
@@ -1080,6 +1207,8 @@
     genres: ["quadrinhos", "drama"],
     tags: ["escravidao", "histórico"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["emocionante", "reflexivo"],
     time: ["passado"],
     description: "Graphic novel que reconta a história bíblica de Jeremias no contexto da escravidão.",
     popularity: 4
@@ -1095,6 +1224,8 @@
     genres: ["drama", "tragedia"],
     tags: ["ambicao", "poder"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["pesado"],
     time: ["passado"],
     description: "Tragédia sobre ambição desmedida e suas consequências.",
     popularity: 8
@@ -1110,6 +1241,8 @@
     genres: ["romance", "modernismo"],
     tags: ["heroi", "folclore"],
     mood: ["surpreender"],
+    tamanho: "medio",
+    vibes: ["engracado", "aventura"],
     time: ["fantasia"],
     description: "O 'herói sem nenhum caráter' em uma aventura pelo Brasil folclórico.",
     popularity: 7
@@ -1125,6 +1258,8 @@
     genres: ["poesia"],
     tags: ["sebastianismo", "portugal"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["reflexivo"],
     time: ["passado"],
     description: "Único livro em português publicado em vida por Pessoa, sobre o destino de Portugal.",
     popularity: 7
@@ -1140,6 +1275,8 @@
     genres: ["romance", "drama"],
     tags: ["familia", "crescimento"],
     mood: ["emocionar"],
+    tamanho: "longo",
+    vibes: ["emocionante", "leve", "romantico"],
     time: ["passado"],
     description: "Clássico sobre as irmãs March e suas jornadas para a vida adulta.",
     popularity: 8
@@ -1155,6 +1292,8 @@
     genres: ["romance", "realismo"],
     tags: ["internato", "critica"],
     mood: ["emocionar"],
+    tamanho: "medio",
+    vibes: ["reflexivo"],
     time: ["passado"],
     description: "Romance impressionista sobre a vida em um internato no século XIX.",
     popularity: 6
@@ -1170,6 +1309,8 @@
     genres: ["poesia"],
     tags: ["bandeirantes", "brasil"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["aventura"],
     time: ["passado"],
     description: "Poema épico sobre a saga dos bandeirantes em busca de esmeraldas.",
     popularity: 5
@@ -1185,6 +1326,8 @@
     genres: ["teatro", "comedia"],
     tags: ["escravidao", "costumes"],
     mood: ["surpreender"],
+    tamanho: "curto",
+    vibes: ["engracado"],
     time: ["passado"],
     description: "Peça teatral que satiriza os costumes da elite brasileira do século XIX.",
     popularity: 5
@@ -1200,6 +1343,8 @@
     genres: ["aventura", "infantil"],
     tags: ["detetive", "misterio"],
     mood: ["surpreender"],
+    tamanho: "curto",
+    vibes: ["misterio", "aventura", "leve"],
     time: ["presente"],
     description: "Aventura de um grupo de crianças para desvendar um mistério.",
     popularity: 5
@@ -1215,6 +1360,8 @@
     genres: ["matematica", "aventura"],
     tags: ["numeros", "oriental"],
     mood: ["surpreender"],
+    tamanho: "medio",
+    vibes: ["leve", "reflexivo"],
     time: ["passado"],
     description: "Aventuras matemáticas de Beremiz Samir no mundo árabe.",
     popularity: 6
@@ -1230,6 +1377,8 @@
     genres: ["infantil", "drama"],
     tags: ["amizade", "natureza"],
     mood: ["emocionar"],
+    tamanho: "medio",
+    vibes: ["leve", "emocionante"],
     time: ["passado"],
     description: "Clássico infantil sobre redenção e amizade em um jardim misterioso.",
     popularity: 7
@@ -1245,6 +1394,8 @@
     genres: ["infantil", "fantasia"],
     tags: ["natureza", "poderes"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["leve", "emocionante"],
     time: ["fantasia"],
     description: "História de um menino com o dom de fazer flores crescerem ao seu toque.",
     popularity: 6
@@ -1260,6 +1411,8 @@
     genres: ["biografia"],
     tags: ["africa", "inovacao"],
     mood: ["emocionar"],
+    tamanho: "medio",
+    vibes: ["inspirador"],
     time: ["presente"],
     description: "História real de um jovem que construiu um moinho de vento no Malawi.",
     popularity: 5
@@ -1275,6 +1428,8 @@
     genres: ["ensaio", "social"],
     tags: ["racismo", "educacao"],
     mood: ["surpreender"],
+    tamanho: "curto",
+    vibes: ["reflexivo"],
     time: ["presente"],
     description: "Guia conciso para compreender e combater o racismo no cotidiano.",
     popularity: 6
@@ -1290,6 +1445,8 @@
     genres: ["teatro", "tragedia"],
     tags: ["grecia", "destino"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["pesado", "misterio"],
     time: ["passado"],
     description: "Tragédia grega sobre Édipo, que sem saber mata o pai e casa com a mãe.",
     popularity: 8
@@ -1305,6 +1462,8 @@
     genres: ["romance", "modernismo"],
     tags: ["nacionalismo", "loucuras"],
     mood: ["emocionar"],
+    tamanho: "medio",
+    vibes: ["engracado", "emocionante"],
     time: ["passado"],
     description: "Sátira sobre um nacionalista ingênuo no Brasil da Primeira República.",
     popularity: 6
@@ -1320,6 +1479,8 @@
     genres: ["poesia", "romantismo"],
     tags: ["abolicao", "justica"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["pesado", "emocionante"],
     time: ["passado"],
     description: "Poemas abolicionistas que denunciam os horrores da escravidão.",
     popularity: 6
@@ -1335,6 +1496,8 @@
     genres: ["poesia", "modernismo"],
     tags: ["sao-paulo", "vanguarda"],
     mood: ["surpreender"],
+    tamanho: "curto",
+    vibes: ["reflexivo"],
     time: ["passado"],
     description: "Primeiro livro de poemas modernistas de Mário de Andrade.",
     popularity: 6
@@ -1350,6 +1513,8 @@
     genres: ["poesia", "modernismo"],
     tags: ["heteronimo", "futurismo"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["reflexivo"],
     time: ["passado"],
     description: "Poemas do heterônimo mais futurista e angustiado de Pessoa.",
     popularity: 7
@@ -1365,6 +1530,8 @@
     genres: ["poesia", "modernismo"],
     tags: ["heteronimo", "classicismo"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["reflexivo"],
     time: ["passado"],
     description: "Poemas do heterônimo clássico and epicurista de Pessoa.",
     popularity: 7
@@ -1380,6 +1547,8 @@
     genres: ["poesia", "modernismo"],
     tags: ["heteronimo", "natureza"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["reflexivo"],
     time: ["passado"],
     description: "Poemas do heterônimo mais 'natural' de Fernando Pessoa.",
     popularity: 6
@@ -1395,6 +1564,8 @@
     genres: ["poesia", "modernismo"],
     tags: ["brasil", "vanguarda"],
     mood: ["emocionar"],
+    tamanho: "medio",
+    vibes: ["reflexivo"],
     time: ["passado"],
     description: "Reunião da obra poética completa do autor modernista.",
     popularity: 6
@@ -1410,6 +1581,8 @@
     genres: ["teatro", "tragedia"],
     tags: ["poder", "familia"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["pesado"],
     time: ["passado"],
     description: "Tragédia sobre um rei que divide seu reino entre as filhas, com consequências trágicas.",
     popularity: 8
@@ -1425,6 +1598,8 @@
     genres: ["teatro", "tragedia"],
     tags: ["amor", "conflito"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["romantico", "emocionante"],
     time: ["passado"],
     description: "A mais famosa história de amor proibido da literatura mundial.",
     popularity: 9
@@ -1440,6 +1615,8 @@
     genres: ["fantasia", "aventura"],
     tags: ["magia", "poderes"],
     mood: ["surpreender"],
+    tamanho: "medio",
+    vibes: ["aventura", "romantico"],
     time: ["fantasia"],
     description: "Primeiro livro da trilogia Grisha, sobre uma orfã com poderes extraordinários.",
     popularity: 6
@@ -1455,6 +1632,8 @@
     genres: ["educativo"],
     tags: ["cultura", "aprendizado"],
     mood: ["surpreender"],
+    tamanho: "curto",
+    vibes: ["leve"],
     time: ["presente"],
     description: "Guia infantil para explorar museus and apreciar arte.",
     popularity: 3
@@ -1470,6 +1649,8 @@
     genres: ["infantil", "educativo"],
     tags: ["inclusao", "amizade"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["emocionante", "leve"],
     time: ["presente"],
     description: "História sobre um caracol diferente que ensina sobre aceitação.",
     popularity: 3
@@ -1485,6 +1666,8 @@
     genres: ["educativo", "ciencia"],
     tags: ["meio-ambiente", "clima"],
     mood: ["surpreender"],
+    tamanho: "curto",
+    vibes: ["reflexivo"],
     time: ["presente"],
     description: "Explicação lúdica sobre mudanças climáticas para crianças.",
     popularity: 4
@@ -1500,6 +1683,8 @@
     genres: ["infantil", "drama"],
     tags: ["ancestralidade", "identidade"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["emocionante", "inspirador"],
     time: ["fantasia"],
     description: "Releitura afrocentrada do clássico, sobre autoestima e herança cultural.",
     popularity: 5
@@ -1515,6 +1700,8 @@
     genres: ["infantil"],
     tags: ["detetive", "hotel"],
     mood: ["surpreender"],
+    tamanho: "curto",
+    vibes: ["misterio"],
     time: ["presente"],
     description: "Aventura de um grupo de crianças para desvendar um roubo em um hotel luxuoso.",
     popularity: 5
@@ -1530,6 +1717,8 @@
     genres: ["terror", "gotico"],
     tags: ["vampiro", "classico"],
     mood: ["surpreender"],
+    tamanho: "longo",
+    vibes: ["assustador", "misterio"],
     time: ["passado"],
     description: "O romance que popularizou o mito do vampiro Conde Drácula.",
     popularity: 8
@@ -1545,6 +1734,8 @@
     genres: ["fantasia", "aventura"],
     tags: ["magia", "resistencia"],
     mood: ["emocionar"],
+    tamanho: "longo",
+    vibes: ["aventura"],
     time: ["fantasia"],
     description: "Quinto livro da saga, onde Harry enfrenta a negação do Ministério sobre o retorno de Voldemort.",
     popularity: 8
@@ -1560,6 +1751,8 @@
     genres: ["poesia", "modernismo"],
     tags: ["heteronimos", "filosofia"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["reflexivo"],
     time: ["passado"],
     description: "Seleção de poemas do poeta português e seus principais heterônimos.",
     popularity: 7
@@ -1575,6 +1768,8 @@
     genres: ["educativo", "tecnologia"],
     tags: ["digital", "consumo"],
     mood: ["surpreender"],
+    tamanho: "curto",
+    vibes: ["leve"],
     time: ["presente"],
     description: "Reflexão sobre uso consciente da tecnologia para crianças.",
     popularity: 3
@@ -1590,6 +1785,8 @@
     genres: ["romance", "realismo"],
     tags: ["ironia", "critica"],
     mood: ["surpreender"],
+    tamanho: "medio",
+    vibes: ["engracado", "reflexivo"],
     time: ["passado"],
     description: "Romance narrado por um defunto que critica a sociedade brasileira do século XIX.",
     popularity: 7
@@ -1605,6 +1802,8 @@
     genres: ["romance", "psicologico"],
     tags: ["culpa", "redencao"],
     mood: ["emocionar"],
+    tamanho: "longo",
+    vibes: ["pesado", "reflexivo", "misterio"],
     time: ["passado"],
     description: "Clássico sobre um estudante que comete um assassinato e lida com as consequências morais.",
     popularity: 8
@@ -1620,6 +1819,8 @@
     genres: ["educativo"],
     tags: ["animais", "biodiversidade"],
     mood: ["surpreender"],
+    tamanho: "curto",
+    vibes: ["leve"],
     time: ["presente"],
     description: "Guia ilustrado sobre a vida animal e ecossistemas.",
     popularity: 3
@@ -1635,6 +1836,8 @@
     genres: ["romance", "realismo"],
     tags: ["humanitismo", "ironia"],
     mood: ["surpreender"],
+    tamanho: "medio",
+    vibes: ["reflexivo", "engracado"],
     time: ["passado"],
     description: "Sátira machadiana sobre heranças, filosofia e ambição.",
     popularity: 6
@@ -1650,6 +1853,8 @@
     genres: ["historia"],
     tags: ["cosmovisao", "sabedoria"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["reflexivo"],
     time: ["passado"],
     description: "Narrativas da cosmovisão guarani sobre a criação do mundo.",
     popularity: 4
@@ -1665,6 +1870,8 @@
     genres: ["infantil", "matematica"],
     tags: ["numeros", "amizade"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["leve", "engracado"],
     time: ["presente"],
     description: "História sobre como a matemática pode unir pessoas diferentes.",
     popularity: 3
@@ -1680,6 +1887,8 @@
     genres: ["conto", "realismo"],
     tags: ["musica", "frustracao"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["reflexivo"],
     time: ["passado"],
     description: "Conto sobre um compositor famoso que não consegue criar sua obra-prima.",
     popularity: 5
@@ -1695,6 +1904,7 @@
     genres: ["biografia", "esporte"],
     tags: ["f1", "superacao"],
     mood: ["emocionar"],
+    vibes: ["inspirador"],
     time: ["passado"],
     description: "Biografia do maior ídolo do automobilismo brasileiro.",
     popularity: 6
@@ -1710,6 +1920,8 @@
     genres: ["conto", "drama"],
     tags: ["anos-80", "marginal"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["pesado", "reflexivo"],
     time: ["passado"],
     description: "Contos que retratam a geração dos anos 80 com sensibilidade e crueza.",
     popularity: 5
@@ -1725,6 +1937,8 @@
     genres: ["educativo", "tecnologia"],
     tags: ["inovacao", "ciência"],
     mood: ["surpreender"],
+    tamanho: "curto",
+    vibes: ["leve"],
     time: ["futuro"],
     description: "Exploração de tecnologias que podem mudar o mundo no futuro.",
     popularity: 3
@@ -1740,6 +1954,8 @@
     genres: ["educativo", "cultura"],
     tags: ["povos-originarios", "historia"],
     mood: ["surpreender"],
+    tamanho: "curto",
+    vibes: ["reflexivo"],
     time: ["presente"],
     description: "Guia sobre a diversidade dos povos indígenas brasileiros.",
     popularity: 3
@@ -1770,6 +1986,8 @@
     genres: ["poesia"],
     tags: ["morte", "existencia"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["pesado"],
     time: ["passado"],
     description: "Poemas que exploram temas como a morte e a finitude humana.",
     popularity: 5
@@ -1785,6 +2003,8 @@
     genres: ["poesia"],
     tags: ["colonial", "satira"],
     mood: ["surpreender"],
+    tamanho: "medio",
+    vibes: ["engracado", "reflexivo"],
     time: ["passado"],
     description: "Poemas do 'Boca do Inferno', conhecido por sua lírica satírica e religiosa.",
     popularity: 6
@@ -1800,6 +2020,8 @@
     genres: ["romance", "drama"],
     tags: ["africa", "mulheres"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["romantico", "emocionante"],
     time: ["presente"],
     description: "Primeiro romance publicado por uma mulher em Moçambique, sobre tradição e modernidade.",
     popularity: 4
@@ -1830,6 +2052,8 @@
     genres: ["romance", "realismo"],
     tags: ["civilizacao", "natureza"],
     mood: ["refletir"],
+    tamanho: "medio",
+    vibes: ["engracado", "leve"],
     time: ["passado"],
     description: "Contraste entre a vida urbana e rural na obra do mestre do Realismo português.",
     popularity: 6
@@ -1845,6 +2069,8 @@
     genres: ["poesia", "modernismo"],
     tags: ["minimalismo", "cotidiano"],
     mood: ["refletir"],
+    tamanho: "curto",
+    vibes: ["reflexivo", "engracado"],
     time: ["presente"],
     description: "Poemas que exploram a beleza nas pequenas coisas do dia a dia.",
     popularity: 4
@@ -1860,6 +2086,8 @@
     genres: ["romance", "drama"],
     tags: ["russia", "tragédia"],
     mood: ["emocionar"],
+    tamanho: "longo",
+    vibes: ["romantico", "emocionante"],
     time: ["passado"],
     description: "Clássico russo sobre amor, traição e convenções sociais.",
     popularity: 8
@@ -1875,6 +2103,8 @@
     genres: ["ensaio", "historico"],
     tags: ["nordeste", "seca"],
     mood: ["refletir"],
+    tamanho: "medio",
+    vibes: ["reflexivo"],
     time: ["passado"],
     description: "Análise social e geográfica sobre regiões marginalizadas do Brasil.",
     popularity: 5
@@ -1890,6 +2120,8 @@
     genres: ["distopia", "ficcao-cientifica"],
     tags: ["censura", "futuro"],
     mood: ["surpreender"],
+    tamanho: "curto",
+    vibes: ["reflexivo"],
     time: ["futuro"],
     description: "Clássico distópico sobre uma sociedade onde livros são proibidos e bombeiros queimam obras literárias.",
     popularity: 9
@@ -1905,6 +2137,8 @@
     genres: ["jornalismo", "ficcao"],
     tags: ["contracultura", "drogas"],
     mood: ["surpreender"],
+    tamanho: "curto",
+    vibes: ["engracado", "pesado"],
     time: ["passado"],
     description: "Relato alucinado de uma viagem pelo sonho americano sob o efeito de substâncias psicodélicas.",
     popularity: 6
@@ -1920,6 +2154,8 @@
     genres: ["ficcao", "drama"],
     tags: ["suspense", "crime"],
     mood: ["surpreender"],
+    tamanho: "longo",
+    vibes: ["misterio", "pesado"],
     time: ["presente"],
     description: "Thriller psicológico sobre o desaparecimento de uma mulher perfeita e os segredos de seu casamento.",
     popularity: 7
@@ -1935,6 +2171,8 @@
     genres: ["infantil", "poesia"],
     tags: ["hora-de-dormir", "ritual"],
     mood: ["acalmar"],
+    tamanho: "curto",
+    vibes: ["leve"],
     time: ["fantasia"],
     description: "Clássico infantil que acompanha um coelho em seu ritual noturno antes de dormir.",
     popularity: 5
@@ -1950,6 +2188,8 @@
     genres: ["romance", "classico"],
     tags: ["vitoriano", "ascensao-social"],
     mood: ["refletir"],
+    tamanho: "longo",
+    vibes: ["emocionante"],
     time: ["passado"],
     description: "Romance de formação sobre Pip, um órfão que herda uma fortuna misteriosa.",
     popularity: 8
@@ -1965,6 +2205,8 @@
     genres: ["historia"],
     tags: ["civilizacao", "evolucao"],
     mood: ["surpreender"],
+    tamanho: "longo",
+    vibes: ["reflexivo"],
     time: ["passado"],
     description: "Análise sobre como fatores geográficos moldaram o desenvolvimento das sociedades humanas.",
     popularity: 7
@@ -1980,6 +2222,8 @@
     genres: ["fantasia", "aventura"],
     tags: ["magia", "hogwarts"],
     mood: ["surpreender"],
+    tamanho: "medio",
+    vibes: ["aventura", "misterio"],
     time: ["fantasia"],
     description: "Segundo livro da série, onde Harry descobre segredos sombrios em Hogwarts.",
     popularity: 8
@@ -1995,6 +2239,8 @@
     genres: ["jornalismo", "crime"],
     tags: ["assassinato", "investigacao"],
     mood: ["chocar"],
+    tamanho: "medio",
+    vibes: ["pesado", "misterio"],
     time: ["passado"],
     description: "Clássico do jornalismo literário sobre um assassinato real no Kansas.",
     popularity: 8
@@ -2010,6 +2256,8 @@
     genres: ["conto", "drama"],
     tags: ["imigracao", "identidade"],
     mood: ["emocionar"],
+    tamanho: "medio",
+    vibes: ["emocionante"],
     time: ["presente"],
     description: "Contos sobre indianos e seus descendentes lidando com deslocamento cultural.",
     popularity: 6
@@ -2025,6 +2273,8 @@
     genres: ["romance", "social"],
     tags: ["racismo", "identidade"],
     mood: ["refletir"],
+    tamanho: "longo",
+    vibes: ["reflexivo", "pesado"],
     time: ["passado"],
     description: "Romance seminal sobre um homem negro invisível para a sociedade americana dos anos 1950.",
     popularity: 7
@@ -2040,6 +2290,8 @@
     genres: ["quadrinhos", "drama"],
     tags: ["vida-cotidiana", "isolamento"],
     mood: ["refletir"],
+    tamanho: "medio",
+    vibes: ["emocionante"],
     time: ["presente"],
     description: "Graphic novel que explora solidão e conexões humanas de forma visual inovadora.",
     popularity: 5
@@ -2055,6 +2307,8 @@
     genres: ["memoir"],
     tags: ["restaurantes", "culinaria"],
     mood: ["surpreender"],
+    tamanho: "medio",
+    vibes: ["engracado"],
     time: ["presente"],
     description: "Relato cru dos bastidores da alta gastronomia por um chef icônico.",
     popularity: 6
@@ -2070,6 +2324,8 @@
     genres: ["ficcao", "drama"],
     tags: ["segunda-guerra", "destino"],
     mood: ["emocionar"],
+    tamanho: "longo",
+    vibes: ["reflexivo", "emocionante"],
     time: ["passado"],
     description: "História de uma mulher que vive múltiplas vidas alternativas durante a Segunda Guerra.",
     popularity: 6
@@ -2085,6 +2341,8 @@
     genres: ["biografia", "historico"],
     tags: ["fronteira", "familia"],
     mood: ["emocionar"],
+    tamanho: "medio",
+    vibes: ["leve", "aventura"],
     time: ["passado"],
     description: "Clássico autobiográfico sobre a vida pioneira nos EUA do século XIX.",
     popularity: 5
@@ -2100,6 +2358,8 @@
     genres: ["romance", "drama"],
     tags: ["obsessao", "moralidade"],
     mood: ["perturbar"],
+    tamanho: "medio",
+    vibes: ["pesado"],
     time: ["passado"],
     description: "Controversa obra sobre a obsessão de um homem por uma adolescente.",
     popularity: 8
@@ -2115,6 +2375,8 @@
     genres: ["romance", "realismo-magico"],
     tags: ["amor", "tempo"],
     mood: ["emocionar"],
+    tamanho: "longo",
+    vibes: ["romantico"],
     time: ["passado"],
     description: "História de um amor que persiste por décadas na América Latina.",
     popularity: 8
@@ -2130,6 +2392,8 @@
     genres: ["romance", "drama"],
     tags: ["nativos-americanos", "familia"],
     mood: ["emocionar"],
+    tamanho: "medio",
+    vibes: ["emocionante"],
     time: ["passado"],
     description: "Saga familiar sobre a comunidade indígena Chippewa no século XX.",
     popularity: 5
@@ -2145,6 +2409,8 @@
     genres: ["psicologico", "memoir"],
     tags: ["holocausto", "logoterapia"],
     mood: ["refletir"],
+    tamanho: "curto",
+    vibes: ["inspirador", "reflexivo"],
     time: ["passado"],
     description: "Relato de um psiquiatra sobre sua sobrevivência em campos de concentração e sua teoria psicológica.",
     popularity: 7
@@ -2160,6 +2426,8 @@
     genres: ["humor", "memoir"],
     tags: ["biografia", "sarcasmo"],
     mood: ["divertir"],
+    tamanho: "medio",
+    vibes: ["engracado"],
     time: ["presente"],
     description: "Ensaios humorísticos sobre as experiências absurdas do autor nos EUA e França.",
     popularity: 6
@@ -2175,6 +2443,8 @@
     genres: ["romance", "drama"],
     tags: ["identidade-de-genero", "imigracao"],
     mood: ["refletir"],
+    tamanho: "longo",
+    vibes: ["emocionante", "reflexivo"],
     time: ["passado"],
     description: "Saga multigeracional sobre um intersexual descendente de imigrantes gregos.",
     popularity: 7
@@ -2190,6 +2460,8 @@
     genres: ["realismo-magico", "historico"],
     tags: ["india", "independencia"],
     mood: ["surpreender"],
+    tamanho: "longo",
+    vibes: ["reflexivo"],
     time: ["passado"],
     description: "Romance épico sobre crianças nascidas no momento da independência da Índia.",
     popularity: 8
@@ -2205,6 +2477,8 @@
     genres: ["esporte", "jornalismo"],
     tags: ["beisebol", "estatistica"],
     mood: ["surpreender"],
+    tamanho: "medio",
+    vibes: ["inspirador"],
     time: ["presente"],
     description: "Análise revolucionária sobre como dados transformaram o beisebol profissional.",
     popularity: 6
@@ -2220,6 +2494,8 @@
     genres: ["romance", "drama"],
     tags: ["existencialismo", "amor"],
     mood: ["refletir"],
+    tamanho: "longo",
+    vibes: ["emocionante", "romantico"],
     time: ["passado"],
     description: "Clássico sobre um médico com deformidade física e suas relações conturbadas.",
     popularity: 7
@@ -2235,6 +2511,8 @@
     genres: ["aventura", "biografia"],
     tags: ["beat-generation", "viagem"],
     mood: ["inspirar"],
+    tamanho: "medio",
+    vibes: ["aventura"],
     time: ["passado"],
     description: "Obra seminal da geração beat sobre viagens rodoviárias pelos EUA.",
     popularity: 6
@@ -2250,6 +2528,8 @@
     genres: ["memoir", "drama"],
     tags: ["africa", "colonialismo"],
     mood: ["emocionar"],
+    tamanho: "medio",
+    vibes: ["emocionante"],
     time: ["passado"],
     description: "Memórias poéticas de uma dinamarquesa em uma fazenda no Quênia colonial.",
     popularity: 6
@@ -2265,6 +2545,8 @@
     genres: ["romance", "classico"],
     tags: ["sociedade", "amor"],
     mood: ["emocionar"],
+    tamanho: "medio",
+    vibes: ["romantico", "engracado"],
     time: ["passado"],
     description: "Clássico romance sobre Elizabeth Bennet e Mr. Darcy na Inglaterra do século XIX.",
     popularity: 9
@@ -2280,6 +2562,8 @@
     genres: ["ciencia", "ecologia"],
     tags: ["meio-ambiente", "pesticidas"],
     mood: ["refletir"],
+    tamanho: "medio",
+    vibes: ["reflexivo"],
     time: ["passado"],
     description: "Obra pioneira que alertou sobre os perigos dos pesticidas sintéticos.",
     popularity: 7
@@ -2295,6 +2579,8 @@
     genres: ["ficcao", "guerra"],
     tags: ["segunda-guerra", "anti-guerra"],
     mood: ["perturbar"],
+    tamanho: "curto",
+    vibes: ["engracado", "pesado", "reflexivo"],
     time: ["passado"],
     description: "Sátira anti-guerra sobre um soldado que viaja no tempo após o bombardeio de Dresden.",
     popularity: 8
@@ -2310,6 +2596,8 @@
     genres: ["historia", "biografia"],
     tags: ["abraham-lincoln", "política"],
     mood: ["refletir"],
+    tamanho: "longo",
+    vibes: ["inspirador"],
     time: ["passado"],
     description: "Análise de como Lincoln formou seu gabinete com ex-rivais políticos.",
     popularity: 6
@@ -2325,6 +2613,8 @@
     genres: ["romance", "drama"],
     tags: ["sociedade", "moralidade"],
     mood: ["refletir"],
+    tamanho: "medio",
+    vibes: ["romantico"],
     time: ["passado"],
     description: "Crítica à alta sociedade nova-iorquina do século XIX através de um triângulo amoroso.",
     popularity: 7
@@ -2340,6 +2630,8 @@
     genres: ["ficcao", "historico"],
     tags: ["quadrinhos", "holocausto"],
     mood: ["emocionar"],
+    tamanho: "longo",
+    vibes: ["aventura", "emocionante"],
     time: ["passado"],
     description: "História de dois primos que criam um super-herói durante a Era de Ouro dos quadrinhos.",
     popularity: 7
@@ -2347,7 +2639,7 @@
   {
     id: 237,
     title: "Malcolm X: Uma vida de reinvenções",
-    author: "Malcolm X",
+    author: "Manning Marable",
     cover: "https://covers.openlibrary.org/b/id/8264729-M.jpg",
     grade: "EM",
     available: false,
@@ -2355,6 +2647,8 @@
     genres: ["biografia", "historia"],
     tags: ["direitos-civis", "islamismo"],
     mood: ["inspirar"],
+    tamanho: "longo",
+    vibes: ["inspirador"],
     time: ["passado"],
     description: "Autobiografia do icônico ativista dos direitos civis norte-americanos.",
     popularity: 6
@@ -2370,6 +2664,8 @@
     genres: ["drama", "historico"],
     tags: ["segunda-guerra", "nazismo"],
     mood: ["emocionar"],
+    tamanho: "longo",
+    vibes: ["emocionante", "pesado"],
     time: ["passado"],
     description: "História de uma jovem que encontra refúgio nos livros durante a Alemanha nazista.",
     popularity: 8
@@ -2385,6 +2681,8 @@
     genres: ["romance", "drama"],
     tags: ["republica-dominicana", "ditadura"],
     mood: ["emocionar"],
+    tamanho: "medio",
+    vibes: ["engracado", "emocionante"],
     time: ["passado"],
     description: "História de um jovem dominicano-americano obcecado por ficção científica e amor.",
     popularity: 7
@@ -2400,6 +2698,8 @@
     genres: ["romance", "drama"],
     tags: ["adolescencia", "alienacao"],
     mood: ["refletir"],
+    tamanho: "curto",
+    vibes: ["reflexivo"],
     time: ["passado"],
     description: "Clássico sobre Holden Caulfield e sua jornada de descoberta em Nova York.",
     popularity: 9
@@ -2415,6 +2715,8 @@
     genres: ["biografia", "memoir"],
     tags: ["racismo", "familia"],
     mood: ["emocionar"],
+    tamanho: "medio",
+    vibes: ["inspirador", "emocionante"],
     time: ["passado"],
     description: "Memórias de um homem negro sobre sua mãe branca e judia nos EUA dos anos 1960.",
     popularity: 6
@@ -2430,6 +2732,8 @@
     genres: ["romance", "drama"],
     tags: ["familia", "disfuncional"],
     mood: ["refletir"],
+    tamanho: "longo",
+    vibes: ["reflexivo"],
     time: ["presente"],
     description: "Saga familiar sobre os Lambert e suas complexas relações no meio-oeste americano.",
     popularity: 6
@@ -2445,6 +2749,8 @@
     genres: ["historia", "crime"],
     tags: ["chicago", "serial-killer"],
     mood: ["chocar"],
+    tamanho: "longo",
+    vibes: ["assustador", "misterio"],
     time: ["passado"],
     description: "Narrativa real sobre um arquiteto e um serial killer durante a Feira Mundial de Chicago.",
     popularity: 7
@@ -2460,6 +2766,8 @@
     genres: ["biografia", "historico"],
     tags: ["holocausto", "nazismo"],
     mood: ["emocionar"],
+    tamanho: "medio",
+    vibes: ["emocionante", "pesado"],
     time: ["passado"],
     description: "Relato pessoal de uma jovem judia escondida durante a Segunda Guerra Mundial.",
     popularity: 9
@@ -2475,6 +2783,8 @@
     genres: ["romance", "drama"],
     tags: ["cancer", "adolescencia"],
     mood: ["emocionar"],
+    tamanho: "medio",
+    vibes: ["romantico", "emocionante"],
     time: ["presente"],
     description: "História de amor entre dois adolescentes que se conhecem em um grupo de apoio ao câncer.",
     popularity: 8
@@ -2490,6 +2800,8 @@
     genres: ["distopia", "ficcao"],
     tags: ["utopia", "controle"],
     mood: ["refletir"],
+    tamanho: "curto",
+    vibes: ["reflexivo", "misterio"],
     time: ["futuro"],
     description: "Clássico juvenil sobre uma sociedade aparentemente perfeita sem dor ou memórias.",
     popularity: 6
@@ -2505,6 +2817,8 @@
     genres: ["fantasia", "aventura"],
     tags: ["universo-paralelo", "daemon"],
     mood: ["surpreender"],
+    tamanho: "medio",
+    vibes: ["aventura"],
     time: ["fantasia"],
     description: "Primeiro livro da trilogia Fronteiras do Universo, sobre Lyra e sua jornada épica.",
     popularity: 7
@@ -2520,6 +2834,8 @@
     genres: ["romance", "classico"],
     tags: ["sonho-americano", "anos-20"],
     mood: ["refletir"],
+    tamanho: "curto",
+    vibes: ["romantico", "reflexivo"],
     time: ["passado"],
     description: "Retrato da decadência do sonho americano nos anos 1920 através de Jay Gatsby.",
     popularity: 9
@@ -2535,6 +2851,8 @@
     genres: ["distopia", "ficcao"],
     tags: ["totalitarismo", "feminismo"],
     mood: ["perturbar"],
+    tamanho: "medio",
+    vibes: ["pesado"],
     time: ["futuro"],
     description: "Distopia sobre um regime teocrático onde mulheres são escravas reprodutivas.",
     popularity: 8
@@ -2550,6 +2868,8 @@
     genres: ["infantil", "fantasia"],
     tags: ["ursinho-pooh", "amizade"],
     mood: ["divertir"],
+    tamanho: "curto",
+    vibes: ["leve", "engracado"],
     time: ["fantasia"],
     description: "Continução das aventuras do Ursinho Pooh e seus amigos na Floresta dos Cem Acres.",
     popularity: 6
@@ -2565,6 +2885,8 @@
     genres: ["distopia", "aventura"],
     tags: ["realidade-tv", "sobrevivencia"],
     mood: ["surpreender"],
+    tamanho: "medio",
+    vibes: ["aventura"],
     time: ["futuro"],
     description: "Primeiro livro da trilogia sobre Katniss Everdeen e os jogos mortais do Capitólio.",
     popularity: 8
@@ -2580,6 +2902,8 @@
     genres: ["ciencia", "biografia"],
     tags: ["hela", "etica-medica"],
     mood: ["refletir"],
+    tamanho: "medio",
+    vibes: ["reflexivo"],
     time: ["passado"],
     description: "História real por trás das células HeLa e os dilemas éticos da pesquisa médica.",
     popularity: 7
@@ -2595,6 +2919,8 @@
     genres: ["memoir", "drama"],
     tags: ["infancia", "texas"],
     mood: ["emocionar"],
+    tamanho: "medio",
+    vibes: ["emocionante", "engracado"],
     time: ["passado"],
     description: "Memórias de uma infância turbulenta no Texas dos anos 1960.",
     popularity: 5
@@ -2610,6 +2936,8 @@
     genres: ["fantasia", "aventura"],
     tags: ["mitologia-grega", "semideuses"],
     mood: ["divertir"],
+    tamanho: "medio",
+    vibes: ["aventura", "engracado"],
     time: ["presente"],
     description: "Primeiro livro da série sobre um garoto que descobre ser filho de Poseidon.",
     popularity: 7
@@ -2625,6 +2953,8 @@
     genres: ["crime", "romance"],
     tags: ["detetive", "misterio"],
     mood: ["surpreender"],
+    tamanho: "curto",
+    vibes: ["misterio"],
     time: ["passado"],
     description: "Clássico do romance noir com o detetive Philip Marlowe em Los Angeles.",
     popularity: 7
@@ -2640,6 +2970,8 @@
     genres: ["jornalismo", "historia"],
     tags: ["al-qaeda", "11-de-setembro"],
     mood: ["refletir"],
+    tamanho: "longo",
+    vibes: ["misterio", "pesado"],
     time: ["passado"],
     description: "Investigação sobre os eventos que levaram aos ataques de 11 de setembro.",
     popularity: 6
@@ -2655,6 +2987,8 @@
     genres: ["fantasia", "aventura"],
     tags: ["terra-media", "anel-do-poder"],
     mood: ["surpreender"],
+    tamanho: "longo",
+    vibes: ["aventura"],
     time: ["fantasia"],
     description: "Trilogia épica sobre a jornada para destruir o Um Anel e salvar a Terra-média.",
     popularity: 10
@@ -2670,6 +3004,8 @@
     genres: ["ciencia"],
     tags: ["casos-clinicos", "mente"],
     mood: ["surpreender"],
+    tamanho: "medio",
+    vibes: ["reflexivo"],
     time: ["presente"],
     description: "Estudos de caso neurológicos que revelam os mistérios do cérebro humano.",
     popularity: 7
@@ -2685,6 +3021,8 @@
     genres: ["ciencia"],
     tags: ["industria-alimenticia", "etica"],
     mood: ["refletir"],
+    tamanho: "medio",
+    vibes: ["reflexivo"],
     time: ["presente"],
     description: "Investigação sobre as origens do que comemos e seus impactos éticos e ambientais.",
     popularity: 6
@@ -2700,6 +3038,8 @@
     genres: ["infantil", "filosofia"],
     tags: ["percepcao", "aprendizado"],
     mood: ["refletir"],
+    tamanho: "curto",
+    vibes: ["engracado", "aventura"],
     time: ["fantasia"],
     description: "Clássico infantil que ensina sobre perspectivas através de aventuras imaginativas.",
     popularity: 5
@@ -2715,6 +3055,8 @@
     genres: ["ficcao", "drama"],
     tags: ["mexico", "missionarios"],
     mood: ["emocionar"],
+    tamanho: "longo",
+    vibes: ["emocionante"],
     time: ["passado"],
     description: "História de uma família de missionários no México dos anos 1950 e seus conflitos culturais.",
     popularity: 6
@@ -2730,6 +3072,8 @@
     genres: ["biografia", "politica"],
     tags: ["urbanismo", "poder"],
     mood: ["refletir"],
+    tamanho: "longo",
+    vibes: ["reflexivo"],
     time: ["passado"],
     description: "Biografia de Robert Moses e sua influência no desenvolvimento urbano de Nova York.",
     popularity: 7
@@ -2745,6 +3089,8 @@
     genres: ["ficcao", "historico"],
     tags: ["nasa", "corrida-espacial"],
     mood: ["surpreender"],
+    tamanho: "medio",
+    vibes: ["aventura", "inspirador"],
     time: ["passado"],
     description: "Romance sobre os primeiros astronautas do programa espacial norte-americano.",
     popularity: 6
@@ -2760,6 +3106,8 @@
     genres: ["ficcao", "familiar"],
     tags: ["sobrevivencia", "pai-e-filho"],
     mood: ["perturbar"],
+    tamanho: "curto",
+    vibes: ["pesado", "emocionante"],
     time: ["futuro"],
     description: "História sombria de um pai e seu filho em um mundo pós-apocalíptico.",
     popularity: 8
@@ -2775,6 +3123,8 @@
     genres: ["drama"],
     tags: ["universidade", "crime"],
     mood: ["surpreender"],
+    tamanho: "longo",
+    vibes: ["misterio"],
     time: ["passado"],
     description: "Narrativa sobre um grupo de estudantes de elite envolvidos em um assassinato.",
     popularity: 7
@@ -2790,6 +3140,8 @@
     genres: ["terror"],
     tags: ["hotel", "loucura"],
     mood: ["assustar"],
+    tamanho: "longo",
+    vibes: ["assustador"],
     time: ["passado"],
     description: "Clássico do terror sobre um escritor que se torna zelador de um hotel assombrado.",
     popularity: 9
@@ -2805,6 +3157,8 @@
     genres: ["filosofia", "drama"],
     tags: ["absurdo", "existencialismo"],
     mood: ["refletir"],
+    tamanho: "curto",
+    vibes: ["reflexivo"],
     time: ["passado"],
     description: "Romance existencialista sobre um homem indiferente julgado por um crime.",
     popularity: 8
@@ -2820,6 +3174,8 @@
     genres: ["romance", "drama"],
     tags: ["geracao-perdida", "expatriados"],
     mood: ["refletir"],
+    tamanho: "medio",
+    vibes: ["romantico", "reflexivo"],
     time: ["passado"],
     description: "Retrato da Geração Perdida de americanos em Paris após a Primeira Guerra.",
     popularity: 7
@@ -2835,6 +3191,8 @@
     genres: ["guerra", "ficcao"],
     tags: ["vietna", "trauma"],
     mood: ["emocionar"],
+    tamanho: "medio",
+    vibes: ["pesado", "emocionante"],
     time: ["passado"],
     description: "Coleção de histórias interligadas sobre soldados na Guerra do Vietnã.",
     popularity: 7
@@ -2850,6 +3208,8 @@
     genres: ["infantil", "educativo"],
     tags: ["alimentacao", "cores"],
     mood: ["divertir"],
+    tamanho: "curto",
+    vibes: ["leve"],
     time: ["fantasia"],
     description: "Clássico infantil sobre uma lagarta que come até se transformar em borboleta.",
     popularity: 5
@@ -2865,6 +3225,8 @@
     genres: ["infantil", "aventura"],
     tags: ["animais", "amizade"],
     mood: ["acalmar"],
+    tamanho: "medio",
+    vibes: ["leve", "aventura"],
     time: ["fantasia"],
     description: "Aventuras de Toupeira, Rato e outros animais antropomórficos na Inglaterra rural.",
     popularity: 6
@@ -2880,6 +3242,8 @@
     genres: ["ficcao"],
     tags: ["japao", "misterio"],
     mood: ["surpreender"],
+    tamanho: "longo",
+    vibes: ["misterio"],
     time: ["presente"],
     description: "Narrativa surreal sobre um homem que busca sua esposa desaparecida em Tóquio.",
     popularity: 7
@@ -2895,6 +3259,8 @@
     genres: ["romance", "drama"],
     tags: ["escritor", "tragicomedia"],
     mood: ["emocionar"],
+    tamanho: "longo",
+    vibes: ["engracado", "emocionante"],
     time: ["passado"],
     description: "História da vida do escritor T.S. Garp e sua família incomum.",
     popularity: 6
@@ -2910,6 +3276,8 @@
     genres: ["memoir", "drama"],
     tags: ["luto", "perda"],
     mood: ["emocionar"],
+    tamanho: "curto",
+    vibes: ["emocionante"],
     time: ["presente"],
     description: "Relato autobiográfico sobre o luto após a morte repentina do marido da autora.",
     popularity: 6
@@ -2925,6 +3293,8 @@
     genres: ["romance", "historico"],
     tags: ["nigeria", "colonialismo"],
     mood: ["refletir"],
+    tamanho: "curto",
+    vibes: ["reflexivo", "pesado"],
     time: ["passado"],
     description: "Clássico africano sobre o choque entre tradições igbo e o colonialismo britânico.",
     popularity: 8
@@ -2940,6 +3310,8 @@
     genres: ["romance", "drama"],
     tags: ["racismo", "justica"],
     mood: ["emocionar"],
+    tamanho: "medio",
+    vibes: ["emocionante", "reflexivo"],
     time: ["passado"],
     description: "Clássico sobre um advogado que defende um homem negro injustamente acusado no sul dos EUA.",
     popularity: 9
@@ -2955,6 +3327,8 @@
     genres: ["biografia", "historia"],
     tags: ["segunda-guerra", "superacao"],
     mood: ["inspirar"],
+    tamanho: "longo",
+    vibes: ["inspirador"],
     time: ["passado"],
     description: "História real de um atleta olímpico sobrevivente de um acidente aéreo na Segunda Guerra.",
     popularity: 7
@@ -2970,6 +3344,8 @@
     genres: ["romance", "drama"],
     tags: ["hollywood", "drogas"],
     mood: ["chocar"],
+    tamanho: "longo",
+    vibes: ["pesado"],
     time: ["passado"],
     description: "Clássico sobre três mulheres e seus dramas na indústria do entretenimento dos anos 1960.",
     popularity: 6
@@ -2985,6 +3361,8 @@
     genres: ["poesia", "infantil"],
     tags: ["humor", "imaginacao"],
     mood: ["divertir"],
+    tamanho: "curto",
+    vibes: ["engracado", "leve"],
     time: ["fantasia"],
     description: "Coleção de poemas nonsense e ilustrações para crianças.",
     popularity: 6
@@ -3000,6 +3378,8 @@
     genres: ["infantil", "fantasia"],
     tags: ["imaginacao", "aventura"],
     mood: ["divertir"],
+    tamanho: "curto",
+    vibes: ["leve", "aventura"],
     time: ["fantasia"],
     description: "Clássico infantil sobre Max e sua terra de monstros selvagens.",
     popularity: 7
@@ -3015,6 +3395,8 @@
   genres: ["romance", "regionalismo"],
   tags: ["seca", "nordeste"],
   mood: ["emocionar"],
+  tamanho: "curto",
+  vibes: ["emocionante", "pesado"],
   time: ["passado"],
   description: "Romance sobre a seca de 1915 no Nordeste brasileiro e a luta pela sobrevivência.",
   popularity: 7
@@ -3030,6 +3412,8 @@
   genres: ["romance", "realismo"],
   tags: ["nordeste", "propriedade"],
   mood: ["refletir"],
+  tamanho: "curto",
+  vibes: ["reflexivo", "pesado"],
   time: ["passado"],
   description: "Narrativa em primeira pessoa sobre um homem obcecado por posses e controle.",
   popularity: 7
@@ -3045,6 +3429,8 @@
   genres: ["romance", "regionalismo"],
   tags: ["nordeste", "migração"],
   mood: ["emocionar"],
+  tamanho: "medio",
+  vibes: ["emocionante"],
   time: ["passado"],
   description: "Primeiro romance do ciclo nordestino, retratando a vida dos retirantes.",
   popularity: 6
@@ -3060,6 +3446,8 @@
   genres: ["romance", "regionalismo"],
   tags: ["engenho", "decadência"],
   mood: ["refletir"],
+  tamanho: "medio",
+  vibes: ["pesado"],
   time: ["passado"],
   description: "Último livro do ciclo da cana-de-açúcar, mostrando a decadência dos engenhos.",
   popularity: 6
@@ -3075,6 +3463,8 @@
   genres: ["romance", "satira"],
   tags: ["fantástico", "política"],
   mood: ["surpreender"],
+  tamanho: "longo",
+  vibes: ["engracado"],
   time: ["passado"],
   description: "Sátira política onde mortos ressuscitam para protestar contra injustiças.",
   popularity: 7
@@ -3090,6 +3480,8 @@
   genres: ["conto", "psicologico"],
   tags: ["família", "cotidiano"],
   mood: ["refletir"],
+  tamanho: "curto",
+  vibes: ["reflexivo"],
   time: ["presente"],
   description: "Coletânea de contos que exploram as relações familiares e a condição feminina.",
   popularity: 8
@@ -3105,6 +3497,8 @@
   genres: ["romance", "filosofia"],
   tags: ["existencialismo", "transformação"],
   mood: ["perturbar"],
+  tamanho: "curto",
+  vibes: ["reflexivo"],
   time: ["presente"],
   description: "Narrativa introspectiva sobre uma mulher em crise existencial.",
   popularity: 8
@@ -3120,6 +3514,8 @@
   genres: ["conto", "regionalismo"],
   tags: ["sertão", "linguagem"],
   mood: ["surpreender"],
+  tamanho: "medio",
+  vibes: ["emocionante"],
   time: ["passado"],
   description: "Nove contos que recriam o universo do sertão mineiro com linguagem inovadora.",
   popularity: 8
@@ -3135,6 +3531,8 @@
   genres: ["conto", "regionalismo"],
   tags: ["sertão", "infância"],
   mood: ["emocionar"],
+  tamanho: "curto",
+  vibes: ["emocionante"],
   time: ["passado"],
   description: "Coletânea de contos com temas que vão do místico ao cotidiano do sertão.",
   popularity: 7
@@ -3150,6 +3548,8 @@
   genres: ["conto"],
   tags: ["urbanismo", "solidão"],
   mood: ["perturbar"],
+  tamanho: "curto",
+  vibes: ["pesado"],
   time: ["presente"],
   description: "Contos que retratam a solidão e os dramas urbanos de forma concisa e impactante.",
   popularity: 6
@@ -3165,6 +3565,8 @@
   genres: ["romance"],
   tags: ["ditadura", "censura"],
   mood: ["perturbar"],
+  tamanho: "medio",
+  vibes: ["pesado"],
   time: ["futuro"],
   description: "Romance experimental que critica a ditadura militar através de estrutura não-linear.",
   popularity: 6
@@ -3180,6 +3582,8 @@
   genres: ["romance", "satira"],
   tags: ["história", "amazônia"],
   mood: ["divertir"],
+  tamanho: "medio",
+  vibes: ["engracado", "aventura"],
   time: ["passado"],
   description: "Sátira histórica sobre um aventureiro espanhol que se torna imperador do Acre.",
   popularity: 5
@@ -3195,6 +3599,8 @@
   genres: ["romance", "crime"],
   tags: ["crime", "política"],
   mood: ["surpreender"],
+  tamanho: "longo",
+  vibes: ["misterio"],
   time: ["passado"],
   description: "Romance policial que se passa durante a crise política que levou ao suicídio de Getúlio Vargas.",
   popularity: 7
@@ -3210,6 +3616,8 @@
   genres: ["romance", "psicologico"],
   tags: ["cinema", "memória"],
   mood: ["refletir"],
+  tamanho: "medio",
+  vibes: ["misterio"],
   time: ["passado"],
   description: "História de um cineasta que revisita seu passado através de suas memórias.",
   popularity: 6
@@ -3225,6 +3633,8 @@
   genres: ["romance", "psicologico"],
   tags: ["identidade", "linguagem"],
   mood: ["refletir"],
+  tamanho: "curto",
+  vibes: ["reflexivo"],
   time: ["presente"],
   description: "História de um ghost writer que se descobre em uma cidade estrangeira.",
   popularity: 7
@@ -3240,6 +3650,8 @@
   genres: ["romance", "historico"],
   tags: ["família", "decadência"],
   mood: ["emocionar"],
+  tamanho: "curto",
+  vibes: ["emocionante", "reflexivo"],
   time: ["passado"],
   description: "Narrativa de um patriarca que relembra a história de sua família em declínio.",
   popularity: 6
@@ -3255,6 +3667,8 @@
   genres: ["romance", "familiar"],
   tags: ["amazonas", "conflito"],
   mood: ["emocionar"],
+  tamanho: "medio",
+  vibes: ["emocionante", "pesado"],
   time: ["passado"],
   description: "História de gêmeos com personalidades opostas e sua relação conturbada.",
   popularity: 7
@@ -3270,6 +3684,8 @@
   genres: ["romance", "memoir"],
   tags: ["amazonas", "imigração"],
   mood: ["refletir"],
+  tamanho: "medio",
+  vibes: ["reflexivo"],
   time: ["passado"],
   description: "Narrativa sobre memórias familiares e a experiência de imigrantes no Amazonas.",
   popularity: 6
@@ -3285,6 +3701,8 @@
   genres: ["romance", "regionalismo"],
   tags: ["nordeste", "cultura"],
   mood: ["surpreender"],
+  tamanho: "longo",
+  vibes: ["engracado", "aventura"],
   time: ["passado"],
   description: "Romance que mistura realidade e fantasia no contexto do movimento armorial.",
   popularity: 7
@@ -3300,6 +3718,8 @@
   genres: ["romance", "historico"],
   tags: ["inquisição", "portugal"],
   mood: ["refletir"],
+  tamanho: "longo",
+  vibes: ["romantico", "reflexivo"],
   time: ["passado"],
   description: "Romance histórico sobre a construção do Convento de Mafra no século XVIII.",
   popularity: 8
@@ -3315,6 +3735,8 @@
   genres: ["romance"],
   tags: ["península", "separação"],
   mood: ["surpreender"],
+  tamanho: "medio",
+  vibes: ["reflexivo"],
   time: ["presente"],
   description: "Narrativa fantástica sobre a Península Ibérica que se desprende da Europa.",
   popularity: 7
@@ -3345,6 +3767,8 @@
   genres: ["romance", "satira"],
   tags: ["hipocrisia", "religião"],
   mood: ["divertir"],
+  tamanho: "medio",
+  vibes: ["engracado"],
   time: ["passado"],
   description: "Sátira à hipocrisia religiosa e social da burguesia portuguesa do século XIX.",
   popularity: 7
@@ -3360,6 +3784,8 @@
   genres: ["romance", "filosofia"],
   tags: ["família", "fé"],
   mood: ["refletir"],
+  tamanho: "longo",
+  vibes: ["reflexivo", "misterio"],
   time: ["passado"],
   description: "Último romance de Dostoiévski, explorando temas de fé, moralidade e livre-arbítrio.",
   popularity: 8
@@ -3375,6 +3801,8 @@
   genres: ["romance", "epico"],
   tags: ["napoleão", "rússia"],
   mood: ["refletir"],
+  tamanho: "longo",
+  vibes: ["emocionante", "reflexivo"],
   time: ["passado"],
   description: "Épico que narra a história de cinco famílias aristocráticas durante as guerras napoleônicas.",
   popularity: 8
@@ -3390,6 +3818,8 @@
   genres: ["romance", "realismo"],
   tags: ["adulério", "desilusão"],
   mood: ["emocionar"],
+  tamanho: "medio",
+  vibes: ["romantico", "pesado"],
   time: ["passado"],
   description: "Clássico do realismo francês sobre uma mulher insatisfeita com sua vida conjugal.",
   popularity: 8
@@ -3405,6 +3835,8 @@
   genres: ["romance", "epico"],
   tags: ["justiça", "revolução"],
   mood: ["emocionar"],
+  tamanho: "longo",
+  vibes: ["emocionante", "inspirador"],
   time: ["passado"],
   description: "Épico sobre redenção, justiça social e amor na França do século XIX.",
   popularity: 9
@@ -3420,6 +3852,8 @@
   genres: ["romance", "drama"],
   tags: ["defeitos-físicos", "paris"],
   mood: ["emocionar"],
+  tamanho: "longo",
+  vibes: ["emocionante", "romantico"],
   time: ["passado"],
   description: "História trágica de Quasímodo, o corcunda que vive na catedral de Notre-Dame.",
   popularity: 8
@@ -3435,6 +3869,8 @@
   genres: ["romance", "filosofia"],
   tags: ["vaidade", "eternidade"],
   mood: ["perturbar"],
+  tamanho: "medio",
+  vibes: ["misterio", "pesado"],
   time: ["passado"],
   description: "Clássico sobre um homem cujo retrato envelhece enquanto ele permanece jovem.",
   popularity: 8
@@ -3450,6 +3886,8 @@
   genres: ["romance", "drama"],
   tags: ["amor-obsessivo", "vingança"],
   mood: ["emocionar"],
+  tamanho: "medio",
+  vibes: ["romantico", "pesado"],
   time: ["passado"],
   description: "História de amor obsessivo e vingança entre Heathcliff e Catherine.",
   popularity: 8
@@ -3465,6 +3903,8 @@
   genres: ["romance", "drama"],
   tags: ["independência", "moralidade"],
   mood: ["emocionar"],
+  tamanho: "longo",
+  vibes: ["romantico", "misterio"],
   time: ["passado"],
   description: "História de uma órfã que se torna governanta e se apaixona por seu empregador.",
   popularity: 8
@@ -3480,6 +3920,8 @@
   genres: ["romance", "epico"],
   tags: ["obsessão", "baleia"],
   mood: ["refletir"],
+  tamanho: "longo",
+  vibes: ["aventura"],
   time: ["passado"],
   description: "Épica jornada do Capitão Ahab em sua obsessiva caça à grande baleia branca.",
   popularity: 8
@@ -3495,6 +3937,8 @@
   genres: ["romance", "social"],
   tags: ["grande-depressão", "migração"],
   mood: ["emocionar"],
+  tamanho: "longo",
+  vibes: ["emocionante", "pesado"],
   time: ["passado"],
   description: "História da família Joad durante a Grande Depressão nos Estados Unidos.",
   popularity: 8
@@ -3510,6 +3954,8 @@
   genres: ["romance", "familiar"],
   tags: ["caim-e-abel", "califórnia"],
   mood: ["refletir"],
+  tamanho: "longo",
+  vibes: ["emocionante"],
   time: ["passado"],
   description: "Narrativa bíblica recontada através de duas famílias no Vale de Salinas.",
   popularity: 7
@@ -3525,6 +3971,8 @@
   genres: ["romance", "drama"],
   tags: ["persistência", "natureza"],
   mood: ["refletir"],
+  tamanho: "curto",
+  vibes: ["inspirador", "emocionante"],
   time: ["passado"],
   description: "História de um velho pescador cubano e sua luta épica com um marlim gigante.",
   popularity: 7
@@ -3540,6 +3988,8 @@
   genres: ["romance", "guerra"],
   tags: ["guerra-civil-espanhola", "sacrifício"],
   mood: ["emocionar"],
+  tamanho: "longo",
+  vibes: ["pesado", "romantico"],
   time: ["passado"],
   description: "História de um professor americano que luta na Guerra Civil Espanhola.",
   popularity: 7
@@ -3555,6 +4005,8 @@
   genres: ["romance"],
   tags: ["narrativa-fragmentada", "decadência"],
   mood: ["perturbar"],
+  tamanho: "medio",
+  vibes: ["pesado"],
   time: ["passado"],
   description: "Obra modernista que explora a decadência de uma família sulista americana.",
   popularity: 7
@@ -3570,6 +4022,8 @@
   genres: ["romance", "drama"],
   tags: ["preconceito-racial", "sul-dos-eua"],
   mood: ["refletir"],
+  tamanho: "longo",
+  vibes: ["reflexivo"],
   time: ["passado"],
   description: "História que aborda questões raciais e religiosas no Sul dos Estados Unidos.",
   popularity: 6
@@ -3585,6 +4039,8 @@
   genres: ["romance", "filosofia"],
   tags: ["existencialismo", "absurdo"],
   mood: ["perturbar"],
+  tamanho: "medio",
+  vibes: ["reflexivo"],
   time: ["presente"],
   description: "Romance filosófico que explora a angústia existencial e o absurdo da existência.",
   popularity: 7
@@ -3600,6 +4056,8 @@
   genres: ["romance", "realismo-magico"],
   tags: ["américa-latina", "narrativa"],
   mood: ["emocionar"],
+  tamanho: "medio",
+  vibes: ["romantico", "aventura"],
   time: ["passado"],
   description: "História de uma contadora de histórias na América Latina.",
   popularity: 7
@@ -3615,6 +4073,7 @@
   genres: ["filosofia", "ensaio"],
   tags: ["pessimismo", "existência"],
   mood: ["perturbar"],
+  vibes: ["reflexivo"],
   time: ["presente"],
   description: "Reflexões filosóficas sobre o sofrimento humano e a condição existencial.",
   popularity: 6
@@ -3630,6 +4089,8 @@
   genres: ["ficcao-cientifica", "epico"],
   tags: ["planeta-deserto", "messias"],
   mood: ["surpreender"],
+  tamanho: "longo",
+  vibes: ["aventura"],
   time: ["futuro"],
   description: "Épico de ficção científica sobre o planeta deserto Arrakis e sua preciosa especiaria.",
   popularity: 8
@@ -3645,6 +4106,8 @@
   genres: ["ficcao-cientifica", "epico"],
   tags: ["império-galático", "psico-história"],
   mood: ["surpreender"],
+  tamanho: "medio",
+  vibes: ["reflexivo"],
   time: ["futuro"],
   description: "Série sobre a queda de um império galáctico e a tentativa de preservar o conhecimento.",
   popularity: 8
@@ -3660,6 +4123,8 @@
   genres: ["ficcao-cientifica", "conto"],
   tags: ["robótica", "três-leis"],
   mood: ["refletir"],
+  tamanho: "medio",
+  vibes: ["reflexivo", "misterio"],
   time: ["futuro"],
   description: "Coletânea de contos que exploram as implicações éticas da inteligência artificial.",
   popularity: 7
@@ -3675,6 +4140,8 @@
   genres: ["ficcao-cientifica", "distopia"],
   tags: ["violência", "livre-arbítrio"],
   mood: ["perturbar"],
+  tamanho: "curto",
+  vibes: ["pesado"],
   time: ["futuro"],
   description: "Distopia sobre violência juvenil e tentativas de controle comportamental.",
   popularity: 7
@@ -3690,6 +4157,8 @@
   genres: ["ficcao-cientifica"],
   tags: ["realidade-virtual", "hackers"],
   mood: ["surpreender"],
+  tamanho: "medio",
+  vibes: ["aventura"],
   time: ["futuro"],
   description: "Obra seminal do cyberpunk sobre um hacker e a inteligência artificial.",
   popularity: 7
@@ -3705,6 +4174,8 @@
   genres: ["ficcao-cientifica", "humor"],
   tags: ["sátira", "aventura-espacial"],
   mood: ["divertir"],
+  tamanho: "curto",
+  vibes: ["engracado", "aventura"],
   time: ["futuro"],
   description: "Comédia de ficção científica sobre as aventuras de Arthur Dent pelo universo.",
   popularity: 8
@@ -3720,6 +4191,8 @@
   genres: ["fantasia", "aventura"],
   tags: ["terra-média", "dragão"],
   mood: ["aventura"],
+  tamanho: "medio",
+  vibes: ["aventura", "leve"],
   time: ["fantasia"],
   description: "Aventura de Bilbo Bolseiro em uma jornada para recuperar um tesouro guardado por um dragão.",
   popularity: 9
@@ -3735,6 +4208,8 @@
   genres: ["fantasia", "aventura"],
   tags: ["mundo-fantástico", "alegoria-cristã"],
   mood: ["aventura"],
+  tamanho: "longo",
+  vibes: ["aventura"],
   time: ["fantasia"],
   description: "Série de aventuras em um mundo fantástico cheio de criaturas mágicas.",
   popularity: 8
@@ -3750,6 +4225,8 @@
   genres: ["ficcao-cientifica", "conto"],
   tags: ["marte", "colonização"],
   mood: ["refletir"],
+  tamanho: "medio",
+  vibes: ["reflexivo"],
   time: ["futuro"],
   description: "Coletânea de contos sobre a colonização de Marte e encontros com marcianos.",
   popularity: 7
@@ -3765,6 +4242,8 @@
   genres: ["ficcao-cientifica"],
   tags: ["história-alternativa", "eixo-venceu"],
   mood: ["surpreender"],
+  tamanho: "medio",
+  vibes: ["reflexivo"],
   time: ["passado"],
   description: "História alternativa onde o Eixo venceu a Segunda Guerra Mundial.",
   popularity: 7
@@ -3780,6 +4259,8 @@
   genres: ["ficcao-cientifica", "filosofia"],
   tags: ["androides", "humanidade"],
   mood: ["refletir"],
+  tamanho: "medio",
+  vibes: ["reflexivo", "misterio"],
   time: ["futuro"],
   description: "Romance que explora o que significa ser humano em um mundo de androides.",
   popularity: 7
@@ -3795,6 +4276,8 @@
   genres: ["ficcao-cientifica", "drama"],
   tags: ["inteligência", "experimento"],
   mood: ["emocionar"],
+  tamanho: "medio",
+  vibes: ["emocionante"],
   time: ["presente"],
   description: "Comovente história sobre um homem com deficiência intelectual que participa de um experimento.",
   popularity: 7
@@ -3810,6 +4293,8 @@
   genres: ["teatro", "tragedia"],
   tags: ["grécia-antiga", "desobediência-civil"],
   mood: ["refletir"],
+  tamanho: "curto",
+  vibes: ["reflexivo"],
   time: ["passado"],
   description: "Tragédia grega sobre conflito entre lei divina e lei humana.",
   popularity: 7
@@ -3825,6 +4310,8 @@
   genres: ["teatro", "tragedia"],
   tags: ["vingança", "mitologia-grega"],
   mood: ["perturbar"],
+  tamanho: "curto",
+  vibes: ["pesado"],
   time: ["passado"],
   description: "Tragédia sobre a vingança de Medeia contra Jasão por tê-la traído.",
   popularity: 7
@@ -3840,6 +4327,8 @@
   genres: ["teatro", "tragedia"],
   tags: ["paixão-proibida", "mitologia-grega"],
   mood: ["emocionar"],
+  tamanho: "curto",
+  vibes: ["romantico", "pesado"],
   time: ["passado"],
   description: "Tragédia francesa baseada no mito de Fedra e seu amor proibido pelo enteado.",
   popularity: 6
@@ -3855,6 +4344,8 @@
   genres: ["teatro", "drama"],
   tags: ["sonho-americano", "fracasso"],
   mood: ["emocionar"],
+  tamanho: "curto",
+  vibes: ["emocionante"],
   time: ["passado"],
   description: "Drama sobre Willy Loman e sua crise existencial ao enfrentar o fracasso profissional.",
   popularity: 8
@@ -3870,6 +4361,8 @@
   genres: ["teatro", "drama"],
   tags: ["caça-as-bruxas", "alegoria"],
   mood: ["perturbar"],
+  tamanho: "curto",
+  vibes: ["pesado"],
   time: ["passado"],
   description: "Alegoria sobre o macarthismo através dos julgamentos das bruxas de Salem.",
   popularity: 7
@@ -3885,6 +4378,8 @@
   genres: ["teatro"],
   tags: ["existencialismo", "espera"],
   mood: ["refletir"],
+  tamanho: "curto",
+  vibes: ["engracado", "reflexivo"],
   time: ["presente"],
   description: "Peça do teatro do absurdo sobre dois personagens que esperam por alguém que nunca chega.",
   popularity: 7
@@ -3900,6 +4395,8 @@
   genres: ["teatro"],
   tags: ["nonsense", "comédia"],
   mood: ["divertir"],
+  tamanho: "curto",
+  vibes: ["engracado"],
   time: ["presente"],
   description: "Primeira peça do teatro do absurdo, satirizando a banalidade da conversação burguesa.",
   popularity: 7
@@ -3915,6 +4412,8 @@
   genres: ["teatro", "drama"],
   tags: ["arte", "amor-não-correspondido"],
   mood: ["emocionar"],
+  tamanho: "curto",
+  vibes: ["romantico", "emocionante"],
   time: ["passado"],
   description: "Drama sobre artistas e suas complexas relações amorosas e profissionais.",
   popularity: 7
@@ -3930,6 +4429,8 @@
   genres: ["teatro", "drama"],
   tags: ["tédio", "frustração"],
   mood: ["refletir"],
+  tamanho: "curto",
+  vibes: ["reflexivo"],
   time: ["passado"],
   description: "Peça sobre frustração e arrependimento na vida provinciana russa.",
   popularity: 7
@@ -3945,6 +4446,8 @@
   genres: ["ciencia", "ensaio"],
   tags: ["pensamento-crítico", "cientificismo"],
   mood: ["refletir"],
+  tamanho: "longo",
+  vibes: ["reflexivo"],
   time: ["presente"],
   description: "Defesa do pensamento cético e científico contra pseudociências e superstições.",
   popularity: 7
@@ -3960,6 +4463,8 @@
   genres: ["ciencia", "filosofia"],
   tags: ["holismo", "mudança-paradigma"],
   mood: ["refletir"],
+  tamanho: "longo",
+  vibes: ["reflexivo"],
   time: ["presente"],
   description: "Análise da mudança de paradigma do pensamento mecanicista para o holístico.",
   popularity: 6
@@ -3975,6 +4480,8 @@
   genres: ["historia"],
   tags: ["evolução-humana", "civilização"],
   mood: ["surpreender"],
+  tamanho: "longo",
+  vibes: ["reflexivo"],
   time: ["passado"],
   description: "Narrativa da história da humanidade desde a evolução do Homo sapiens.",
   popularity: 8
@@ -3990,6 +4497,8 @@
   genres: ["filosofia"],
   tags: ["futuro-humanidade", "tecnologia"],
   mood: ["refletir"],
+  tamanho: "longo",
+  vibes: ["reflexivo"],
   time: ["futuro"],
   description: "Exploração do futuro da humanidade e dos desafios éticos da tecnologia.",
   popularity: 7
@@ -4005,6 +4514,8 @@
   genres: ["filosofia"],
   tags: ["desafios-contemporâneos", "globalização"],
   mood: ["refletir"],
+  tamanho: "medio",
+  vibes: ["reflexivo"],
   time: ["presente"],
   description: "Análise dos principais desafios e questões do mundo contemporâneo.",
   popularity: 7
@@ -4020,6 +4531,8 @@
   genres: ["ciencia"],
   tags: ["evolução", "genética"],
   mood: ["surpreender"],
+  tamanho: "medio",
+  vibes: ["reflexivo"],
   time: ["presente"],
   description: "Teoria da evolução centrada nos genes como unidades fundamentais da seleção natural.",
   popularity: 7
@@ -4035,6 +4548,8 @@
   genres: ["ciencia"],
   tags: ["aleatoriedade", "probabilidade"],
   mood: ["surpreender"],
+  tamanho: "medio",
+  vibes: ["reflexivo"],
   time: ["presente"],
   description: "Exploração do papel do acaso e da aleatoriedade em nossas vidas.",
   popularity: 6
@@ -4050,6 +4565,8 @@
   genres: ["ciencia"],
   tags: ["universo", "física"],
   mood: ["surpreender"],
+  tamanho: "curto",
+  vibes: ["reflexivo"],
   time: ["presente"],
   description: "Reflexões sobre as grandes questões da existência humana e do universo.",
   popularity: 7
@@ -4065,6 +4582,8 @@
   genres: ["ciencia"],
   tags: ["universo", "astronomia"],
   mood: ["surpreender"],
+  tamanho: "medio",
+  vibes: ["reflexivo", "inspirador"],
   time: ["presente"],
   description: "Jornada através do espaço e tempo explorando as maravilhas do cosmos.",
   popularity: 8
@@ -4080,6 +4599,8 @@
   genres: ["filosofia", "politica"],
   tags: ["poder", "governo"],
   mood: ["refletir"],
+  tamanho: "curto",
+  vibes: ["reflexivo"],
   time: ["passado"],
   description: "Tratado político sobre a aquisição e manutenção do poder.",
   popularity: 8
@@ -4095,6 +4616,8 @@
   genres: ["poesia"],
   tags: ["objetos-cotidianos", "celebração"],
   mood: ["emocionar"],
+  tamanho: "medio",
+  vibes: ["reflexivo"],
   time: ["presente"],
   description: "Coleção de poemas que celebran objetos e aspectos simples da vida cotidiana.",
   popularity: 7
@@ -4110,6 +4633,8 @@
   genres: ["poesia"],
   tags: ["amor", "paixão"],
   mood: ["emocionar"],
+  tamanho: "curto",
+  vibes: ["romantico"],
   time: ["presente"],
   description: "Uma das obras mais famosas de Neruda sobre amor, paixão e desespero.",
   popularity: 8
@@ -4125,6 +4650,8 @@
   genres: ["poesia", "modernismo"],
   tags: ["modernismo", "cotidiano"],
   mood: ["refletir"],
+  tamanho: "longo",
+  vibes: ["reflexivo"],
   time: ["passado"],
   description: "Compilação completa da obra poética de um dos maiores poetas brasileiros.",
   popularity: 9
@@ -4140,6 +4667,8 @@
   genres: ["poesia", "social"],
   tags: ["engajamento", "guerra"],
   mood: ["refletir"],
+  tamanho: "medio",
+  vibes: ["reflexivo"],
   time: ["passado"],
   description: "Livro de poesia com forte engajamento social e político.",
   popularity: 7
@@ -4155,6 +4684,8 @@
   genres: ["poesia", "filosofia"],
   tags: ["existencialismo", "metafísica"],
   mood: ["refletir"],
+  tamanho: "curto",
+  vibes: ["reflexivo"],
   time: ["presente"],
   description: "Poesia que aborda questões existenciais e metafísicas.",
   popularity: 7
@@ -4170,6 +4701,8 @@
   genres: ["poesia"],
   tags: ["amor", "musicalidade"],
   mood: ["emocionar"],
+  tamanho: "medio",
+  vibes: ["romantico"],
   time: ["passado"],
   description: "Seleção dos melhores poemas do poeta da paixão e da musicalidade.",
   popularity: 8
@@ -4185,6 +4718,8 @@
   genres: ["poesia"],
   tags: ["forma-clássica", "amor"],
   mood: ["emocionar"],
+  tamanho: "curto",
+  vibes: ["romantico"],
   time: ["passado"],
   description: "Coleção de sonetos que demonstram o domínio de Vinicius da forma clássica.",
   popularity: 7
@@ -4200,6 +4735,8 @@
   genres: ["poesia"],
   tags: ["ortônimo", "modernismo"],
   mood: ["refletir"],
+  tamanho: "medio",
+  vibes: ["reflexivo"],
   time: ["passado"],
   description: "Obra poética do próprio Fernando Pessoa, distinta de seus heterônimos.",
   popularity: 8
@@ -4215,6 +4752,8 @@
   genres: ["poesia", "filosofia"],
   tags: ["alienação", "existência"],
   mood: ["refletir"],
+  tamanho: "curto",
+  vibes: ["reflexivo"],
   time: ["presente"],
   description: "Um dos poemas mais famosos de Álvaro de Campos sobre a condição humana.",
   popularity: 8
@@ -4230,6 +4769,7 @@
   genres: ["fantasia", "romance"],
   tags: ["universidade", "poderes", "segredos", "jogo-misterioso", "conspiracao"],
   mood: ["surpreender", "intrigar"],
+  vibes: ["misterio", "romantico"],
   time: ["presente"],
   description: "Em uma universidade de elite, uma bolsista descobre segredos sombrios e um jogo misterioso que concede poderes extraordinários, desencadeando uma trama de conspirações, traições e amores intensos.",
   "popularity": 7

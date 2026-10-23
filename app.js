@@ -1,14 +1,4 @@
-    // Extrair todos os gêneros únicos do banco de dados
- let precomputedScores = {};
 let genreIndex = {};
-let lastFilters = null;
-let cachedResults = null;
-
-// Extrair todos os gêneros únicos do banco de dados
-const allGenres = Array.from(new Set(
-  booksDatabase.flatMap(book => book.genres || [])
-    .concat(fallbackBooks.flatMap(book => book.genres || []))
-)).filter(Boolean);
 
 // ===== Log de debug (só aparece se DEBUG_MODE = true) =====
 const DEBUG_MODE = false;
@@ -192,7 +182,7 @@ function favoriteButtonHtml(bookId) {
 }
 
 // ===== Card de livro (usado no quiz, nos populares e na biblioteca) =====
-function createBookCard(book) {
+function createBookCard(book, options = {}) {
   const pt = state.currentLanguage === 'pt';
   const card = document.createElement('div');
   card.className = 'book-card fade-in';
@@ -202,19 +192,20 @@ function createBookCard(book) {
 
   card.innerHTML = `
     <div class="book-cover loading">
-      <img class="lazy"
+      <img class="lazy" src="${PLACEHOLDER_COVER}"
            data-src="${escapeHtml(book.cover || PLACEHOLDER_COVER)}"
            data-book-id="${book.id}"
            alt="Capa do livro: ${escapeHtml(book.title)}"
            onerror="this.onerror=null;this.src='assets/sem-capa.svg'">
       ${favoriteButtonHtml(book.id)}
       ${isRead(book.id) ? `<span class="read-badge"><i class="fas fa-check"></i> ${pt ? 'Lido' : 'Leído'}</span>` : ''}
+      ${options.match !== undefined ? `<span class="match-badge">${matchPercent(options.match)}%</span>` : ''}
     </div>
     <div class="book-info">
       <h4 class="book-title">${escapeHtml(book.title)}</h4>
       <p class="book-author">${escapeHtml(book.author)}</p>
-      ${book.recommendationReason ? `<p class="book-reason">${escapeHtml(book.recommendationReason)}</p>` : ''}
-      ${book.description ? `<p class="book-description">${escapeHtml(book.description)}</p>` : ''}
+      ${options.reason ? `<p class="book-reason">${escapeHtml(options.reason)}</p>` : ''}
+      ${book.description && !options.hideDescription ? `<p class="book-description">${escapeHtml(book.description)}</p>` : ''}
       <div class="book-meta">
         <span>${gradeLabel(book)}</span>
         ${book.available
@@ -254,7 +245,7 @@ function getSimilarBooks(book, limit = 4) {
     .map(other => {
       let score = asArray(other.genres).filter(g => genres.includes(g)).length * 2;
       score += asArray(other.tags).filter(t => tags.includes(t)).length;
-      if (other.author === book.author) score += 1;
+      if (authorKey(other.author) === authorKey(book.author)) score += 1;
       return { book: other, score };
     })
     .filter(item => item.score > 0)
@@ -533,139 +524,262 @@ const genreTranslations = {
   }
 };
 
-// Perguntas do quiz em português e espanhol
+// ===== Quiz =====
+
+// Grupos de gêneros mostrados no quiz. Cada grupo junta vários gêneros (e às vezes "vibes")
+// dos dados, porque "romance" nos dados quer dizer "livro de ficção", não "história de amor".
+const GENRE_GROUPS = {
+  fantasia:  { genres: ['fantasia', 'mitologia', 'realismo-magico'] },
+  misterio:  { genres: ['crime'], vibes: ['misterio'] },
+  scifi:     { genres: ['ficcao-cientifica', 'distopia'] },
+  aventura:  { genres: ['aventura', 'epico', 'guerra', 'esporte'], vibes: ['aventura'] },
+  amor:      { vibes: ['romantico'] },
+  drama:     { genres: ['drama', 'social', 'familiar', 'psicologico', 'ficcao'] },
+  terror:    { genres: ['terror', 'gotico'], vibes: ['assustador'] },
+  humor:     { genres: ['humor', 'comedia', 'satira'], vibes: ['engracado'] },
+  classicos: { genres: ['classico', 'romantismo', 'modernismo', 'realismo', 'naturalismo', 'regionalismo', 'barroco', 'parnasianismo', 'pre-modernismo', 'tragedia'] },
+  poesia:    { genres: ['poesia'] },
+  teatro:    { genres: ['teatro', 'tragedia', 'comedia'] },
+  reais:     { genres: ['biografia', 'memoir', 'historia', 'jornalismo', 'ciencia', 'educativo', 'cultura', 'ecologia', 'matematica', 'tecnologia', 'ensaio', 'filosofia'] },
+  juvenil:   { genres: ['infantil', 'quadrinhos'] }
+};
+
+// Quando o livro ainda não tem "vibes", usa o campo antigo "mood"
+const MOOD_TO_VIBE = {
+  emocionar: 'emocionante', surpreender: 'misterio', intrigar: 'misterio', refletir: 'reflexivo',
+  rir: 'engracado', divertir: 'engracado', aventura: 'aventura', acalmar: 'leve',
+  assustar: 'assustador', perturbar: 'pesado', chocar: 'pesado', inspirar: 'inspirador'
+};
+
+function getBookVibes(book) {
+  if (Array.isArray(book.vibes) && book.vibes.length > 0) return book.vibes;
+  return Array.from(new Set(asArray(book.mood).map(m => MOOD_TO_VIBE[m]).filter(Boolean)));
+}
+
+function getBookGroups(book) {
+  const genres = asArray(book.genres);
+  const vibes = getBookVibes(book);
+  return Object.keys(GENRE_GROUPS).filter(key => {
+    const group = GENRE_GROUPS[key];
+    return (group.genres || []).some(g => genres.includes(g)) ||
+           (group.vibes || []).some(v => vibes.includes(v));
+  });
+}
+
+// Textos que mudam com o idioma
+const quizText = {
+  pt: {
+    groups: {
+      fantasia: '🐉 Fantasia e magia', misterio: '🕵️ Mistério e crime', scifi: '🚀 Ficção científica e distopia',
+      aventura: '🗺️ Aventura e ação', amor: '💘 Histórias de amor', drama: '🎭 Dramas da vida',
+      terror: '👻 Terror', humor: '😂 Humor', classicos: '📜 Clássicos', poesia: '✒️ Poesia',
+      teatro: '🎟️ Teatro', reais: '🌍 Histórias reais, ciência e ideias', juvenil: '🧸 Infantojuvenil e HQ'
+    },
+    vibes: {
+      emocionante: 'emocionante', engracado: 'engraçado', assustador: 'assustador', misterio: 'cheio de mistério',
+      reflexivo: 'que faz pensar', aventura: 'cheio de aventura', leve: 'leve', pesado: 'intenso',
+      romantico: 'romântico', inspirador: 'inspirador'
+    },
+    lengths: { curto: 'curtinho', medio: 'de tamanho médio', longo: 'daqueles longos' },
+    matchLabel: 'a sua cara',
+    reasonGroup: 'É de',
+    reasonVibe: 'É',
+    reasonLiked: 'Parecido com',
+    reasonLength: 'É',
+    reasonAvailable: 'Disponível no Leia SP',
+    topPick: 'Sua melhor combinação',
+    details: 'Ver detalhes',
+    pickBook: 'Escolha um livro da lista ou pule esta pergunta.',
+    searchPlaceholder: 'Digite o nome de um livro ou autor…',
+    chosen: 'Escolhido:',
+    noMatch: 'Não achei esse livro aqui. Tudo bem, pode pular!',
+    remove: 'trocar',
+    optionalHint: 'Opcional: pode pular.',
+    upTo: n => `Escolha até ${n}.`,
+    limit: n => `Você pode escolher até ${n} opções.`,
+    pleaseChoose: 'Por favor, selecione uma opção',
+    seeResults: 'Ver meus livros',
+    next: 'Próximo',
+    question: (c, t) => `Pergunta ${c} de ${t}`
+  },
+  es: {
+    groups: {
+      fantasia: '🐉 Fantasía y magia', misterio: '🕵️ Misterio y crimen', scifi: '🚀 Ciencia ficción y distopía',
+      aventura: '🗺️ Aventura y acción', amor: '💘 Historias de amor', drama: '🎭 Dramas de la vida',
+      terror: '👻 Terror', humor: '😂 Humor', classicos: '📜 Clásicos', poesia: '✒️ Poesía',
+      teatro: '🎟️ Teatro', reais: '🌍 Historias reales, ciencia e ideas', juvenil: '🧸 Infantil-juvenil y cómic'
+    },
+    vibes: {
+      emocionante: 'emocionante', engracado: 'divertido', assustador: 'aterrador', misterio: 'lleno de misterio',
+      reflexivo: 'que te hace pensar', aventura: 'lleno de aventura', leve: 'ligero', pesado: 'intenso',
+      romantico: 'romántico', inspirador: 'inspirador'
+    },
+    lengths: { curto: 'cortito', medio: 'de tamaño medio', longo: 'de los largos' },
+    matchLabel: 'tu estilo',
+    reasonGroup: 'Es de',
+    reasonVibe: 'Es',
+    reasonLiked: 'Parecido a',
+    reasonLength: 'Es',
+    reasonAvailable: 'Disponible en Leia SP',
+    topPick: 'Tu mejor combinación',
+    details: 'Ver detalles',
+    pickBook: 'Elige un libro de la lista o salta esta pregunta.',
+    searchPlaceholder: 'Escribe el nombre de un libro o autor…',
+    chosen: 'Elegido:',
+    noMatch: 'No encontré ese libro aquí. ¡Puedes saltar esta pregunta!',
+    remove: 'cambiar',
+    optionalHint: 'Opcional: puedes saltarla.',
+    upTo: n => `Elige hasta ${n}.`,
+    limit: n => `Puedes elegir hasta ${n} opciones.`,
+    pleaseChoose: 'Por favor, seleccione una opción',
+    seeResults: 'Ver mis libros',
+    next: 'Siguiente',
+    question: (c, t) => `Pregunta ${c} de ${t}`
+  }
+};
+
+function t() {
+  return quizText[state.currentLanguage] || quizText.pt;
+}
+
+// Perguntas do quiz em português e espanhol (mesma ordem e mesmas chaves nos dois idiomas)
 const quizQuestions = {
   pt: [
     {
-      id: 1,
-      question: "📚 Qual sua série?",
+      id: 1, key: 'grade',
+      question: '🎒 Em que série você está?',
       options: [
-        { value: "EF1", label: "6° ou 7° ano" },
-        { value: "EF2", label: "8° ou 9° ano" },
-        { value: "EM", label: "Ensino Médio" },
-        { value: "EM", label: "Professor/Outro" }
-      ],
-      filterKey: "grade",
-      weight: 15 // Peso maior para esta pergunta
+        { value: 'EF1', label: '6° ou 7° ano' },
+        { value: 'EF2', label: '8° ou 9° ano' },
+        { value: 'EM', label: 'Ensino Médio' },
+        { value: 'EM', label: 'Professor(a) / Outro' }
+      ]
     },
     {
-      id: 2,
-      question: "🌎 Qual tipo de literatura prefere?",
-      options: [
-        { value: "brasileira", label: "🇧🇷 Brasileira" },
-        { value: "estrangeira", label: "🌐 Estrangeira" },
-        { value: "qualquer", label: "📖 Qualquer uma" }
-      ],
-      filterKey: "type",
-      weight: 15
+      id: 2, key: 'groups', multiple: true, maxSelections: 3,
+      question: '📚 Que tipo de história te chama?',
+      options: Object.keys(GENRE_GROUPS).map(key => ({ value: key, label: quizText.pt.groups[key] }))
     },
     {
-      id: 3,
-      question: "📖 Quais gêneros você mais gosta? (Selecione até 4)",
-      options: [...allGenres].sort((a, b) => (genreTranslations.pt[a] || a).localeCompare(genreTranslations.pt[b] || b)).map(genre => ({
-        value: genre,
-        label: genreTranslations.pt[genre] || genre
-      })),
-      filterKey: "genres",
-      multiple: true,
-      maxSelections: 4,
-      weight: 30 // Maior peso para gêneros
+      id: 3, key: 'vibes', multiple: true, maxSelections: 3,
+      question: '✨ Como você quer se sentir lendo?',
+      options: [
+        { value: 'emocionante', label: '😢 Emocionado(a)' },
+        { value: 'engracado', label: '😂 Rindo alto' },
+        { value: 'misterio', label: '🕵️ Curioso(a) pra saber o final' },
+        { value: 'aventura', label: '🏹 Na adrenalina' },
+        { value: 'romantico', label: '💘 Apaixonado(a)' },
+        { value: 'reflexivo', label: '🤔 Pensando na vida' },
+        { value: 'leve', label: '🌿 Leve e tranquilo(a)' },
+        { value: 'inspirador', label: '💪 Inspirado(a)' },
+        { value: 'assustador', label: '😱 Com medo' },
+        { value: 'pesado', label: '🤯 Impactado(a), pode ser pesado' }
+      ]
     },
     {
-      id: 4,
-      question: "📖 Que tipo de experiência você busca? (Selecione até 3)",
-      options: [
-        { value: "emocionar", label: "😢 Emoção/Drama" },
-        { value: "surpreender", label: "😲 Mistério/Suspense" },
-        { value: "refletir", label: "🤔 Reflexão" },
-        { value: "rir", label: "😂 Comédia" },
-        { value: "aventura", label: "🏹 Ação/Aventura" },
-        { value: "acalmar", label: "🌿 Leve/Relaxante" },
-        { value: "assustar", label: "😨 Terror" },
-        { value: "perturbar", label: "🤯 Intenso/Pesado" },
-        { value: "divertir", label: "😊 Entretenimento" },
-        { value: "inspirar", label: "🧠 Superação" }
-      ],
-      filterKey: "mood",
-      multiple: true,
-      maxSelections: 3,
-      weight: 30
+      id: 4, key: 'liked', type: 'book-search', optional: true,
+      question: '❤️ Qual livro você já leu e amou?'
     },
     {
-      id: 5,
-      question: "⏳ Prefere histórias que se passam no:",
+      id: 5, key: 'length',
+      question: '⏱️ Qual tamanho de livro combina com você?',
       options: [
-        { value: "presente", label: "📅 Presente" },
-        { value: "passado", label: "🏺 Passado" },
-        { value: "futuro", label: "🚀 Futuro" },
-        { value: "todos", label: "🌈 Qualquer época" }
-      ],
-      filterKey: "time",
-      weight: 10 // Menor peso para esta pergunta
+        { value: 'curto', label: '📖 Curtinho, leio aos poucos' },
+        { value: 'medio', label: '📚 Médio, tranquilo' },
+        { value: 'longo', label: '🧱 Pode ser um tijolão!' },
+        { value: 'qualquer', label: '🤷 Tanto faz' }
+      ]
+    },
+    {
+      id: 6, key: 'type',
+      question: '🌎 Prefere autores do Brasil ou de fora?',
+      options: [
+        { value: 'brasileira', label: '🇧🇷 Do Brasil' },
+        { value: 'estrangeira', label: '🌐 De fora (inclui Portugal)' },
+        { value: 'qualquer', label: '📖 Tanto faz' }
+      ]
+    },
+    {
+      id: 7, key: 'avoid', multiple: true, optional: true,
+      question: '🚫 Tem algo que você NÃO quer de jeito nenhum?',
+      options: [
+        { value: 'terror', label: '👻 Terror' },
+        { value: 'pesado', label: '🌧️ Histórias pesadas ou tristes' },
+        { value: 'amor', label: '💔 Romance (história de amor)' },
+        { value: 'poesia', label: '✒️ Poesia' },
+        { value: 'teatro', label: '🎟️ Teatro' },
+        { value: 'longo', label: '🧱 Livros longos' },
+        { value: 'classicos', label: '📜 Clássicos antigos' }
+      ]
     }
   ],
   es: [
-   {
-      id: 1,
-      question: "📚 ¿Cuál es tu grado escolar?",
+    {
+      id: 1, key: 'grade',
+      question: '🎒 ¿En qué grado estás?',
       options: [
-        { value: "EF1", label: "6° o 7° grado" },
-        { value: "EF2", label: "8° o 9° grado" },
-        { value: "EM", label: "Escuela secundaria" },
-        { value: "EM", label: "Profesor/Otro" }
-      ],
-      filterKey: "grade"
+        { value: 'EF1', label: '6° o 7° grado' },
+        { value: 'EF2', label: '8° o 9° grado' },
+        { value: 'EM', label: 'Escuela secundaria' },
+        { value: 'EM', label: 'Profesor(a) / Otro' }
+      ]
     },
     {
-      id: 2,
-      question: "🌎 ¿Qué tipo de literatura prefieres?",
-      options: [
-        { value: "brasileira", label: "🇧🇷 Brasileña" },
-        { value: "estrangeira", label: "🌐 Extranjera" },
-        { value:  "qualquer", label: "📖 Cualquiera" }
-      ],
-      filterKey: "type"
+      id: 2, key: 'groups', multiple: true, maxSelections: 3,
+      question: '📚 ¿Qué tipo de historia te llama?',
+      options: Object.keys(GENRE_GROUPS).map(key => ({ value: key, label: quizText.es.groups[key] }))
     },
     {
-      id: 3,
-      question: "📖 ¿Qué géneros te gustan más? (Selecciona hasta 4)",
-      options: [...allGenres].sort((a, b) => (genreTranslations.pt[a] || a).localeCompare(genreTranslations.pt[b] || b)).map(genre => ({
-        value: genre,
-        label: genreTranslations.es[genre] || genre
-      })),
-      filterKey: "genres",
-      multiple: true,
-      maxSelections: 4
+      id: 3, key: 'vibes', multiple: true, maxSelections: 3,
+      question: '✨ ¿Cómo quieres sentirte al leer?',
+      options: [
+        { value: 'emocionante', label: '😢 Emocionado(a)' },
+        { value: 'engracado', label: '😂 Riéndome fuerte' },
+        { value: 'misterio', label: '🕵️ Curioso(a) por saber el final' },
+        { value: 'aventura', label: '🏹 Con adrenalina' },
+        { value: 'romantico', label: '💘 Enamorado(a)' },
+        { value: 'reflexivo', label: '🤔 Pensando en la vida' },
+        { value: 'leve', label: '🌿 Ligero y tranquilo' },
+        { value: 'inspirador', label: '💪 Inspirado(a)' },
+        { value: 'assustador', label: '😱 Con miedo' },
+        { value: 'pesado', label: '🤯 Impactado(a), puede ser intenso' }
+      ]
     },
     {
-      id: 4,
-      question: "📖 ¿Qué tipo de experiencia buscas? (Selecciona hasta 3)",
-      options: [
-        { value: "emocionar", label: "😢 Emoción/Drama" },
-        { value: "surpreender", label: "😲 Misterio/Suspenso" },
-        { value: "refletir", label: "🤔 Reflexión" },
-        { value: "rir", label: "😂 Comedia" },
-        { value: "aventura", label: "🏹 Acción/Aventura" },
-        { value: "acalmar", label: "🌿 Lectura ligera" },
-        { value: "assustar", label: "😨 Terror" },
-        { value: "perturbar", label: "🤯 Intenso" },
-        { value: "divertir", label: "😊 Entretenimiento" },
-        { value: "inspirar", label: "🧠 Superación" }
-      ],
-      filterKey: "mood",
-      multiple: true,
-      maxSelections: 3
+      id: 4, key: 'liked', type: 'book-search', optional: true,
+      question: '❤️ ¿Qué libro ya leíste y te encantó?'
     },
     {
-      id: 5,
-      question: "⏳ ¿Prefieres historias que ocurren en el:",
+      id: 5, key: 'length',
+      question: '⏱️ ¿Qué tamaño de libro va contigo?',
       options: [
-        { value: "presente", label: "📅 Presente" },
-        { value: "passado", label: "🏺 Pasado" },
-        { value: "futuro", label: "🚀 Futuro" },
-        { value: "todos", label: "🌈 Cualquier época" }
-      ],
-      filterKey: "time"
+        { value: 'curto', label: '📖 Cortito, leo de a poco' },
+        { value: 'medio', label: '📚 Mediano, tranquilo' },
+        { value: 'longo', label: '🧱 ¡Puede ser un ladrillo!' },
+        { value: 'qualquer', label: '🤷 Me da igual' }
+      ]
+    },
+    {
+      id: 6, key: 'type',
+      question: '🌎 ¿Prefieres autores de Brasil o de fuera?',
+      options: [
+        { value: 'brasileira', label: '🇧🇷 De Brasil' },
+        { value: 'estrangeira', label: '🌐 De fuera (incluye Portugal)' },
+        { value: 'qualquer', label: '📖 Me da igual' }
+      ]
+    },
+    {
+      id: 7, key: 'avoid', multiple: true, optional: true,
+      question: '🚫 ¿Hay algo que NO quieres de ninguna manera?',
+      options: [
+        { value: 'terror', label: '👻 Terror' },
+        { value: 'pesado', label: '🌧️ Historias pesadas o tristes' },
+        { value: 'amor', label: '💔 Romance (historia de amor)' },
+        { value: 'poesia', label: '✒️ Poesía' },
+        { value: 'teatro', label: '🎟️ Teatro' },
+        { value: 'longo', label: '🧱 Libros largos' },
+        { value: 'classicos', label: '📜 Clásicos antiguos' }
+      ]
     }
   ]
 };
@@ -834,8 +948,8 @@ const elements = {
   quizScreen: document.getElementById('quiz-screen'),
   resultScreen: document.getElementById('result-screen'),
   libraryScreen: document.getElementById('library-screen'),
-  quizForm: document.getElementById('quizForm'),
   questionText: document.getElementById('questionText'),
+  questionHint: document.getElementById('questionHint'),
   optionsContainer: document.getElementById('optionsContainer'),
   prevBtn: document.getElementById('prevBtn'),
   nextBtn: document.getElementById('nextBtn'),
@@ -843,14 +957,17 @@ const elements = {
   progressText: document.getElementById('progressText'),
   questionIndicator: document.getElementById('questionIndicator'),
   resultTitle: document.getElementById('resultTitle'),
-  availableBooks: document.getElementById('availableBooks'),
-  unavailableBooks: document.getElementById('unavailableBooks'),
+  resultEyebrow: document.getElementById('resultEyebrow'),
+  topPick: document.getElementById('topPick'),
+  resultsGrid: document.getElementById('resultsGrid'),
+  moreResultsTitle: document.getElementById('moreResultsTitle'),
+  onlyAvailableToggle: document.getElementById('onlyAvailableToggle'),
+  onlyAvailableLabel: document.getElementById('onlyAvailableLabel'),
   vestibularBtn: document.getElementById('vestibularBtn'),
+  homeVestibularBtn: document.getElementById('homeVestibularBtn'),
   shareBtn: document.getElementById('shareBtn'),
   restartBtn: document.getElementById('restartBtn'),
   vestibularModal: document.getElementById('vestibularModal'),
-  closeModal: document.querySelectorAll('.close-modal'),
-  langButtons: document.querySelectorAll('.lang-btn'),
   fallbackBooks: document.getElementById('fallbackBooks'),
   fallbackBooksList: document.getElementById('fallbackBooksList'),
   exploreBtn: document.getElementById('exploreBtn'),
@@ -867,7 +984,7 @@ const elements = {
   shareMessage: document.getElementById('shareMessage'),
   qrCodeContainer: document.getElementById('qrCodeContainer'),
   breadcrumbs: document.getElementById('breadcrumbs'),
-  homeBreadcrumb: document.getElementById('homeBreadcrumb'),
+  brandLink: document.getElementById('brandLink'),
   loadingResults: document.getElementById('loadingResults'),
   resultsContent: document.getElementById('resultsContent'),
   authorModal: document.getElementById('authorModal'),
@@ -889,14 +1006,13 @@ const elements = {
 const state = {
   currentLanguage: 'pt',
   currentQuestion: 0,
-  answers: [],
-  filteredBooks: [],
-  displayedBooksCount: 6,
+  answers: {},
+  answerOption: {},
+  recommendations: [],
+  lastFilters: null,
+  displayedBooksCount: 8,
   lastRecommendedBook: null,
-  currentScreen: 'home',
-  breadcrumbs: {
-    home: { name: 'Home', element: elements.homeBreadcrumb }
-  },
+  currentScreen: 'home'
 };
 
 // Função para pré-processar os dados (executar uma vez no carregamento)
@@ -920,12 +1036,6 @@ function init() {
     setupEventListeners();
   } catch (e) {
     console.error('Erro ao configurar os botões da página:', e);
-  }
-
-  try {
-    loadRandomBackground();
-  } catch (e) {
-    console.error('Erro ao carregar imagem de fundo:', e);
   }
 
   try {
@@ -975,15 +1085,14 @@ function setupEventListeners() {
   });
   elements.libraryBtn.addEventListener('click', showLibraryScreen);
   
-  // Botões de idioma
-  document.querySelectorAll('.home-btn[data-lang]').forEach(btn => {
+  elements.brandLink.addEventListener('click', goToHomeScreen);
+  elements.homeVestibularBtn.addEventListener('click', showVestibularModal);
+
+  // Quiz em espanhol
+  document.querySelectorAll('[data-lang]').forEach(btn => {
     btn.addEventListener('click', () => {
       state.currentLanguage = btn.dataset.lang;
-      if (document.getElementById('stats-screen').classList.contains('active')) {
-        updateStatsScreen();
-      } else {
-        startQuiz();
-      }
+      startQuiz();
     });
   });
   
@@ -998,12 +1107,17 @@ function setupEventListeners() {
   elements.backToHomeFromResults.addEventListener('click', goToHomeScreen);
   elements.backToHomeFromLibrary.addEventListener('click', goToHomeScreen);
   
-  // Botão de mais recomendações
+  // Botão de mais recomendações e filtro "só Leia SP"
   elements.moreBooksBtn.addEventListener('click', loadMoreBooks);
+  elements.onlyAvailableToggle.addEventListener('change', () => {
+    state.displayedBooksCount = 8;
+    renderResults();
+  });
   
   // Navegação da tela de estatísticas
   elements.backToHomeBtn.addEventListener('click', goToHomeScreen);
   elements.startFromStatsBtn.addEventListener('click', () => {
+    state.currentLanguage = 'pt';
     startQuiz();
   });
   
@@ -1192,14 +1306,14 @@ function updateBreadcrumbs() {
   // Sempre começa com Home
   const homeCrumb = document.createElement('a');
   homeCrumb.href = '#';
-  homeCrumb.textContent = 'Home';
+  homeCrumb.textContent = 'Início';
   homeCrumb.addEventListener('click', goToHomeScreen);
   elements.breadcrumbs.appendChild(homeCrumb);
   
   // Adiciona outras páginas conforme a navegação
   // (com appendChild: usar innerHTML += apagava o clique do link "Home")
   const screenNames = {
-    stats: 'Livros Populares',
+    stats: 'Mais amados',
     quiz: 'Quiz',
     results: 'Resultados',
     library: 'Biblioteca'
@@ -1220,7 +1334,7 @@ function goToHomeScreen(e) {
   if (e && e.preventDefault) e.preventDefault();
   document.querySelector('.screen.active').classList.remove('active');
   elements.homeScreen.classList.add('active');
-  loadRandomBackground();
+  state.currentLanguage = 'pt';
   state.currentScreen = 'home';
   updateBreadcrumbs();
   renderReadingProgress();
@@ -1339,204 +1453,244 @@ function startQuiz() {
   document.querySelector('.screen.active').classList.remove('active');
   elements.quizScreen.classList.add('active');
   state.currentQuestion = 0;
-  state.answers = [];
+  state.answers = {};
   loadQuestion(state.currentQuestion);
   state.currentScreen = 'quiz';
   updateBreadcrumbs();
+  window.scrollTo(0, 0);
+}
+
+function getQuestions() {
+  return quizQuestions[state.currentLanguage] || quizQuestions.pt;
+}
+
+// A pergunta já foi respondida o suficiente para seguir?
+function isAnswered(question) {
+  const answer = state.answers[question.key];
+  if (question.optional) return true;
+  if (question.multiple) return Array.isArray(answer) && answer.length > 0;
+  return answer !== undefined && answer !== null && answer !== '';
+}
+
+function updateNavButtons(index) {
+  const questions = getQuestions();
+  const question = questions[index];
+  const isLast = index === questions.length - 1;
+  elements.prevBtn.disabled = index === 0;
+  elements.nextBtn.disabled = !isAnswered(question);
+  elements.nextBtn.innerHTML = isLast
+    ? `${t().seeResults} <i class="fas fa-book-open"></i>`
+    : `${t().next} <i class="fas fa-arrow-right"></i>`;
 }
 
 // Carregar pergunta
 function loadQuestion(index) {
-  const questions = quizQuestions[state.currentLanguage];
+  const questions = getQuestions();
   const question = questions[index];
-  
-  // Atualizar progresso
+
   updateProgress(index + 1, questions.length);
-  
-  // Atualizar indicador de perguntas
   updateQuestionIndicator(index, questions.length);
-  
-  // Exibir pergunta
+
   elements.questionText.textContent = question.question;
+  const hints = [];
+  if (question.maxSelections) hints.push(t().upTo(question.maxSelections));
+  if (question.optional) hints.push(t().optionalHint);
+  elements.questionHint.textContent = hints.join(' ');
   elements.optionsContainer.innerHTML = '';
-  
-  // Adicionar opções
-  question.options.forEach(option => {
+  elements.optionsContainer.className = 'options';
+
+  if (question.type === 'book-search') {
+    renderBookSearchQuestion(question, index);
+  } else {
+    renderOptionsQuestion(question, index);
+  }
+
+  updateNavButtons(index);
+}
+
+function renderOptionsQuestion(question, index) {
+  const questions = getQuestions();
+  elements.optionsContainer.classList.add(question.options.length > 5 ? 'options-grid' : 'options-list');
+
+  question.options.forEach((option, optionIndex) => {
     const optionElement = document.createElement('div');
     optionElement.className = 'option';
     optionElement.dataset.value = option.value;
-    
+
     const input = document.createElement('input');
     input.type = question.multiple ? 'checkbox' : 'radio';
-    input.name = question.multiple ? `answer-${question.id}` : 'answer';
-    input.id = `option-${option.value}-${question.id}`;
+    input.name = `answer-${question.id}`;
+    input.id = `option-${question.id}-${optionIndex}`;
     input.value = option.value;
-    
-    // Marcar se já foi respondido
-    if (state.answers[index]) {
-      if (question.multiple) {
-        input.checked = state.answers[index].includes(option.value);
-      } else {
-        input.checked = state.answers[index] === option.value;
-      }
-      
-      // Adicionar classe selected se estiver marcado
-      if (input.checked) {
-        optionElement.classList.add('selected');
-      }
+
+    // Marcar se já foi respondido (no "Professor/Outro" o valor repete, então guarda qual opção foi clicada)
+    const answer = state.answers[question.key];
+    if (question.multiple) {
+      input.checked = Array.isArray(answer) && answer.includes(option.value);
+    } else {
+      input.checked = answer === option.value && state.answerOption?.[question.key] === optionIndex;
     }
-    
+    if (input.checked) optionElement.classList.add('selected');
+
     const label = document.createElement('label');
-    label.htmlFor = `option-${option.value}-${question.id}`;
+    label.htmlFor = input.id;
     label.textContent = option.label;
-    
+
     optionElement.appendChild(input);
     optionElement.appendChild(label);
-    
-    // Event listener para o elemento de opção inteiro
+
     optionElement.addEventListener('click', (e) => {
       // Clique direto na caixinha: o navegador já marcou/desmarcou sozinho.
       // Clique no texto ou no cartão: impede o clique duplicado do <label> e alterna aqui.
       const clickedInput = e.target === input;
       if (!clickedInput) e.preventDefault();
 
-      // Se for questão de múltipla escolha (checkbox)
       if (question.multiple) {
-        if (!clickedInput) input.checked = !input.checked; // Alterna o estado
+        if (!clickedInput) input.checked = !input.checked;
 
-        // Respeita o limite ("Selecione até 4")
+        // Respeita o limite ("Escolha até 3")
         if (input.checked && question.maxSelections) {
-          const checkedCount = document.querySelectorAll(`input[name="answer-${question.id}"]:checked`).length;
+          const checkedCount = elements.optionsContainer.querySelectorAll('input:checked').length;
           if (checkedCount > question.maxSelections) {
             input.checked = false;
-            alert(state.currentLanguage === 'pt'
-              ? `Você pode escolher até ${question.maxSelections} opções.`
-              : `Puedes elegir hasta ${question.maxSelections} opciones.`);
+            alert(t().limit(question.maxSelections));
             return;
           }
         }
 
-        // Atualiza a seleção visual
-        if (input.checked) {
-          optionElement.classList.add('selected');
-        } else {
-          optionElement.classList.remove('selected');
-        }
-        
-        // Atualiza o estado das respostas
-        const selectedOptions = Array.from(
-          document.querySelectorAll(`input[name="answer-${question.id}"]:checked`)
+        optionElement.classList.toggle('selected', input.checked);
+        state.answers[question.key] = Array.from(
+          elements.optionsContainer.querySelectorAll('input:checked')
         ).map(el => el.value);
-        
-        state.answers[index] = selectedOptions;
-      } 
-      // Se for questão de única escolha (radio)
-      else {
-        // Remove a seleção de todas as outras opções
-        document.querySelectorAll(`input[name="answer"]`).forEach(otherInput => {
-          otherInput.checked = false;
-        });
-        document.querySelectorAll('.option').forEach(otherOption => {
-          otherOption.classList.remove('selected');
-        });
-        
-        // Seleciona a opção atual
+      } else {
+        elements.optionsContainer.querySelectorAll('input').forEach(other => { other.checked = false; });
+        elements.optionsContainer.querySelectorAll('.option').forEach(other => other.classList.remove('selected'));
         input.checked = true;
         optionElement.classList.add('selected');
-        state.answers[index] = option.value;
+        state.answers[question.key] = option.value;
+        state.answerOption = { ...(state.answerOption || {}), [question.key]: optionIndex };
       }
-      
-      // Atualizar indicador de perguntas
+
       updateQuestionIndicator(index, questions.length);
-      
-      // Atualizar estado do botão próximo
-      elements.nextBtn.disabled = !state.answers[index] || 
-        (question.multiple && state.answers[index].length === 0);
+      updateNavButtons(index);
     });
-    
+
     elements.optionsContainer.appendChild(optionElement);
   });
-  
-  // Atualizar botões de navegação
-  elements.prevBtn.disabled = index === 0;
-  elements.nextBtn.disabled = !state.answers[index] || 
-    (question.multiple && state.answers[index].length === 0);
 }
 
-function updateOptionSelection(questionIndex) {
-  const questions = quizQuestions[state.currentLanguage];
-  const question = questions[questionIndex];
-  const options = elements.optionsContainer.querySelectorAll('.option');
-  
-  options.forEach(option => {
-    const input = option.querySelector('input');
-    const value = option.dataset.value;
-    
-    if (question.multiple) {
-      // Para múltipla escolha
-      if (state.answers[questionIndex] && state.answers[questionIndex].includes(value)) {
-        option.classList.add('selected');
-        input.checked = true;
-      } else {
-        option.classList.remove('selected');
-        input.checked = false;
-      }
-    } else {
-      // Para única escolha
-      if (state.answers[questionIndex] === value) {
-        option.classList.add('selected');
-        input.checked = true;
-      } else {
-        option.classList.remove('selected');
-        input.checked = false;
-      }
+// Pergunta "Qual livro você já leu e amou?": busca na lista de livros
+function renderBookSearchQuestion(question, index) {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'book-search';
+
+  const chosenId = state.answers[question.key];
+  const chosenBook = chosenId ? findBookById(chosenId) : null;
+
+  if (chosenBook) {
+    wrapper.innerHTML = `
+      <div class="book-search-chosen">
+        <img src="${escapeHtml(chosenBook.cover || PLACEHOLDER_COVER)}" alt="" onerror="this.onerror=null;this.src='assets/sem-capa.svg'">
+        <div>
+          <small>${t().chosen}</small>
+          <strong>${escapeHtml(chosenBook.title)}</strong>
+          <span>${escapeHtml(chosenBook.author)}</span>
+        </div>
+        <button type="button" class="btn btn-ghost btn-small" id="clearLikedBtn">${t().remove}</button>
+      </div>`;
+    elements.optionsContainer.appendChild(wrapper);
+    document.getElementById('clearLikedBtn').addEventListener('click', () => {
+      delete state.answers[question.key];
+      loadQuestion(index);
+    });
+    return;
+  }
+
+  wrapper.innerHTML = `
+    <div class="search-container">
+      <i class="fas fa-search"></i>
+      <input type="search" id="likedBookSearch" autocomplete="off" placeholder="${escapeHtml(t().searchPlaceholder)}" aria-label="${escapeHtml(t().searchPlaceholder)}">
+    </div>
+    <p class="book-search-help">${t().pickBook}</p>
+    <div class="book-search-results" id="likedBookResults"></div>`;
+  elements.optionsContainer.appendChild(wrapper);
+
+  const input = document.getElementById('likedBookSearch');
+  const results = document.getElementById('likedBookResults');
+
+  const render = () => {
+    const term = normalizeText(input.value.trim());
+    results.innerHTML = '';
+    if (term.length < 2) return;
+
+    const matches = booksDatabase
+      .filter(book => normalizeText(book.title).includes(term) || normalizeText(book.author).includes(term))
+      .sort((a, b) => (b.popularity || 0) - (a.popularity || 0))
+      .slice(0, 6);
+
+    if (matches.length === 0) {
+      results.innerHTML = `<p class="book-search-empty">${t().noMatch}</p>`;
+      return;
     }
-  });
+
+    matches.forEach(book => {
+      const item = document.createElement('button');
+      item.type = 'button';
+      item.className = 'book-search-item';
+      item.innerHTML = `<strong>${escapeHtml(book.title)}</strong><span>${escapeHtml(book.author)}</span>`;
+      item.addEventListener('click', () => {
+        state.answers[question.key] = book.id;
+        loadQuestion(index);
+      });
+      results.appendChild(item);
+    });
+  };
+
+  input.addEventListener('input', debounce(render, 150));
+  setTimeout(() => input.focus({ preventScroll: true }), 50);
 }
 
 // Atualizar indicador de perguntas
 function updateQuestionIndicator(currentIndex, totalQuestions) {
+  const questions = getQuestions();
   elements.questionIndicator.innerHTML = '';
-  
+
   for (let i = 0; i < totalQuestions; i++) {
     const dot = document.createElement('div');
     dot.className = 'question-dot';
-    
+
+    const answer = state.answers[questions[i].key];
+    const hasAnswer = Array.isArray(answer) ? answer.length > 0 : answer !== undefined;
     if (i === currentIndex) {
       dot.classList.add('active');
-    } else if (state.answers[i]) {
+    } else if (hasAnswer) {
       dot.classList.add('answered');
     }
-    
+
     elements.questionIndicator.appendChild(dot);
   }
 }
 
 // Atualizar barra de progresso
 function updateProgress(current, total) {
-  const percentage = (current / total) * 100;
-  elements.progressBar.style.width = `${percentage}%`;
-  elements.progressText.textContent = state.currentLanguage === 'pt' 
-    ? `Pergunta ${current} de ${total}` 
-    : `Pregunta ${current} de ${total}`;
+  elements.progressBar.style.width = `${(current / total) * 100}%`;
+  elements.progressText.textContent = t().question(current, total);
 }
 
 // Navegação
 function goToNextQuestion() {
-  const questions = quizQuestions[state.currentLanguage];
-  const currentQuestion = questions[state.currentQuestion];
-  
-  if (!state.answers[state.currentQuestion] || 
-      (currentQuestion.multiple && state.answers[state.currentQuestion].length === 0)) {
-    alert(state.currentLanguage === 'pt' 
-      ? 'Por favor, selecione uma opção' 
-      : 'Por favor, seleccione una opción');
+  const questions = getQuestions();
+  const question = questions[state.currentQuestion];
+
+  if (!isAnswered(question)) {
+    alert(t().pleaseChoose);
     return;
   }
-  
+
   if (state.currentQuestion < questions.length - 1) {
     state.currentQuestion++;
     loadQuestion(state.currentQuestion);
+    elements.quizScreen.scrollIntoView({ block: 'start' });
   } else {
     showResults();
   }
@@ -1546,374 +1700,368 @@ function goToPreviousQuestion() {
   if (state.currentQuestion > 0) {
     state.currentQuestion--;
     loadQuestion(state.currentQuestion);
-    
-    // Atualiza a seleção visual para a pergunta anterior
-    updateOptionSelection(state.currentQuestion);
   }
 }
 
+// ===== Sistema de recomendação =====
+//
+// Cada livro ganha pontos em partes (o máximo de cada parte está em SCORE_MAX):
+//  - tipo de história (grupos) e sensação (vibes) são as partes que mais pesam;
+//  - "livro que você amou" puxa livros parecidos com ele;
+//  - tamanho e série ajustam;
+//  - popularidade e Leia SP só desempatam.
+// O que a pessoa disse que NÃO quer, livros que ela já marcou como lidos e livros fora da série saem da lista.
+const SCORE_MAX = { groups: 30, vibes: 25, liked: 25, length: 8, grade: 8, popularity: 3, available: 1 };
 
-// Sistema de recomendação melhorado
+const LENGTH_ORDER = ['curto', 'medio', 'longo'];
+const GRADE_ORDER = ['EF1', 'EF2', 'EM'];
 
-// Pesos de cada pergunta (ficam só nas perguntas em português;
-// antes o quiz em espanhol ficava sem peso e a pontuação virava NaN)
-function getQuestionWeight(filterKey) {
-  const question = quizQuestions.pt.find(q => q.filterKey === filterKey);
-  return (question && question.weight) || 0;
+// "J.K. Rowling" e "J. K. Rowling" são a mesma pessoa
+function authorKey(author) {
+  return normalizeText(author).replace(/[^a-z0-9]/g, '');
 }
 
-// Experiências parecidas contam como a mesma coisa
-// (nenhum livro usa "rir", mas vários usam "divertir")
-const MOOD_ALIASES = {
-  rir: ['divertir'],
-  divertir: ['rir'],
-  surpreender: ['intrigar'],
-  perturbar: ['chocar']
-};
-
-function getMatchingMoods(book, selectedMoods) {
-  const bookMoods = asArray(book.mood);
-  return asArray(selectedMoods).filter(mood =>
-    bookMoods.includes(mood) || (MOOD_ALIASES[mood] || []).some(alias => bookMoods.includes(alias))
-  );
+function jaccard(a, b) {
+  const setA = new Set(a);
+  const setB = new Set(b);
+  if (setA.size === 0 && setB.size === 0) return 0;
+  let common = 0;
+  setA.forEach(item => { if (setB.has(item)) common++; });
+  return common / (setA.size + setB.size - common);
 }
 
-function calculateBookScore(book, filters) {
-  let score = 0;
-  const bookGenres = asArray(book.genres);
-  const bookGrades = asArray(book.grade);
+// Quão parecidos dois livros são (0 a 1)
+function bookSimilarity(a, b) {
+  return 0.35 * jaccard(getBookGroups(a), getBookGroups(b)) +
+         0.35 * jaccard(getBookVibes(a), getBookVibes(b)) +
+         0.15 * jaccard(asArray(a.genres), asArray(b.genres)) +
+         0.15 * (authorKey(a.author) === authorKey(b.author) ? 1 : 0);
+}
 
-  // 1. Gênero literário (maior peso)
-  if (filters.genres?.length > 0 && bookGenres.length > 0) {
-    // Priorizar livros que combinam com múltiplos gêneros selecionados
-    const matchingGenres = bookGenres.filter(g => filters.genres.includes(g));
+// Número estável a partir de um texto (pra desempatar sem ser sempre na mesma ordem)
+function stableHash(text) {
+  let hash = 2166136261;
+  for (let i = 0; i < text.length; i++) {
+    hash ^= text.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return (hash >>> 0) / 4294967295;
+}
 
-    // Pontuar mais se combinar com vários gêneros
-    score += (matchingGenres.length / filters.genres.length) * getQuestionWeight('genres');
-
-    // Bônus adicional se combinar com pelo menos 2 gêneros
-    if (matchingGenres.length >= 2) {
-      score += 10;
+function isAvoided(book, avoid) {
+  if (!avoid || avoid.length === 0) return false;
+  const groups = getBookGroups(book);
+  const vibes = getBookVibes(book);
+  const genres = asArray(book.genres);
+  return avoid.some(item => {
+    switch (item) {
+      case 'terror': return groups.includes('terror');
+      case 'pesado': return vibes.includes('pesado') || vibes.includes('assustador');
+      case 'amor': return vibes.includes('romantico');
+      case 'poesia': return genres.includes('poesia');
+      case 'teatro': return genres.includes('teatro') || genres.includes('tragedia');
+      case 'longo': return book.tamanho === 'longo';
+      case 'classicos': return groups.includes('classicos') && asArray(book.time).includes('passado');
+      default: return false;
     }
-  }
-
-  // 2. Faixa etária (peso médio)
-  if (bookGrades.includes(filters.grade)) {
-    score += getQuestionWeight('grade'); // Match exato
-  } else if (
-    (filters.grade === 'EF2' && bookGrades.includes('EF1')) ||
-    (filters.grade === 'EM' && bookGrades.includes('EF2'))
-  ) {
-    score += 10; // Faixa próxima
-  }
-
-  // 3. Compatibilidade com humor (peso médio)
-  if (getMatchingMoods(book, filters.mood).length > 0) {
-    score += getQuestionWeight('mood');
-  }
-
-  // 4. Tipo de literatura (menor peso)
-  if (filters.type !== 'qualquer' && matchesType(book, filters.type)) {
-    score += getQuestionWeight('type'); // Match exato
-  }
-
-  // 5. Época da história (essa resposta antes era ignorada)
-  if (filters.time && filters.time !== 'todos' && asArray(book.time).includes(filters.time)) {
-    score += getQuestionWeight('time');
-  }
-
-  // 6. Popularidade (pequeno bônus)
-  score += (book.popularity || 5) * 0.1; // Converte 1-10 para 0.5-5
-
-  // 7. Disponibilidade (Bônus absoluto)
-  if (book.available) score += 1;
-
-  return score;
+  });
 }
 
-// Obter motivo da recomendação
-function getRecommendationReason(book, filters) {
-  const pt = state.currentLanguage === 'pt';
+function fitsGrade(book, grade) {
+  const grades = asArray(book.grade);
+  if (!grade || grades.length === 0) return true;
+  // 6°-7° ano não recebe livro só de Ensino Médio
+  if (grade === 'EF1') return !grades.every(g => g === 'EM');
+  return true;
+}
+
+function scoreBook(book, filters) {
+  const parts = {};
+  const max = {};
+  const bookGroups = getBookGroups(book);
+  const bookVibes = getBookVibes(book);
+
+  if (filters.groups.length > 0) {
+    const matched = filters.groups.filter(g => bookGroups.includes(g));
+    parts.groups = SCORE_MAX.groups * (matched.length / filters.groups.length);
+    max.groups = SCORE_MAX.groups;
+  }
+
+  if (filters.vibes.length > 0) {
+    const matched = filters.vibes.filter(v => bookVibes.includes(v));
+    parts.vibes = SCORE_MAX.vibes * (matched.length / filters.vibes.length);
+    max.vibes = SCORE_MAX.vibes;
+  }
+
+  if (filters.likedBook) {
+    parts.liked = SCORE_MAX.liked * bookSimilarity(book, filters.likedBook);
+    max.liked = SCORE_MAX.liked;
+  }
+
+  if (filters.length && filters.length !== 'qualquer') {
+    const wanted = LENGTH_ORDER.indexOf(filters.length);
+    const actual = LENGTH_ORDER.indexOf(book.tamanho);
+    if (actual === -1) parts.length = SCORE_MAX.length * 0.5; // tamanho desconhecido: meio-termo
+    else if (actual === wanted) parts.length = SCORE_MAX.length;
+    else if (Math.abs(actual - wanted) === 1) parts.length = SCORE_MAX.length * 0.4;
+    else parts.length = 0;
+    max.length = SCORE_MAX.length;
+  }
+
+  if (filters.grade) {
+    const grades = asArray(book.grade);
+    const wanted = GRADE_ORDER.indexOf(filters.grade);
+    const distance = grades.length === 0
+      ? 1
+      : Math.min(...grades.map(g => Math.abs(GRADE_ORDER.indexOf(g) - wanted)));
+    parts.grade = distance === 0 ? SCORE_MAX.grade : distance === 1 ? SCORE_MAX.grade * 0.5 : 0;
+    max.grade = SCORE_MAX.grade;
+  }
+
+  parts.popularity = SCORE_MAX.popularity * ((book.popularity || 5) / 10);
+  max.popularity = SCORE_MAX.popularity;
+  parts.available = book.available ? SCORE_MAX.available : 0;
+  max.available = SCORE_MAX.available;
+
+  const score = Object.values(parts).reduce((sum, value) => sum + value, 0);
+  const maxScore = Object.values(max).reduce((sum, value) => sum + value, 0);
+  return { score, match: maxScore > 0 ? score / maxScore : 0, parts };
+}
+
+function getRecommendationReasons(book, filters) {
+  const text = t();
   const reasons = [];
+  const bookGroups = getBookGroups(book);
+  const bookVibes = getBookVibes(book);
 
-  // Gênero
-  if (filters.genres?.length > 0) {
-    const matchingGenres = asArray(book.genres).filter(g => filters.genres.includes(g));
-    if (matchingGenres.length > 0) {
-      const genreLabels = matchingGenres.map(g => genreTranslations[state.currentLanguage][g] || g);
-      reasons.push(pt
-        ? `combina com seu gosto por ${genreLabels.join(', ')}`
-        : `combina con tu gusto por ${genreLabels.join(', ')}`);
-    }
+  const groups = filters.groups.filter(g => bookGroups.includes(g));
+  if (groups.length > 0) {
+    reasons.push(`${text.reasonGroup} ${groups.map(g => text.groups[g].replace(/^\S+\s/, '').toLowerCase()).join(' + ')}`);
   }
 
-  // Faixa etária
-  if (asArray(book.grade).includes(filters.grade)) {
-    reasons.push(pt ? 'é indicado para sua série' : 'es adecuado para tu grado');
+  const vibes = filters.vibes.filter(v => bookVibes.includes(v));
+  if (vibes.length > 0) {
+    reasons.push(`${text.reasonVibe} ${vibes.map(v => text.vibes[v]).join(', ')}`);
   }
 
-  // Humor/experiência
-  const matchingMoods = getMatchingMoods(book, filters.mood);
-  if (matchingMoods.length > 0) {
-    const moodTranslations = {
-      pt: {
-        emocionar: 'emocionante', surpreender: 'surpreendente', refletir: 'reflexiva',
-        rir: 'divertida', aventura: 'aventureira', acalmar: 'leve', assustar: 'assustadora',
-        perturbar: 'intensa', divertir: 'divertida', inspirar: 'inspiradora'
-      },
-      es: {
-        emocionar: 'emocionante', surpreender: 'sorprendente', refletir: 'reflexiva',
-        rir: 'divertida', aventura: 'aventurera', acalmar: 'ligera', assustar: 'aterradora',
-        perturbar: 'intensa', divertir: 'divertida', inspirar: 'inspiradora'
-      }
-    };
-    const translations = moodTranslations[state.currentLanguage] || moodTranslations.pt;
-    const moodLabels = Array.from(new Set(matchingMoods.map(m => translations[m] || m)));
-    reasons.push(pt
-      ? `oferece uma experiência ${moodLabels.join(' e ')}`
-      : `ofrece una experiencia ${moodLabels.join(' y ')}`);
+  if (filters.likedBook && bookSimilarity(book, filters.likedBook) >= 0.35) {
+    reasons.push(`${text.reasonLiked} "${filters.likedBook.title}"`);
   }
 
-  // Tipo de literatura
-  if (filters.type !== 'qualquer' && matchesType(book, filters.type)) {
-    if (filters.type === 'brasileira') {
-      reasons.push(pt ? 'é literatura brasileira' : 'es literatura brasileña');
-    } else {
-      reasons.push(pt ? 'é literatura estrangeira' : 'es literatura extranjera');
-    }
+  if (filters.length && filters.length !== 'qualquer' && book.tamanho === filters.length) {
+    reasons.push(`${text.reasonLength} ${text.lengths[book.tamanho]}`);
   }
 
-  // Se não encontrou razões específicas, usar uma mensagem genérica
-  if (reasons.length === 0) {
-    return pt
-      ? 'Recomendado com base em livros populares'
-      : 'Recomendado basado en libros populares';
-  }
-
-  // Formatar a mensagem final
-  const and = pt ? ' e ' : ' y ';
-  let message = 'Recomendado porque ';
-  if (reasons.length === 1) {
-    message += reasons[0];
-  } else {
-    message += reasons.slice(0, -1).join(', ') + and + reasons[reasons.length - 1];
-  }
-
-  return message;
+  if (book.available) reasons.push(text.reasonAvailable);
+  return reasons;
 }
 
-// FUNÇÃO OTIMIZADA - Substitui a versão anterior
-function getRecommendedBooks(filters) {
-  // Verificar se podemos usar resultados em cache
-  const filtersKey = JSON.stringify({ ...filters, lang: state.currentLanguage });
-  if (lastFilters === filtersKey && cachedResults) {
-    return cachedResults;
-  }
+// Reordena para não vir uma lista só do mesmo autor ou do mesmo tipo de livro
+function diversify(scored, limit) {
+  const pool = [...scored];
+  const picked = [];
+  const authorCount = {};
+  const groupCount = {};
 
-  lastFilters = filtersKey;
-
-  // 1. Filtro inicial usando índices para melhor performance
-  let candidateIndexes = new Set();
-
-  // Filtro por gênero (se especificado) - uso do índice
-  if (filters.genres && filters.genres.length > 0) {
-    filters.genres.forEach(genre => {
-      if (genreIndex[genre]) {
-        genreIndex[genre].forEach(idx => candidateIndexes.add(idx));
+  while (pool.length > 0 && picked.length < limit) {
+    let bestIndex = 0;
+    let bestValue = -Infinity;
+    pool.forEach((item, i) => {
+      const sameAuthor = authorCount[authorKey(item.book.author)] || 0;
+      const groups = getBookGroups(item.book);
+      const sameGroups = groups.length ? Math.min(...groups.map(g => groupCount[g] || 0)) : 0;
+      const value = item.score - sameAuthor * 10 - sameGroups * 0.8;
+      if (value > bestValue) {
+        bestValue = value;
+        bestIndex = i;
       }
     });
-  } else {
-    // Se não há filtro de gênero, considerar todos os livros inicialmente
-    booksDatabase.forEach((_, idx) => candidateIndexes.add(idx));
+    const [item] = pool.splice(bestIndex, 1);
+    picked.push(item);
+    authorCount[authorKey(item.book.author)] = (authorCount[authorKey(item.book.author)] || 0) + 1;
+    getBookGroups(item.book).forEach(g => { groupCount[g] = (groupCount[g] || 0) + 1; });
   }
-
-  // Converter Set para array
-  let candidates = Array.from(candidateIndexes).map(idx => booksDatabase[idx]);
-
-  // 2. Aplicar outros filtros de forma eficiente
-  candidates = candidates.filter(book => {
-    // Filtro de faixa etária: 6°-7° ano não recebe livro só de Ensino Médio
-    const grades = asArray(book.grade);
-    if (filters.grade === 'EF1' && grades.length > 0 && grades.every(g => g === 'EM')) return false;
-
-    // Filtro de tipo de literatura
-    if (!matchesType(book, filters.type)) return false;
-
-    return true;
-  });
-
-  // 3. Calcular scores apenas para os candidatos (não para todos os livros)
-  candidates.forEach(book => {
-    // Usar cache de scores se disponível
-    const cacheKey = `${book.id}_${filtersKey}`;
-
-    if (precomputedScores[cacheKey] === undefined) {
-      book.relevanceScore = calculateBookScore(book, filters);
-      precomputedScores[cacheKey] = book.relevanceScore;
-    } else {
-      book.relevanceScore = precomputedScores[cacheKey];
-    }
-
-    book.recommendationReason = getRecommendationReason(book, filters);
-  });
-
-  // 4. Ordenar por score (decrescente)
-  const sortedCandidates = candidates.sort((a, b) => b.relevanceScore - a.relevanceScore);
-
-  // Armazenar em cache
-  cachedResults = sortedCandidates;
-
-  return sortedCandidates;
+  return picked;
 }
 
-function getFallbackRecommendations(filters) {
-  // 1. Tenta relaxar os filtros gradualmente
-  const relaxedFilters = {...filters, type: 'qualquer', mood: ['emocionar', 'divertir'], time: 'todos'};
-  let fallbacks = getRecommendedBooks(relaxedFilters);
-
-  // 2. Se ainda vazio, pega os mais populares do perfil demográfico
-  if (fallbacks.length < 5) {
-    fallbacks = booksDatabase
-      .filter(book => !filters.grade || asArray(book.grade).includes(filters.grade))
-      .sort((a, b) => (b.popularity || 0) - (a.popularity || 0))
-      .slice(0, 8);
-  }
-
-  return fallbacks;
+function buildFilters() {
+  const answers = state.answers;
+  return {
+    grade: answers.grade,
+    groups: asArray(answers.groups),
+    vibes: asArray(answers.vibes),
+    likedBook: answers.liked ? findBookById(answers.liked) : null,
+    length: answers.length,
+    type: answers.type || 'qualquer',
+    avoid: asArray(answers.avoid)
+  };
 }
 
-// Mostrar resultados - VERSÃO OTIMIZADA
+function getRecommendedBooks(filters) {
+  const readIds = getReadBooks();
+  const seedKey = JSON.stringify(filters, (key, value) => key === 'likedBook' ? (value && value.id) : value);
+
+  const candidatesFor = (options) => booksDatabase.filter(book =>
+    (!filters.likedBook || book.id !== filters.likedBook.id) &&
+    !readIds.includes(book.id) &&
+    !isAvoided(book, filters.avoid) &&
+    fitsGrade(book, filters.grade) &&
+    (options.ignoreType || matchesType(book, filters.type))
+  );
+
+  let candidates = candidatesFor({});
+  // Se sobrar pouca coisa, aceita autores de qualquer lugar (mas nunca o que a pessoa disse que NÃO quer)
+  if (candidates.length < 8) {
+    const extra = candidatesFor({ ignoreType: true }).filter(book => !candidates.includes(book));
+    candidates = candidates.concat(extra);
+  }
+
+  const scored = candidates.map(book => {
+    const result = scoreBook(book, filters);
+    // Desempate mínimo e estável (muda conforme as respostas)
+    result.score += stableHash(`${seedKey}#${book.id}`) * 0.01;
+    return { book, ...result };
+  }).sort((a, b) => b.score - a.score);
+
+  return diversify(scored, 60);
+}
+
+// Mostrar resultados
 function showResults() {
   document.querySelector('.screen.active').classList.remove('active');
   elements.resultScreen.classList.add('active');
   state.currentScreen = 'results';
   updateBreadcrumbs();
-  
-  // Mostrar loader enquanto processa
+  window.scrollTo(0, 0);
+
   elements.loadingResults.style.display = 'block';
   elements.resultsContent.style.display = 'none';
-  
-  // Usar setTimeout para não travar a UI
-  setTimeout(() => {
-    // Filtrar livros com base nas respostas
-    const questions = quizQuestions[state.currentLanguage];
-    const filters = {
-      grade: state.answers[0],
-      type: state.answers[1],
-      genres: state.answers[2] || [],
-      mood: state.answers[3],
-      time: state.answers[4]
-    };
 
-    // Usar Promise para processamento assíncrono
-    new Promise((resolve) => {
-      // Obter recomendações principais
-      const filteredBooks = getRecommendedBooks(filters);
-      resolve(filteredBooks);
-    }).then(filteredBooks => {
-      state.filteredBooks = filteredBooks;
-      state.displayedBooksCount = 6;
-      
-      // Se poucos resultados, complementa com fallback
-      if (state.filteredBooks.length < 6) {
-        const fallbacks = getFallbackRecommendations(filters)
-          .filter(fb => !state.filteredBooks.some(b => b.id === fb.id));
-        
-        state.filteredBooks = [...state.filteredBooks, ...fallbacks];
-      }
-      
-      // Armazenar o último livro recomendado para compartilhamento
-      if (state.filteredBooks.length > 0) {
-        state.lastRecommendedBook = state.filteredBooks[0];
-      }
-      
-      // Exibir livros disponíveis
-      const availableBooks = state.filteredBooks.filter(book => book.available);
-      displayBooks(availableBooks.slice(0, state.displayedBooksCount), elements.availableBooks, true);
-      
-      // Exibir livros não disponíveis
-      const unavailableBooks = state.filteredBooks.filter(book => !book.available);
-      displayBooks(unavailableBooks.slice(0, state.displayedBooksCount), elements.unavailableBooks, false);
-      
-      // Mostrar fallback se não houver livros
-      if (availableBooks.length === 0 && unavailableBooks.length === 0) {
-        elements.fallbackBooks.style.display = 'block';
-        
-        // Atualizar a mensagem de fallback de acordo com o idioma
-        const fallbackMessage = elements.fallbackBooks.querySelector('.no-books-message');
-        if (fallbackMessage) {
-          fallbackMessage.textContent = state.currentLanguage === 'pt' 
-            ? 'Não encontramos livros que se encaixem perfeitamente no seu gosto, mas aqui estão algumas excelentes recomendações para qualquer leitor:' 
-            : 'No encontramos libros que se ajusten perfectamente a tus gustos, pero aquí hay algunas excelentes recomendaciones para cualquier lector:';
-        }
-        
-        displayBooks(fallbackBooks, elements.fallbackBooksList, true);
-      } else {
-        elements.fallbackBooks.style.display = 'none';
-      }
-      
-      // Mostrar botão "Mais recomendações" se houver mais livros
-      if (state.filteredBooks.length > state.displayedBooksCount) {
-        elements.moreBooksBtn.style.display = 'block';
-      } else {
-        elements.moreBooksBtn.style.display = 'none';
-      }
-      
-      // Atualizar título principal
-      elements.resultTitle.textContent = state.currentLanguage === 'pt' 
-        ? 'Livros recomendados para você' 
-        : 'Libros recomendados para ti';
-      
-      // Esconder loader e mostrar conteúdo
-      elements.loadingResults.style.display = 'none';
-      elements.resultsContent.style.display = 'block';
-    }).catch(error => {
+  setTimeout(() => {
+    try {
+      const filters = buildFilters();
+      state.lastFilters = filters;
+      state.recommendations = getRecommendedBooks(filters);
+      state.displayedBooksCount = 8;
+      state.lastRecommendedBook = state.recommendations[0] ? state.recommendations[0].book : null;
+
+      const pt = state.currentLanguage === 'pt';
+      elements.resultTitle.textContent = pt ? 'Livros recomendados para você' : 'Libros recomendados para ti';
+      elements.resultEyebrow.textContent = pt ? 'Garimpamos a estante pra você' : 'Buscamos en la estantería para ti';
+      elements.moreResultsTitle.textContent = pt ? 'Mais livros com a sua cara' : 'Más libros con tu estilo';
+      elements.onlyAvailableLabel.textContent = pt ? 'Só os do Leia SP' : 'Solo los de Leia SP';
+      elements.onlyAvailableToggle.checked = false;
+
+      renderResults();
+    } catch (error) {
       console.error('Erro ao calcular recomendações do quiz:', error);
-      elements.loadingResults.style.display = 'none';
-      elements.resultsContent.style.display = 'block';
       elements.resultTitle.textContent = state.currentLanguage === 'pt'
         ? 'Ops! Algo deu errado ao gerar suas recomendações.'
         : '¡Ups! Algo salió mal al generar tus recomendaciones.';
-      // Mostra a lista geral de fallback pra o aluno não ficar sem nada
+      elements.topPick.innerHTML = '';
+      elements.resultsGrid.innerHTML = '';
       elements.fallbackBooks.style.display = 'block';
-      displayBooks(fallbackBooks, elements.fallbackBooksList, true);
-    });
-  }, 100);
+      displayBooks(fallbackBooks, elements.fallbackBooksList);
+    }
+
+    elements.loadingResults.style.display = 'none';
+    elements.resultsContent.style.display = 'block';
+  }, 250);
+}
+
+function renderResults() {
+  const filters = state.lastFilters;
+  const onlyAvailable = elements.onlyAvailableToggle.checked;
+  const list = (state.recommendations || []).filter(item => !onlyAvailable || item.book.available);
+
+  if (list.length === 0) {
+    elements.topPick.innerHTML = '';
+    elements.resultsGrid.innerHTML = '';
+    elements.fallbackBooks.style.display = 'block';
+    const fallbackMessage = elements.fallbackBooks.querySelector('.no-books-message');
+    if (fallbackMessage) {
+      fallbackMessage.textContent = state.currentLanguage === 'pt'
+        ? 'Não encontramos livros que se encaixem perfeitamente no seu gosto, mas aqui estão algumas excelentes recomendações para qualquer leitor:'
+        : 'No encontramos libros que se ajusten perfectamente a tus gustos, pero aquí hay algunas excelentes recomendaciones para cualquier lector:';
+    }
+    displayBooks(fallbackBooks, elements.fallbackBooksList);
+    elements.moreBooksBtn.style.display = 'none';
+    return;
+  }
+
+  elements.fallbackBooks.style.display = 'none';
+  renderTopPick(list[0], filters);
+
+  const rest = list.slice(1, 1 + state.displayedBooksCount);
+  elements.resultsGrid.innerHTML = '';
+  rest.forEach(item => {
+    const reasons = getRecommendationReasons(item.book, filters);
+    elements.resultsGrid.appendChild(createBookCard(item.book, {
+      reason: reasons[0],
+      hideDescription: true
+    }));
+  });
+  setupLazyLoading();
+
+  elements.moreBooksBtn.style.display = list.length > 1 + state.displayedBooksCount ? 'flex' : 'none';
+}
+
+function matchPercent(match) {
+  return Math.max(1, Math.min(99, Math.round(match * 100)));
+}
+
+function renderTopPick(item, filters) {
+  const book = item.book;
+  const text = t();
+  const reasons = getRecommendationReasons(book, filters);
+
+  elements.topPick.innerHTML = `
+    <div class="top-pick-cover">
+      <img src="${escapeHtml(book.cover || PLACEHOLDER_COVER)}" alt="Capa do livro: ${escapeHtml(book.title)}"
+           onerror="this.onerror=null;this.src='assets/sem-capa.svg'">
+      <span class="match-stamp"><strong>${matchPercent(item.match)}%</strong>${escapeHtml(text.matchLabel)}</span>
+    </div>
+    <div class="top-pick-info">
+      <p class="eyebrow">${escapeHtml(text.topPick)}</p>
+      <h3>${escapeHtml(book.title)}</h3>
+      <p class="top-pick-author">${escapeHtml(book.author)}</p>
+      <ul class="reason-list">${reasons.map(r => `<li>${escapeHtml(r)}</li>`).join('')}</ul>
+      ${book.description ? `<p class="top-pick-description">${escapeHtml(book.description)}</p>` : ''}
+      <div class="top-pick-actions">
+        <button class="btn btn-primary" id="topPickDetailsBtn"><i class="fas fa-book-open"></i> ${escapeHtml(text.details)}</button>
+        ${favoriteButtonHtml(book.id)}
+      </div>
+    </div>
+  `;
+
+  document.getElementById('topPickDetailsBtn').addEventListener('click', () => showBookModal(book.id));
+  fetchCorrectCover(book).then(url => {
+    const img = elements.topPick.querySelector('.top-pick-cover img');
+    if (url && img) img.src = url;
+  });
 }
 
 // Carregar mais livros
 function loadMoreBooks() {
-  state.displayedBooksCount += 6;
-  
-  // Exibir livros disponíveis
-  const availableBooks = state.filteredBooks.filter(book => book.available);
-  displayBooks(availableBooks.slice(0, state.displayedBooksCount), elements.availableBooks, true);
-  
-  // Exibir livros não disponíveis
-  const unavailableBooks = state.filteredBooks.filter(book => !book.available);
-  displayBooks(unavailableBooks.slice(0, state.displayedBooksCount), elements.unavailableBooks, false);
-  
-  // Esconder botão se não houver mais livros
-  if (state.filteredBooks.length <= state.displayedBooksCount) {
-    elements.moreBooksBtn.style.display = 'none';
-  }
+  state.displayedBooksCount += 8;
+  renderResults();
 }
 
 // Exibir livros na tela
-function displayBooks(books, container, isAvailable) {
+function displayBooks(books, container) {
   container.innerHTML = '';
-  
+
   if (books.length === 0) {
-    container.innerHTML = '<p class="no-books">' + 
-      (state.currentLanguage === 'pt' ? 'Nenhum livro encontrado' : 'No se encontraron libros') + 
+    container.innerHTML = '<p class="no-books">' +
+      (state.currentLanguage === 'pt' ? 'Nenhum livro encontrado' : 'No se encontraron libros') +
       '</p>';
     return;
   }
-  
+
   books.forEach(book => {
     container.appendChild(createBookCard(book));
   });
-  
+
   // Ativa o lazy loading para as novas imagens
   setupLazyLoading();
 }
@@ -2083,58 +2231,12 @@ function shareOnInstagram() {
 
 // Reiniciar quiz
 function restartQuiz() {
-  state.currentQuestion = 0;
-  state.answers = [];
-  document.querySelector('.screen.active').classList.remove('active');
-  elements.quizScreen.classList.add('active');
-  loadQuestion(state.currentQuestion);
-  state.currentScreen = 'quiz';
-  updateBreadcrumbs();
-}
-
-// Carregar background aleatório
-function loadRandomBackground() {
-  const backgrounds = [
-    'https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
-    'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
-    'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
-    'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'
-  ];
-  
-  const randomBg = backgrounds[Math.floor(Math.random() * backgrounds.length)];
-  document.getElementById('background').style.backgroundImage = `url(${randomBg})`;
+  startQuiz();
 }
 
 // Iniciar aplicação quando o DOM estiver carregado
 document.addEventListener('DOMContentLoaded', init);
 
-function toggleGenres() {
-  const hiddenGenres = document.querySelectorAll('.hidden-genre');
-  const btn = document.getElementById('toggleGenresBtn');
-  let allVisible = true;
-  
- hiddenGenres.forEach(genre => {
-    if (!genre.classList.contains('visible')) {
-      allVisible = false;
-    }
-  });
-  
-  if (allVisible) {
-    // Esconder todos
-    hiddenGenres.forEach(genre => {
-      genre.classList.remove('visible');
-    });
-    btn.innerHTML = '<i class="fas fa-plus"></i> Ver mais gêneros';
-  } else {
-    // Mostrar todos
-    hiddenGenres.forEach(genre => {
-      genre.classList.add('visible');
-    });
-    btn.innerHTML = '<i class="fas fa-minus"></i> Ver menos';
-  }
-}
-
-document.getElementById('toggleGenresBtn').addEventListener('click', toggleGenres);
 const libraryState = {
   currentPage: 1,
   itemsPerPage: 12,

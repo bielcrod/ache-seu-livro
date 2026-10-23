@@ -11,7 +11,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
   <link rel="manifest" href="manifest.webmanifest">
-  <meta name="theme-color" content="#2d5f8b">
+  <meta name="theme-color" content="#f6ecd6">
 
   <!-- Compartilhamento (WhatsApp, Instagram, Twitter/X, Facebook...) -->
   <meta property="og:type" content="website">
@@ -25,326 +25,313 @@
   <meta name="twitter:description" content="Descubra seu próximo livro favorito com um quiz de recomendação ou explore a biblioteca completa.">
   <meta name="twitter:image" content="https://bielcrod.github.io/ache-seu-livro/assets/og-image.png">
 
+  <!-- Fontes: Fraunces (títulos, cara de livraria antiga) + DM Sans (texto) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;0,800;1,600&family=DM+Sans:wght@400;500;700&display=swap">
+
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div id="app">
-    <div id="background"></div>
-    <div id="overlay"></div>
-    
-    <div id="content">
-      <!-- Cabeçalho -->
-      <div class="app-header">
-        <h1>Ache seu livro 📚</h1>
-        <p>Descubra seu próximo livro favorito </p>
-      </div>
-      
-      <!-- Breadcrumbs -->
-      <div class="breadcrumbs" id="breadcrumbs">
-        <a href="#" id="homeBreadcrumb">Home</a>
-      </div>
-      
-      <!-- Tela inicial -->
-      <div id="home-screen" class="screen active">
-        <div class="home-content">
-          <h2>Bem-vindo ao Ache seu Livro!</h2>
-          <p>Encontre recomendações perfeitas de livros baseadas no seu gosto pessoal.</p>
+  <!-- Barra do topo -->
+  <header class="app-bar">
+    <a href="#" class="brand" id="brandLink" aria-label="Ache seu livro — início">
+      <span class="brand-mark" aria-hidden="true">📚</span>
+      <span class="brand-name">Ache seu livro</span>
+    </a>
+    <nav class="breadcrumbs" id="breadcrumbs" aria-label="Você está em">
+      <a href="#" id="homeBreadcrumb">Início</a>
+    </nav>
+  </header>
 
-          <div id="bookOfWeek" class="book-of-week" role="button" tabindex="0" aria-label="Ver o livro da semana"></div>
-          <p id="readingProgress" class="reading-progress"></p>
-          
-          <div class="home-buttons">
-<button id="startQuizBtn" class="home-btn" style="background-color: #29b6f6; color: white;">
-  <i class="fas fa-question-circle"></i> Fazer o quiz de recomendação
-</button>
-            <button id="libraryBtn" class="home-btn">
-              <i class="fas fa-book"></i> Biblioteca de Livros
-            </button>
-<button id="libraryCecaBtn" class="home-btn" onclick="window.open('https://bielcrod.github.io/biblioteca-CECA/', '_blank')" style="background-color: #FF5733;">
-  <i class="fas fa-book-reader"></i> Biblioteca CECA
-</button>
-            <button id="exploreBtn" class="home-btn">
-              <i class="fas fa-chart-line"></i> Explorar livros populares
-            </button>
-<button id="tributeBtn" class="home-btn" onclick="window.open('https://bielcrod.github.io/verissimo-tributo/', '_blank')" style="background-color: #8e44ad; color: white;">
-  <i class="fas fa-pen-fancy"></i> Tributo a Luis Fernando Veríssimo
-</button>
-            <div class="language-selection">
-              <h3>Faça o quiz em espanhol:</h3>
-              <div class="options">
-                <button class="home-btn" data-lang="es">
-                  <span class="flag">🇪🇸</span> Español
-                </button>
-              </div>
-            </div>
-          </div>
-                 <div class="home-contact-message">
-            <p><i class="fas fa-info-circle"></i> Para problemas, sugestões ou avaliações, entre em contato no Instagram: <a href="https://www.instagram.com/bielcrod" target="_blank">@bielcrod</a></p>
-          </div>        
-</div>
-      </div>
+  <main id="content">
 
-      <!-- Tela de estatísticas -->
-      <div id="stats-screen" class="screen">
-        <h2><i class="fas fa-chart-line"></i> Os livros mais amados pelos leitores</h2>
-        
-        <div class="stats-container">
-          <h3>Gêneros mais populares</h3>
-          <div class="stats-chart">
-            <canvas id="genreChart"></canvas>
-          </div>
-        </div>
-        
-        <div class="top-books">
-          <!-- Preenchido por JavaScript (os 10 livros mais populares) -->
-        </div>
+    <!-- ========== TELA INICIAL ========== -->
+    <section id="home-screen" class="screen active">
 
-        <div class="nav-buttons">
-          <button id="backToHomeBtn" class="nav-btn back-btn">
-            <i class="fas fa-arrow-left"></i> Voltar
-          </button>
-          <button id="startFromStatsBtn" class="nav-btn">
-            Fazer quiz <i class="fas fa-arrow-right"></i>
-          </button>
+      <div class="hero">
+        <p class="eyebrow">Livraria do CECA · aberta 24h</p>
+        <h1>Qual vai ser sua <em>próxima</em> leitura?</h1>
+        <p class="hero-sub">Responda 7 perguntas rapidinhas e a gente garimpa na estante os livros que mais combinam com você.</p>
+        <button id="startQuizBtn" class="btn btn-primary btn-big">
+          <i class="fas fa-wand-magic-sparkles"></i> Fazer o quiz
+          <span class="stamp">2 min</span>
+        </button>
+
+        <!-- Estante decorativa -->
+        <div class="shelf" aria-hidden="true">
+          <span style="--h:78%;--c:var(--coral)"></span>
+          <span style="--h:92%;--c:var(--teal)"></span>
+          <span style="--h:70%;--c:var(--mustard)"></span>
+          <span style="--h:86%;--c:var(--plum)"></span>
+          <span class="tilt" style="--h:80%;--c:var(--sky)"></span>
+          <span style="--h:96%;--c:var(--sage)"></span>
+          <span style="--h:74%;--c:var(--coral)"></span>
+          <span style="--h:88%;--c:var(--mustard)"></span>
+          <span style="--h:68%;--c:var(--teal)"></span>
+          <span style="--h:90%;--c:var(--plum)"></span>
+          <span style="--h:76%;--c:var(--sky)"></span>
+          <span style="--h:84%;--c:var(--coral)"></span>
         </div>
       </div>
 
-      <!-- Quiz -->
-      <div id="quiz-screen" class="screen">
+      <div id="bookOfWeek" class="book-of-week" role="button" tabindex="0" aria-label="Ver o livro da semana"></div>
+
+      <p id="readingProgress" class="reading-progress"></p>
+
+      <h2 class="section-title">Explore a livraria</h2>
+      <div class="tiles">
+        <button id="libraryBtn" class="tile tile-teal">
+          <i class="fas fa-book"></i>
+          <strong>Biblioteca</strong>
+          <span>Todos os livros, com filtros</span>
+        </button>
+        <button id="exploreBtn" class="tile tile-mustard">
+          <i class="fas fa-fire"></i>
+          <strong>Mais amados</strong>
+          <span>Os favoritos dos leitores</span>
+        </button>
+        <button id="homeVestibularBtn" class="tile tile-plum">
+          <i class="fas fa-graduation-cap"></i>
+          <strong>Vestibular</strong>
+          <span>Fuvest, Comvest e ENEM</span>
+        </button>
+        <button id="libraryCecaBtn" class="tile tile-coral" onclick="window.open('https://bielcrod.github.io/biblioteca-CECA/', '_blank')">
+          <i class="fas fa-book-reader"></i>
+          <strong>Biblioteca CECA</strong>
+          <span>O acervo da escola</span>
+        </button>
+        <button id="tributeBtn" class="tile tile-sage" onclick="window.open('https://bielcrod.github.io/verissimo-tributo/', '_blank')">
+          <i class="fas fa-pen-fancy"></i>
+          <strong>Tributo</strong>
+          <span>Luis Fernando Veríssimo</span>
+        </button>
+        <button class="tile tile-sky" data-lang="es">
+          <span class="tile-flag" aria-hidden="true">🇪🇸</span>
+          <strong>Quiz en español</strong>
+          <span>¡Descubre tu libro!</span>
+        </button>
+      </div>
+
+      <div class="home-contact-message">
+        <p><i class="fas fa-envelope-open-text"></i> Problemas, sugestões ou avaliações? Chama no Instagram: <a href="https://www.instagram.com/bielcrod" target="_blank" rel="noopener">@bielcrod</a></p>
+      </div>
+    </section>
+
+    <!-- ========== MAIS AMADOS ========== -->
+    <section id="stats-screen" class="screen">
+      <p class="eyebrow">Ranking da casa</p>
+      <h2 class="screen-title">Os livros mais amados pelos leitores</h2>
+
+      <div class="stats-container">
+        <h3>Gêneros mais populares</h3>
+        <div class="stats-chart">
+          <canvas id="genreChart"></canvas>
+        </div>
+      </div>
+
+      <div class="top-books">
+        <!-- Preenchido por JavaScript (os 10 livros mais populares) -->
+      </div>
+
+      <div class="nav-buttons">
+        <button id="backToHomeBtn" class="btn btn-ghost">
+          <i class="fas fa-arrow-left"></i> Voltar
+        </button>
+        <button id="startFromStatsBtn" class="btn btn-primary">
+          Fazer o quiz <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- ========== QUIZ ========== -->
+    <section id="quiz-screen" class="screen">
+      <div class="quiz-card">
         <div class="progress-container">
+          <span id="progressText">Pergunta 1 de 7</span>
           <div class="progress-bar">
             <div class="progress-bar-fill" id="progressBar"></div>
           </div>
-          <span id="progressText">Pergunta 1/5</span>
         </div>
-        
+
         <div class="question-indicator" id="questionIndicator">
           <!-- Pontos serão adicionados por JavaScript -->
         </div>
-        
-        <form id="quizForm">
-          <h2 id="questionNumber"></h2>
-          <div class="question-text" id="questionText"></div>
+
+        <form id="quizForm" onsubmit="return false;">
+          <h2 class="question-text" id="questionText"></h2>
+          <p class="question-hint" id="questionHint"></p>
           <div class="options" id="optionsContainer"></div>
 
           <div class="nav-buttons">
-            <button type="button" id="prevBtn" class="nav-btn back-btn">
+            <button type="button" id="prevBtn" class="btn btn-ghost">
               <i class="fas fa-arrow-left"></i> Voltar
             </button>
-            <button type="button" id="nextBtn" class="nav-btn">
+            <button type="button" id="nextBtn" class="btn btn-primary">
               Próximo <i class="fas fa-arrow-right"></i>
             </button>
           </div>
         </form>
       </div>
+    </section>
 
-      <!-- Resultados -->
-      <div id="result-screen" class="screen">
-        <h2 id="resultTitle"><i class="fas fa-book-open"></i> Livros recomendados para você</h2>
-        <div class="result-content">
-          <div id="loadingResults" class="loader" style="display: none;"></div>
-          
-          <div id="resultsContent">
-            <div class="book-section">
-              <h3><i class="fas fa-check-circle"></i> Disponíveis no Leia SP</h3>
-              <div id="availableBooks" class="book-grid"></div>
-            </div>
-            
-            <div class="book-section">
-              <h3><i class="fas fa-search"></i> Outras recomendações (Indisponíveis no Leia SP)</h3>
-              <div id="unavailableBooks" class="book-grid"></div>
-            </div>
-            
-            <div id="fallbackBooks" class="fallback-books" style="display: none;">
-              <h3><i class="fas fa-book"></i> Recomendações gerais</h3>
-              <p class="no-books-message">Não encontramos livros que se encaixem perfeitamente no seu gosto, mas aqui estão algumas excelentes recomendações para qualquer leitor:</p>
-              <div id="fallbackBooksList" class="book-grid"></div>
-            </div>
-            
-            <button id="moreBooksBtn" class="action-btn more-books-btn" style="display: none;">
-              <i class="fas fa-sync-alt"></i> Mais recomendações
-            </button>
-          </div>
+    <!-- ========== RESULTADOS ========== -->
+    <section id="result-screen" class="screen">
+      <p class="eyebrow" id="resultEyebrow">Garimpamos a estante pra você</p>
+      <h2 class="screen-title" id="resultTitle">Livros recomendados para você</h2>
 
-          <!-- Guia de Gêneros -->
-          <div class="genre-guide-container" id="genreGuide">
-  <h3><i class="fas fa-info-circle"></i> Guia de Gêneros Literários</h3>
-  <div class="genre-guide-items-container">
-    <!-- Gêneros visíveis inicialmente -->
-    <div class="genre-guide-item">
-      <div class="genre-guide-title">Distopia</div>
-      <div class="genre-guide-desc">Romances que retratam sociedades futuras indesejáveis, muitas vezes com regimes opressivos e controle social extremo. Exemplos: "1984", "Admirável Mundo Novo".</div>
-    </div>
-    <div class="genre-guide-item">
-      <div class="genre-guide-title">Realismo Mágico</div>
-      <div class="genre-guide-desc">Narrativas que misturam o cotidiano com elementos fantásticos, tratados como normais pelos personagens. Exemplos: "Cem Anos de Solidão", "A Casa dos Espíritos".</div>
-    </div>
-    
-    <!-- Gêneros ocultos inicialmente -->
-    <div class="genre-guide-item hidden-genre">
-      <div class="genre-guide-title">Ficção Científica</div>
-      <div class="genre-guide-desc">Explora conceitos científicos e tecnológicos com plausibilidade, muitas vezes em cenários futuros. Exemplos: "Duna", "Fundação".</div>
-    </div>
-    <div class="genre-guide-item hidden-genre">
-      <div class="genre-guide-title">Romance Histórico</div>
-      <div class="genre-guide-desc">Narrativas ficcionais ambientadas em períodos históricos reais, com atenção à precisão dos detalhes. Exemplos: "O Nome da Rosa", "Pillars of the Earth".</div>
-    </div>
-    <div class="genre-guide-item hidden-genre">
-      <div class="genre-guide-title">Fantasia</div>
-      <div class="genre-guide-desc">Mundos imaginários com elementos mágicos e criaturas mitológicas. Exemplos: "O Senhor dos Anéis", "Harry Potter".</div>
-    </div>
-    <div class="genre-guide-item hidden-genre">
-      <div class="genre-guide-title">Suspense</div>
-      <div class="genre-guide-desc">Narrativas que mantêm tensão e expectativa até o final. Exemplos: "O Silêncio dos Inocentes", "Garota Exemplar".</div>
-    </div>
-    <div class="genre-guide-item hidden-genre">
-      <div class="genre-guide-title">Biografia</div>
-      <div class="genre-guide-desc">Relatos sobre a vida de pessoas reais, contando suas histórias e conquistas. Exemplos: "Einstein: Sua Vida, Seu Universo", "Steve Jobs".</div>
-    </div>
-    <div class="genre-guide-item hidden-genre">
-      <div class="genre-guide-title">Poesia</div>
-      <div class="genre-guide-desc">Expressão artística através do ritmo, métrica e linguagem. Exemplos: "Sonetos" de Shakespeare, "Libertinagem" de Manuel Bandeira.</div>
-    </div>
-  </div>
-  <button id="toggleGenresBtn" class="action-btn">
-    <i class="fas fa-plus"></i> Ver mais gêneros
-  </button>
-</div>
+      <div id="loadingResults" class="loader" style="display: none;"></div>
 
-          <!-- Dicas de Leitura -->
-          <div class="reading-tip">
-            <h4><i class="fas fa-lightbulb"></i> Dica de Leitura</h4>
-            <p>Estabeleça uma meta realista, como ler 20 minutos por dia. Encontre um local confortável e reserve esse tempo como um momento especial para você.</p>
-          </div>
+      <div id="resultsContent">
+        <!-- Melhor combinação -->
+        <div id="topPick" class="top-pick"></div>
+
+        <div class="results-header">
+          <h3 id="moreResultsTitle">Mais livros com a sua cara</h3>
+          <label class="switch">
+            <input type="checkbox" id="onlyAvailableToggle">
+            <span class="switch-track" aria-hidden="true"></span>
+            <span id="onlyAvailableLabel">Só os do Leia SP</span>
+          </label>
+        </div>
+        <div id="resultsGrid" class="book-grid"></div>
+
+        <div id="fallbackBooks" class="fallback-books" style="display: none;">
+          <h3><i class="fas fa-book"></i> Recomendações gerais</h3>
+          <p class="no-books-message">Não encontramos livros que se encaixem perfeitamente no seu gosto, mas aqui estão algumas excelentes recomendações para qualquer leitor:</p>
+          <div id="fallbackBooksList" class="book-grid"></div>
         </div>
 
-        <div class="action-buttons">
-          <button id="vestibularBtn" class="action-btn">
-            <i class="fas fa-graduation-cap"></i> Livros para vestibular
-          </button>
-          <button id="shareBtn" class="action-btn">
-            <i class="fas fa-share-alt"></i> Compartilhar
-          </button>
-          <button id="restartBtn" class="action-btn">
-            <i class="fas fa-redo"></i> Refazer quiz
-          </button>
-          <button id="backToHomeFromResults" class="action-btn">
-            <i class="fas fa-home"></i> Voltar ao início
-          </button>
-        </div>
-
-        <div class="contact-message">
-          <p><i class="fas fa-envelope"></i> Para qualquer problema, sugestão ou avaliação, me contate no Instagram: <a href="https://www.instagram.com/bielcrod" target="_blank">@bielcrod</a></p>
-        </div>
+        <button id="moreBooksBtn" class="btn btn-ghost more-books-btn" style="display: none;">
+          <i class="fas fa-plus"></i> Mostrar mais
+        </button>
       </div>
-      
-      <!-- Tela da Biblioteca -->
-      <div id="library-screen" class="screen">
-        <h2><i class="fas fa-book"></i> Biblioteca de Livros</h2>
-        <p>Explore nossa coleção completa de livros. Filtre por gênero, disponibilidade e muito mais.</p>
-        
-        <div class="library-filters">
-          <div class="search-container">
-            <i class="fas fa-search"></i>
-            <input type="text" id="librarySearch" placeholder="Buscar por título, autor ou descrição...">
-          </div>
-          
-          <div class="filter-group">
-            <h4>Gêneros</h4>
-            <div class="filter-options" id="genreFilters">
-              <!-- Será preenchido por JavaScript -->
-            </div>
-          </div>
-          
-          <div class="filter-group">
-            <h4>Disponibilidade</h4>
-            <div class="filter-options">
-              <div class="filter-option selected" data-availability="all">Todos</div>
-              <div class="filter-option" data-availability="available">Disponíveis</div>
-              <div class="filter-option" data-availability="unavailable">Indisponíveis</div>
-            </div>
-          </div>
-          
-          <div class="filter-group">
-            <h4>Faixa Etária</h4>
-            <div class="filter-options">
-              <div class="filter-option selected" data-grade="all">Todas</div>
-              <div class="filter-option" data-grade="EF1">6°-7° ano</div>
-              <div class="filter-option" data-grade="EF2">8°-9° ano</div>
-              <div class="filter-option" data-grade="EM">Ensino Médio</div>
-            </div>
-          </div>
-          
-          <div class="filter-group">
-            <h4>Minha lista</h4>
-            <div class="filter-options">
-              <div class="filter-option" data-favorites="only" id="favoritesFilterOption">
-                <i class="fas fa-heart"></i> Somente favoritos
-              </div>
-              <div class="filter-option" data-read="only" id="readFilterOption">
-                <i class="fas fa-check"></i> Já li
-              </div>
-            </div>
-          </div>
 
-          <div class="filter-group">
-            <h4>Ordenar por</h4>
-            <div class="sort-options">
-              <button class="sort-btn active" data-sort="popularity">Popularidade</button>
-              <button class="sort-btn" data-sort="title">Título (A-Z)</button>
-              <button class="sort-btn" data-sort="author">Autor (A-Z)</button>
-            </div>
-          </div>
-        </div>
-        
-        <div class="library-results">
-          <div class="results-count" id="resultsCount">Carregando livros...</div>
-          <div class="library-books" id="libraryBooks">
-            <!-- Será preenchido por JavaScript -->
-          </div>
-          
-          <div class="pagination" id="pagination">
+      <div class="reading-tip">
+        <h4><i class="fas fa-lightbulb"></i> Dica de leitura</h4>
+        <p>Comece com uma meta pequena, tipo 20 minutos por dia. Escolha um cantinho confortável e trate esse tempo como um momento só seu.</p>
+      </div>
+
+      <div class="action-buttons">
+        <button id="vestibularBtn" class="btn btn-ghost">
+          <i class="fas fa-graduation-cap"></i> Livros para vestibular
+        </button>
+        <button id="shareBtn" class="btn btn-ghost">
+          <i class="fas fa-share-alt"></i> Compartilhar
+        </button>
+        <button id="restartBtn" class="btn btn-ghost">
+          <i class="fas fa-redo"></i> Refazer quiz
+        </button>
+        <button id="backToHomeFromResults" class="btn btn-ghost">
+          <i class="fas fa-home"></i> Voltar ao início
+        </button>
+      </div>
+
+      <div class="contact-message">
+        <p><i class="fas fa-envelope-open-text"></i> Problemas, sugestões ou avaliações? Chama no Instagram: <a href="https://www.instagram.com/bielcrod" target="_blank" rel="noopener">@bielcrod</a></p>
+      </div>
+    </section>
+
+    <!-- ========== BIBLIOTECA ========== -->
+    <section id="library-screen" class="screen">
+      <p class="eyebrow">Acervo completo</p>
+      <h2 class="screen-title">Biblioteca de livros</h2>
+
+      <div class="search-container">
+        <i class="fas fa-search"></i>
+        <input type="search" id="librarySearch" placeholder="Buscar por título, autor ou assunto…" aria-label="Buscar livros">
+      </div>
+
+      <details class="library-filters" id="libraryFiltersPanel">
+        <summary><i class="fas fa-sliders"></i> Filtros e ordem</summary>
+
+        <div class="filter-group">
+          <h4>Gêneros</h4>
+          <div class="filter-options" id="genreFilters">
             <!-- Será preenchido por JavaScript -->
           </div>
         </div>
-        
-        <div class="nav-buttons">
-          <button id="backToHomeFromLibrary" class="nav-btn back-btn">
-            <i class="fas fa-arrow-left"></i> Voltar
-          </button>
+
+        <div class="filter-group">
+          <h4>Disponibilidade no Leia SP</h4>
+          <div class="filter-options">
+            <div class="filter-option selected" data-availability="all">Todos</div>
+            <div class="filter-option" data-availability="available">Disponíveis</div>
+            <div class="filter-option" data-availability="unavailable">Indisponíveis</div>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <h4>Série</h4>
+          <div class="filter-options">
+            <div class="filter-option selected" data-grade="all">Todas</div>
+            <div class="filter-option" data-grade="EF1">6°-7° ano</div>
+            <div class="filter-option" data-grade="EF2">8°-9° ano</div>
+            <div class="filter-option" data-grade="EM">Ensino Médio</div>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <h4>Minha lista</h4>
+          <div class="filter-options">
+            <div class="filter-option" data-favorites="only" id="favoritesFilterOption">
+              <i class="fas fa-heart"></i> Favoritos
+            </div>
+            <div class="filter-option" data-read="only" id="readFilterOption">
+              <i class="fas fa-check"></i> Já li
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <h4>Ordenar por</h4>
+          <div class="sort-options">
+            <button class="sort-btn active" data-sort="popularity">Popularidade</button>
+            <button class="sort-btn" data-sort="title">Título (A-Z)</button>
+            <button class="sort-btn" data-sort="author">Autor (A-Z)</button>
+          </div>
+        </div>
+      </details>
+
+      <div class="library-results">
+        <div class="results-count" id="resultsCount">Carregando livros...</div>
+        <div class="library-books book-grid" id="libraryBooks">
+          <!-- Será preenchido por JavaScript -->
+        </div>
+
+        <div class="pagination" id="pagination">
+          <!-- Será preenchido por JavaScript -->
         </div>
       </div>
-    </div>
-  </div>
+
+      <div class="nav-buttons">
+        <button id="backToHomeFromLibrary" class="btn btn-ghost">
+          <i class="fas fa-arrow-left"></i> Voltar
+        </button>
+      </div>
+    </section>
+  </main>
 
   <!-- Modal Vestibular -->
   <div id="vestibularModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 class="modal-title"><i class="fas fa-graduation-cap"></i> Livros para Vestibular</h2>
-        <button class="close-modal">&times;</button>
+        <h2 class="modal-title"><i class="fas fa-graduation-cap"></i> Livros para vestibular</h2>
+        <button class="close-modal" aria-label="Fechar">&times;</button>
       </div>
-      
+
       <div class="vestibular-tabs">
         <button class="tab-btn active" data-tab="fuvest">Fuvest</button>
         <button class="tab-btn" data-tab="comvest">Comvest</button>
         <button class="tab-btn" data-tab="enem">ENEM</button>
       </div>
-      
-      <div id="fuvest" class="tab-content active">
-        <!-- Preenchido por JavaScript -->
-      </div>
-      
-      <div id="comvest" class="tab-content">
-        <!-- Preenchido por JavaScript -->
-      </div>
-      
-      <div id="enem" class="tab-content">
-        <!-- Preenchido por JavaScript -->
-      </div>
+
+      <div id="fuvest" class="tab-content active"></div>
+      <div id="comvest" class="tab-content"></div>
+      <div id="enem" class="tab-content"></div>
     </div>
   </div>
 
@@ -352,29 +339,29 @@
   <div id="shareModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 class="modal-title"><i class="fas fa-share-alt"></i> Compartilhe o Questionário</h2>
-        <button class="close-modal">&times;</button>
+        <h2 class="modal-title"><i class="fas fa-share-alt"></i> Compartilhe o quiz</h2>
+        <button class="close-modal" aria-label="Fechar">&times;</button>
       </div>
-      
+
       <!-- QR Code será gerado aqui -->
-      <div id="qrCodeContainer" style="width: 200px; height: 200px; margin: 20px auto;"></div>
-      
+      <div id="qrCodeContainer" class="qr-container"></div>
+
       <!-- Link copiável -->
-      <div style="margin: 20px 0;">
-        <input type="text" id="shareableLink" readonly style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
-        <button onclick="copyLink()" class="action-btn" style="margin-top: 10px;">
-          <i class="fas fa-copy"></i> Copiar Link
+      <div class="share-field">
+        <input type="text" id="shareableLink" readonly aria-label="Link do site">
+        <button onclick="copyLink()" class="btn btn-ghost">
+          <i class="fas fa-copy"></i> Copiar link
         </button>
       </div>
-      
+
       <!-- Mensagem personalizada -->
-      <div style="margin: 20px 0; padding: 15px; background: #f5f5f5; border-radius: 8px;">
-        <p style="margin-bottom: 10px;"><strong>Mensagem para compartilhar:</strong></p>
-        <textarea id="shareMessage" rows="4" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;"></textarea>
+      <div class="share-field">
+        <label for="shareMessage"><strong>Mensagem para compartilhar:</strong></label>
+        <textarea id="shareMessage" rows="4"></textarea>
       </div>
-      
+
       <!-- Compartilhar pelo próprio celular (aparece só quando o navegador suporta) -->
-      <button id="nativeShareBtn" class="action-btn" style="display: none; width: 100%; margin-bottom: 15px;">
+      <button id="nativeShareBtn" class="btn btn-primary btn-block" style="display: none;">
         <i class="fas fa-share-nodes"></i> Compartilhar…
       </button>
 
@@ -400,12 +387,10 @@
   <div id="authorModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 class="modal-title"><i class="fas fa-user-edit"></i> Sobre o Autor</h2>
-        <button class="close-modal">&times;</button>
+        <h2 class="modal-title"><i class="fas fa-user-edit"></i> Sobre o autor</h2>
+        <button class="close-modal" aria-label="Fechar">&times;</button>
       </div>
-      <div id="authorModalContent">
-        <!-- Preenchido por JavaScript -->
-      </div>
+      <div id="authorModalContent"></div>
     </div>
   </div>
 
@@ -416,9 +401,7 @@
         <h2 class="modal-title" id="bookModalTitle"></h2>
         <button class="close-modal" aria-label="Fechar">&times;</button>
       </div>
-      <div id="bookModalContent">
-        <!-- Preenchido por JavaScript -->
-      </div>
+      <div id="bookModalContent"></div>
     </div>
   </div>
 
