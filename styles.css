@@ -1296,7 +1296,8 @@ img {
 }
 
 .book-detail-cover {
-  flex: 0 0 130px;
+  flex: none;
+  width: 130px;
 }
 
 .book-detail-cover img {
