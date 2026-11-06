@@ -1641,3 +1641,325 @@ img {
     scroll-behavior: auto !important;
   }
 }
+
+/* =========================================================
+   Novidades de novembro/2026
+   ========================================================= */
+
+/* Aviso rápido (no lugar de alert) */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  z-index: 200;
+  max-width: min(92vw, 420px);
+  padding: 12px 18px;
+  background: var(--ink);
+  color: var(--paper-light);
+  font-weight: 700;
+  text-align: center;
+  border-radius: 999px;
+  box-shadow: 4px 4px 0 var(--coral);
+  transform: translate(-50%, 140%);
+  opacity: 0;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  pointer-events: none;
+}
+
+.toast.visible {
+  transform: translate(-50%, 0);
+  opacity: 1;
+}
+
+/* Opção desativada no quiz (contradiz uma resposta anterior) */
+.option.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--paper);
+  border-style: dashed;
+}
+
+.option.disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.option.disabled label,
+.option.disabled input {
+  cursor: not-allowed;
+}
+
+.option-note {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--ink-soft);
+}
+
+/* Livro amado fora do acervo: escolher de que tipo ele é */
+.liked-groups {
+  display: grid;
+  gap: 10px;
+}
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  background: var(--paper-light);
+  border: 1.5px solid var(--line);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.chip.selected {
+  background: var(--mustard);
+  font-weight: 700;
+}
+
+.liked-groups .btn {
+  justify-self: start;
+}
+
+/* Resultados: aviso de pouca coisa, outras sugestões, botões */
+.scarce-notice {
+  margin-bottom: 18px;
+  padding: 14px 16px;
+  background: #fff1cc;
+  border: 2px dashed var(--line);
+  border-radius: var(--radius);
+}
+
+.scarce-notice p {
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.scarce-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.scarce-actions:empty {
+  display: none;
+}
+
+.other-results {
+  margin-top: 28px;
+  padding-top: 18px;
+  border-top: 2px dashed rgba(42, 31, 26, 0.35);
+}
+
+.other-results h3 {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+}
+
+.other-results-hint {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  margin: 4px 0 14px;
+}
+
+.results-more {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.results-more .more-books-btn {
+  margin: 0;
+}
+
+/* Selo de combinação por faixa */
+.match-badge.tier-high,
+.match-stamp.tier-high {
+  background: var(--coral);
+  color: #fff;
+}
+
+.match-badge.tier-mid,
+.match-stamp.tier-mid {
+  background: var(--mustard);
+  color: var(--ink);
+}
+
+.match-badge.tier-low,
+.match-stamp.tier-low {
+  background: var(--paper-light);
+  color: var(--ink);
+}
+
+.match-badge {
+  text-transform: lowercase;
+}
+
+/* 👍 / 👎 */
+.feedback-buttons {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.feedback-btn {
+  width: 36px;
+  height: 36px;
+  font-size: 1rem;
+  line-height: 1;
+  background: var(--paper-light);
+  border: 1.5px solid var(--line);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.12s ease, background 0.15s ease;
+}
+
+.feedback-btn:hover {
+  transform: scale(1.08);
+}
+
+.feedback-btn.active {
+  background: var(--sage);
+}
+
+.book-info .feedback-buttons {
+  margin-top: 4px;
+}
+
+/* Leia SP ainda não conferido */
+.unknown-badge {
+  padding: 1px 8px;
+  border: 1.5px dashed var(--ink-soft);
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+}
+
+/* Botão "Surpreenda-me" no topo */
+.surprise-btn {
+  margin-left: 10px;
+  margin-top: 10px;
+}
+
+/* Card para os Stories */
+#storyModal {
+  z-index: 110;
+}
+
+.story-modal-content {
+  max-width: 460px;
+}
+
+.story-image {
+  width: 100%;
+  max-width: 340px;
+  margin: 0 auto;
+  border: var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+
+.story-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.story-hint {
+  margin-top: 12px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+/* Conquistas */
+.achievements-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.achievements-count {
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+
+.achievements-row {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 132px;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 4px 4px 12px;
+  scroll-snap-type: x mandatory;
+}
+
+.achievement {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px;
+  background: var(--paper-light);
+  border: 2px dashed rgba(42, 31, 26, 0.4);
+  border-radius: var(--radius);
+  scroll-snap-align: start;
+  color: var(--ink-soft);
+}
+
+.achievement.unlocked {
+  background: var(--card);
+  border: var(--border);
+  box-shadow: var(--shadow-small);
+  color: var(--ink);
+}
+
+.achievement-icon {
+  font-size: 1.6rem;
+}
+
+.achievement strong {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  line-height: 1.15;
+}
+
+.achievement small {
+  font-size: 0.75rem;
+  line-height: 1.25;
+}
+
+@media (min-width: 900px) {
+  .achievements-row {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    overflow: visible;
+  }
+}
+
+@media (max-width: 420px) {
+  .surprise-btn {
+    margin-left: 0;
+  }
+}
+
+/* Botões do destaque quebram linha no celular */
+.top-pick-actions {
+  flex-wrap: wrap;
+}
+
+.top-pick-actions .btn {
+  flex: 1 1 auto;
+}
+
+.top-pick-info {
+  min-width: 0;
+}

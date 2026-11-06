@@ -55,10 +55,13 @@
       <div class="hero">
         <p class="eyebrow">Livraria do CECA · aberta 24h</p>
         <h1>Qual vai ser sua <em>próxima</em> leitura?</h1>
-        <p class="hero-sub">Responda 7 perguntas rapidinhas e a gente garimpa na estante os livros que mais combinam com você.</p>
+        <p class="hero-sub">Responda 8 perguntas rapidinhas e a gente garimpa na estante os livros que mais combinam com você.</p>
         <button id="startQuizBtn" class="btn btn-primary btn-big">
           <i class="fas fa-wand-magic-sparkles"></i> Fazer o quiz
           <span class="stamp">2 min</span>
+        </button>
+        <button id="surpriseBtn" class="btn btn-ghost surprise-btn">
+          <i class="fas fa-dice"></i> Surpreenda-me
         </button>
 
         <!-- Estante decorativa -->
@@ -81,6 +84,8 @@
       <div id="bookOfWeek" class="book-of-week" role="button" tabindex="0" aria-label="Ver o livro da semana"></div>
 
       <p id="readingProgress" class="reading-progress"></p>
+
+      <section id="achievements" class="achievements" aria-label="Conquistas de leitura"></section>
 
       <h2 class="section-title">Explore a livraria</h2>
       <div class="tiles">
@@ -186,10 +191,13 @@
       <div id="loadingResults" class="loader" style="display: none;"></div>
 
       <div id="resultsContent">
+        <!-- Aviso quando o acervo tem pouca coisa para essas respostas -->
+        <div id="scarceNotice" class="scarce-notice" style="display: none;" role="status"></div>
+
         <!-- Melhor combinação -->
         <div id="topPick" class="top-pick"></div>
 
-        <div class="results-header">
+        <div class="results-header" id="moreResultsHeading">
           <h3 id="moreResultsTitle">Mais livros com a sua cara</h3>
           <label class="switch">
             <input type="checkbox" id="onlyAvailableToggle">
@@ -199,15 +207,27 @@
         </div>
         <div id="resultsGrid" class="book-grid"></div>
 
+        <!-- Livros que combinam menos, separados para não parecerem "a sua cara" -->
+        <section id="otherResults" class="other-results" style="display: none;">
+          <h3 id="otherResultsTitle">Outras sugestões</h3>
+          <p id="otherResultsHint" class="other-results-hint"></p>
+          <div id="otherResultsGrid" class="book-grid"></div>
+        </section>
+
         <div id="fallbackBooks" class="fallback-books" style="display: none;">
           <h3><i class="fas fa-book"></i> Recomendações gerais</h3>
           <p class="no-books-message">Não encontramos livros que se encaixem perfeitamente no seu gosto, mas aqui estão algumas excelentes recomendações para qualquer leitor:</p>
           <div id="fallbackBooksList" class="book-grid"></div>
         </div>
 
-        <button id="moreBooksBtn" class="btn btn-ghost more-books-btn" style="display: none;">
-          <i class="fas fa-plus"></i> Mostrar mais
-        </button>
+        <div class="results-more">
+          <button id="moreBooksBtn" class="btn btn-ghost more-books-btn" style="display: none;">
+            <i class="fas fa-plus"></i> Mostrar mais
+          </button>
+          <button id="shuffleBtn" class="btn btn-ghost">
+            <i class="fas fa-shuffle"></i> Me mostra outros
+          </button>
+        </div>
       </div>
 
       <div class="reading-tip">
@@ -261,6 +281,7 @@
             <div class="filter-option selected" data-availability="all">Todos</div>
             <div class="filter-option" data-availability="available">Disponíveis</div>
             <div class="filter-option" data-availability="unavailable">Indisponíveis</div>
+            <div class="filter-option" data-availability="unknown">Não conferidos</div>
           </div>
         </div>
 
@@ -391,6 +412,17 @@
         <button class="close-modal" aria-label="Fechar">&times;</button>
       </div>
       <div id="authorModalContent"></div>
+    </div>
+  </div>
+
+  <!-- Modal Card para os Stories -->
+  <div id="storyModal" class="modal">
+    <div class="modal-content story-modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title"><i class="fas fa-camera-retro"></i> Card pros Stories</h2>
+        <button class="close-modal" aria-label="Fechar">&times;</button>
+      </div>
+      <div id="storyPreview"></div>
     </div>
   </div>
 

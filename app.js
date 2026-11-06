@@ -85,6 +85,18 @@ function escapeHtml(text) {
   })[c]);
 }
 
+// Leia SP: true = disponível, false = indisponível, null = ainda não conferido
+function availabilityBadge(book, long = false) {
+  const pt = state.currentLanguage === 'pt';
+  if (book.available === true) {
+    return `<span class="available-badge">${pt ? (long ? 'Disponível no Leia SP' : 'Disponível') : (long ? 'Disponible en Leia SP' : 'Disponible')}</span>`;
+  }
+  if (book.available === false) {
+    return `<span class="unavailable-badge">${pt ? (long ? 'Indisponível no Leia SP' : 'Indisponível') : (long ? 'No disponible en Leia SP' : 'No disponible')}</span>`;
+  }
+  return `<span class="unknown-badge" title="${escapeHtml(t().leiaUnknownLong)}">${escapeHtml(t().leiaUnknown)}</span>`;
+}
+
 function gradeLabel(book) {
   const labels = {
     pt: { EF1: '6°-7° ano', EF2: '8°-9° ano', EM: 'Ensino Médio' },
@@ -199,18 +211,17 @@ function createBookCard(book, options = {}) {
            onerror="this.onerror=null;this.src='assets/sem-capa.svg'">
       ${favoriteButtonHtml(book.id)}
       ${isRead(book.id) ? `<span class="read-badge"><i class="fas fa-check"></i> ${pt ? 'Lido' : 'Leído'}</span>` : ''}
-      ${options.match !== undefined ? `<span class="match-badge">${matchPercent(options.match)}%</span>` : ''}
+      ${options.tier ? `<span class="match-badge tier-${options.tier.key}">${escapeHtml(options.tier.label)}</span>` : ''}
     </div>
     <div class="book-info">
       <h4 class="book-title">${escapeHtml(book.title)}</h4>
       <p class="book-author">${escapeHtml(book.author)}</p>
       ${options.reason ? `<p class="book-reason">${escapeHtml(options.reason)}</p>` : ''}
+      ${options.feedback ? feedbackButtonsHtml(book.id) : ''}
       ${book.description && !options.hideDescription ? `<p class="book-description">${escapeHtml(book.description)}</p>` : ''}
       <div class="book-meta">
         <span>${gradeLabel(book)}</span>
-        ${book.available
-          ? `<span class="available-badge">${pt ? 'Disponível' : 'Disponible'}</span>`
-          : `<span class="unavailable-badge">${pt ? 'Indisponível' : 'No disponible'}</span>`}
+        ${availabilityBadge(book)}
       </div>
     </div>
   `;
@@ -224,7 +235,11 @@ function createBookCard(book, options = {}) {
     });
   }
 
-  card.addEventListener('click', () => showBookModal(book.id));
+  card.addEventListener('click', (e) => {
+    // 👍/👎 e o coração têm o próprio clique: não abrem os detalhes
+    if (e.target.closest('.feedback-btn, .favorite-btn')) return;
+    showBookModal(book.id);
+  });
   card.addEventListener('keydown', (e) => {
     if (e.target === card && (e.key === 'Enter' || e.key === ' ')) {
       e.preventDefault();
@@ -241,7 +256,7 @@ function getSimilarBooks(book, limit = 4) {
   const tags = asArray(book.tags);
 
   return booksDatabase
-    .filter(other => other.id !== book.id)
+    .filter(other => other.id !== book.id && (other.quiz !== false || book.quiz === false))
     .map(other => {
       let score = asArray(other.genres).filter(g => genres.includes(g)).length * 2;
       score += asArray(other.tags).filter(t => tags.includes(t)).length;
@@ -289,9 +304,7 @@ function showBookModal(bookId) {
         <p class="book-detail-author">${escapeHtml(book.author)}</p>
         <div class="book-meta">
           <span>${gradeLabel(book)}</span>
-          ${book.available
-            ? `<span class="available-badge">${pt ? 'Disponível no Leia SP' : 'Disponible en Leia SP'}</span>`
-            : `<span class="unavailable-badge">${pt ? 'Indisponível no Leia SP' : 'No disponible en Leia SP'}</span>`}
+          ${availabilityBadge(book, true)}
         </div>
         <div class="genre-chips">${genreChips}</div>
         ${book.description ? `<p class="book-detail-description">${escapeHtml(book.description)}</p>` : ''}
@@ -306,6 +319,9 @@ function showBookModal(bookId) {
       </button>
       <button class="action-btn" id="detailShareBtn">
         <i class="fas fa-share-alt"></i> ${pt ? 'Compartilhar' : 'Compartir'}
+      </button>
+      <button class="action-btn" id="detailStoryBtn">
+        <i class="fas fa-camera-retro"></i> ${escapeHtml(t().storyButton)}
       </button>
     </div>
     ${similar.length ? `
@@ -336,11 +352,14 @@ function showBookModal(bookId) {
     refreshAfterListChange();
   });
   readBtn.addEventListener('click', () => {
+    const before = getAchievements().filter(a => a.unlocked).map(a => a.id);
     toggleRead(book.id);
     updateButtons();
     refreshAfterListChange();
+    checkNewAchievements(before);
   });
   document.getElementById('detailShareBtn').addEventListener('click', () => shareBook(book));
+  document.getElementById('detailStoryBtn').addEventListener('click', () => openStoryCard(book, null));
 
   elements.bookModalContent.querySelectorAll('.similar-book').forEach(btn => {
     btn.addEventListener('click', () => showBookModal(btn.dataset.bookId));
@@ -363,6 +382,7 @@ function showBookModal(bookId) {
 // Depois de favoritar/marcar como lido, atualiza o que estiver aberto
 function refreshAfterListChange() {
   renderReadingProgress();
+  renderAchievements();
   if (state.currentScreen === 'library' && elements.libraryBooks.children.length > 0) {
     filterLibraryBooks();
   }
@@ -418,7 +438,7 @@ async function copyText(text) {
 // ===== Tela inicial: livro da semana e progresso de leitura =====
 function getBookOfTheWeek() {
   const candidates = booksDatabase
-    .filter(book => book.available && (book.popularity || 0) >= 7)
+    .filter(book => book.available === true && book.quiz !== false && (book.popularity || 0) >= 7)
     .sort((a, b) => a.id - b.id);
   if (candidates.length === 0) return null;
   // Muda toda semana, e é o mesmo livro pra todo mundo na mesma semana
@@ -524,6 +544,303 @@ const genreTranslations = {
   }
 };
 
+// ===== Card para os Stories (imagem 1080x1920 gerada no navegador) =====
+const STORY_COLORS = {
+  paper: '#f6ecd6', card: '#fffaf0', ink: '#2a1f1a', inkSoft: '#6b5a4c',
+  coral: '#cf4f3a', teal: '#1f6f68', mustard: '#f2b33d', plum: '#7d3a62', sky: '#3b7ca3', sage: '#9dbb8c'
+};
+
+function loadCanvasImage(url, timeout = 3000) {
+  return new Promise(resolve => {
+    if (!url) return resolve(null);
+    const img = new Image();
+    img.crossOrigin = 'anonymous'; // sem isso a imagem "suja" o canvas e não dá para salvar
+    const timer = setTimeout(() => resolve(null), timeout);
+    img.onload = () => { clearTimeout(timer); resolve(img); };
+    img.onerror = () => { clearTimeout(timer); resolve(null); };
+    img.src = url;
+  });
+}
+
+// Quebra o texto em linhas que cabem na largura (no máximo maxLines; corta com "…")
+function wrapCanvasText(ctx, text, maxWidth, maxLines) {
+  const words = String(text).split(/\s+/);
+  const lines = [];
+  let line = '';
+  words.forEach(word => {
+    const test = line ? `${line} ${word}` : word;
+    if (ctx.measureText(test).width > maxWidth && line) {
+      lines.push(line);
+      line = word;
+    } else {
+      line = test;
+    }
+  });
+  if (line) lines.push(line);
+  if (lines.length > maxLines) {
+    const kept = lines.slice(0, maxLines);
+    let last = kept[maxLines - 1];
+    while (ctx.measureText(`${last}…`).width > maxWidth && last.length > 1) last = last.slice(0, -1);
+    kept[maxLines - 1] = `${last}…`;
+    return kept;
+  }
+  return lines;
+}
+
+function drawStoryCard(canvas, book, match, coverImg) {
+  const W = 1080, H = 1920, C = STORY_COLORS;
+  const pt = state.currentLanguage === 'pt';
+  const display = '"Fraunces", Georgia, "Times New Roman", serif';
+  const body = '"DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  // Papel com pontinhos
+  ctx.fillStyle = C.paper;
+  ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = 'rgba(42, 31, 26, 0.08)';
+  for (let y = 18; y < H; y += 36) {
+    for (let x = 18; x < W; x += 36) {
+      ctx.beginPath();
+      ctx.arc(x, y, 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  // Marca
+  ctx.fillStyle = C.ink;
+  ctx.font = `800 52px ${display}`;
+  ctx.textAlign = 'center';
+  ctx.fillText('Ache seu livro', W / 2, 150);
+  ctx.fillStyle = C.coral;
+  ctx.font = `700 34px ${body}`;
+  ctx.fillText(pt ? 'MEU PRÓXIMO LIVRO É' : 'MI PRÓXIMO LIBRO ES', W / 2, 250);
+
+  // Capa (foto ou desenhada) com sombra de adesivo
+  const coverW = 520, coverH = 780, coverX = (W - coverW) / 2, coverY = 320;
+  ctx.fillStyle = C.ink;
+  ctx.fillRect(coverX + 18, coverY + 18, coverW, coverH);
+  if (coverImg) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(coverX, coverY, coverW, coverH);
+    ctx.clip();
+    const scale = Math.max(coverW / coverImg.width, coverH / coverImg.height);
+    const iw = coverImg.width * scale, ih = coverImg.height * scale;
+    ctx.drawImage(coverImg, coverX + (coverW - iw) / 2, coverY + (coverH - ih) / 2, iw, ih);
+    ctx.restore();
+  } else {
+    const palette = [C.teal, C.coral, C.plum, C.sky];
+    ctx.fillStyle = palette[book.id % palette.length];
+    ctx.fillRect(coverX, coverY, coverW, coverH);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+    ctx.fillRect(coverX + 34, coverY, 12, coverH);
+    ctx.fillStyle = '#fff';
+    ctx.textAlign = 'left';
+    ctx.font = `800 60px ${display}`;
+    const lines = wrapCanvasText(ctx, book.title, coverW - 130, 6);
+    lines.forEach((l, i) => ctx.fillText(l, coverX + 80, coverY + 220 + i * 72));
+    ctx.font = `500 34px ${body}`;
+    ctx.fillText(wrapCanvasText(ctx, book.author, coverW - 130, 1)[0], coverX + 80, coverY + 260 + lines.length * 72);
+  }
+  ctx.lineWidth = 8;
+  ctx.strokeStyle = C.ink;
+  ctx.strokeRect(coverX, coverY, coverW, coverH);
+
+  // Selo de combinação
+  if (typeof match === 'number') {
+    const cx = coverX + coverW - 10, cy = coverY + 30, r = 120;
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(0.18);
+    ctx.fillStyle = C.ink;
+    ctx.beginPath(); ctx.arc(8, 8, r, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = C.coral;
+    ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.fill();
+    ctx.lineWidth = 6; ctx.strokeStyle = C.ink; ctx.stroke();
+    ctx.fillStyle = '#fff';
+    ctx.textAlign = 'center';
+    ctx.font = `800 76px ${display}`;
+    ctx.fillText(`${matchPercent(match)}%`, 0, 14);
+    ctx.font = `700 26px ${body}`;
+    ctx.fillText((pt ? 'A MINHA CARA' : 'MI ESTILO'), 0, 56);
+    ctx.restore();
+  }
+
+  // Título e autor
+  ctx.textAlign = 'center';
+  ctx.fillStyle = C.ink;
+  ctx.font = `800 76px ${display}`;
+  const titleLines = wrapCanvasText(ctx, book.title, W - 160, 3);
+  let y = coverY + coverH + 140;
+  titleLines.forEach(l => { ctx.fillText(l, W / 2, y); y += 88; });
+  ctx.fillStyle = C.inkSoft;
+  ctx.font = `500 44px ${body}`;
+  ctx.fillText(wrapCanvasText(ctx, book.author, W - 160, 1)[0], W / 2, y + 6);
+
+  // Estante no rodapé
+  const spines = [C.coral, C.teal, C.mustard, C.plum, C.sky, C.sage, C.coral, C.mustard, C.teal, C.plum, C.sky, C.coral];
+  const shelfY = H - 250, spineW = 64, gap = 10;
+  const totalW = spines.length * spineW + (spines.length - 1) * gap;
+  let x = (W - totalW) / 2;
+  spines.forEach((color, i) => {
+    const h = 120 + ((i * 37) % 70);
+    ctx.fillStyle = color;
+    ctx.fillRect(x, shelfY - h, spineW, h);
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = C.ink;
+    ctx.strokeRect(x, shelfY - h, spineW, h);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
+    ctx.fillRect(x + 14, shelfY - h + 24, spineW - 28, 8);
+    x += spineW + gap;
+  });
+  ctx.fillStyle = C.ink;
+  ctx.fillRect(0, shelfY, W, 22);
+
+  // Convite
+  ctx.fillStyle = C.ink;
+  ctx.font = `700 36px ${body}`;
+  ctx.fillText(pt ? 'Descubra o seu:' : 'Descubre el tuyo:', W / 2, H - 140);
+  ctx.fillStyle = C.teal;
+  ctx.font = `700 40px ${body}`;
+  ctx.fillText('bielcrod.github.io/ache-seu-livro', W / 2, H - 84);
+}
+
+function canvasToBlob(canvas) {
+  return new Promise((resolve, reject) => {
+    try {
+      canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('imagem vazia')), 'image/png');
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
+async function openStoryCard(book, match) {
+  const pt = state.currentLanguage === 'pt';
+  const modal = elements.storyModal;
+  const preview = elements.storyPreview;
+  preview.innerHTML = `<div class="loader"></div>`;
+  modal.style.display = 'block';
+
+  try {
+    if (document.fonts && document.fonts.load) {
+      await Promise.race([
+        Promise.all([document.fonts.load('800 60px "Fraunces"'), document.fonts.load('700 36px "DM Sans"')]),
+        new Promise(resolve => setTimeout(resolve, 1500))
+      ]);
+    }
+  } catch (e) {
+    // sem as fontes da internet, usa as do sistema
+  }
+
+  const canvas = document.createElement('canvas');
+  const coverUrl = await fetchCorrectCover(book).catch(() => '');
+  const coverImg = coverUrl && coverUrl !== PLACEHOLDER_COVER ? await loadCanvasImage(coverUrl) : null;
+  drawStoryCard(canvas, book, match, coverImg);
+
+  let blob;
+  try {
+    blob = await canvasToBlob(canvas);
+  } catch (e) {
+    // A capa veio de um site que não deixa usar a imagem: refaz com a capa desenhada
+    drawStoryCard(canvas, book, match, null);
+    blob = await canvasToBlob(canvas);
+  }
+
+  if (state.storyUrl) URL.revokeObjectURL(state.storyUrl);
+  state.storyUrl = URL.createObjectURL(blob);
+  const fileName = `ache-seu-livro-${normalizeText(book.title).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}.png`;
+  const file = typeof File === 'function' ? new File([blob], fileName, { type: 'image/png' }) : null;
+  const canShareFile = !!(file && navigator.canShare && navigator.canShare({ files: [file] }));
+
+  preview.innerHTML = `
+    <img src="${state.storyUrl}" alt="${pt ? 'Prévia do card para os Stories' : 'Vista previa de la tarjeta'}" class="story-image">
+    <div class="story-actions">
+      ${canShareFile ? `<button type="button" class="btn btn-primary" id="storyShareBtn"><i class="fas fa-share-nodes"></i> ${pt ? 'Compartilhar' : 'Compartir'}</button>` : ''}
+      <a class="btn ${canShareFile ? '' : 'btn-primary'}" id="storyDownloadLink" href="${state.storyUrl}" download="${fileName}">
+        <i class="fas fa-download"></i> ${pt ? 'Baixar imagem' : 'Descargar imagen'}
+      </a>
+    </div>
+    <p class="story-hint">${pt ? 'Dica: poste nos Stories e marque o link do site!' : '¡Consejo: publícalo en Stories con el enlace del sitio!'}</p>`;
+
+  const shareBtn = document.getElementById('storyShareBtn');
+  if (shareBtn) {
+    shareBtn.addEventListener('click', async () => {
+      try {
+        await navigator.share({ files: [file], title: book.title, text: SITE_URL });
+      } catch (e) {
+        if (e.name !== 'AbortError') console.error('Erro ao compartilhar imagem:', e);
+      }
+    });
+  }
+}
+
+// ===== Surpreenda-me: um livro bem avaliado, ao acaso =====
+function surpriseMe() {
+  const readIds = getReadBooks();
+  const feedback = getFeedback();
+  const pool = booksDatabase.filter(book =>
+    book.quiz !== false && (book.popularity || 0) >= 7 && !readIds.includes(book.id) && feedback[book.id] !== -1);
+  if (pool.length === 0) return;
+  let book = pool[Math.floor(Math.random() * pool.length)];
+  // evita repetir o último sorteado
+  if (pool.length > 1 && state.lastSurpriseId === book.id) {
+    book = pool[(pool.indexOf(book) + 1) % pool.length];
+  }
+  state.lastSurpriseId = book.id;
+  showBookModal(book.id);
+}
+
+// ===== Conquistas de leitura (a partir dos livros marcados como "Já li") =====
+const ACHIEVEMENTS = [
+  { id: 'primeiro', icon: '🌱', name: 'Primeira página', desc: 'Marcar 1 livro como lido', test: r => r.length >= 1 },
+  { id: 'cinco', icon: '📚', name: 'Estante crescendo', desc: 'Ler 5 livros', test: r => r.length >= 5 },
+  { id: 'dez', icon: '🏆', name: 'Rato de biblioteca', desc: 'Ler 10 livros', test: r => r.length >= 10 },
+  { id: 'explorador', icon: '🧭', name: 'Explorador(a)', desc: 'Ler livros de 4 tipos diferentes', test: r => new Set(r.flatMap(getBookGroups)).size >= 4 },
+  { id: 'classicos', icon: '📜', name: 'Clássico é comigo', desc: 'Ler 3 clássicos', test: r => r.filter(b => getBookGroups(b).includes('classicos')).length >= 3 },
+  { id: 'coragem', icon: '👻', name: 'Coragem', desc: 'Ler um livro de terror', test: r => r.some(b => getBookGroups(b).includes('terror')) },
+  { id: 'brasil', icon: '🇧🇷', name: 'Brasilidade', desc: 'Ler 3 autores brasileiros', test: r => new Set(r.filter(b => b.type === 'brasileira').map(b => authorKey(b.author))).size >= 3 },
+  { id: 'tijolo', icon: '🧱', name: 'Tijolão', desc: 'Ler um livro longo', test: r => r.some(b => b.tamanho === 'longo') },
+  { id: 'desafio', icon: '🧠', name: 'Desafio aceito', desc: 'Ler um livro de leitura desafiadora', test: r => r.some(b => b.leitura === 'desafiadora') }
+];
+
+function getAchievements() {
+  const read = getReadBooks().map(findBookById).filter(Boolean);
+  return ACHIEVEMENTS.map(a => ({ ...a, unlocked: a.test(read) }));
+}
+
+function renderAchievements() {
+  const container = elements.achievements;
+  if (!container) return;
+  const list = getAchievements();
+  const unlocked = list.filter(a => a.unlocked).length;
+  container.innerHTML = `
+    <div class="achievements-header">
+      <h2 class="section-title">Conquistas</h2>
+      <span class="achievements-count">${unlocked}/${list.length}</span>
+    </div>
+    <div class="achievements-row">
+      ${list.map(a => `
+        <div class="achievement ${a.unlocked ? 'unlocked' : ''}" title="${escapeHtml(a.desc)}">
+          <span class="achievement-icon" aria-hidden="true">${a.unlocked ? a.icon : '🔒'}</span>
+          <strong>${escapeHtml(a.name)}</strong>
+          <small>${escapeHtml(a.desc)}</small>
+        </div>`).join('')}
+    </div>`;
+}
+
+// Mostra um aviso quando uma conquista nova é liberada
+function checkNewAchievements(before) {
+  const now = getAchievements().filter(a => a.unlocked).map(a => a.id);
+  const fresh = now.filter(id => !before.includes(id));
+  fresh.forEach(id => {
+    const a = ACHIEVEMENTS.find(x => x.id === id);
+    showToast(`${a.icon} Conquista liberada: ${a.name}!`);
+  });
+}
+
 // ===== Quiz =====
 
 // Grupos de gêneros mostrados no quiz. Cada grupo junta vários gêneros (e às vezes "vibes")
@@ -600,7 +917,32 @@ const quizText = {
     pleaseChoose: 'Por favor, selecione uma opção',
     seeResults: 'Ver meus livros',
     next: 'Próximo',
-    question: (c, t) => `Pergunta ${c} de ${t}`
+    question: (c, t) => `Pergunta ${c} de ${t}`,
+    reasonReading: { facil: 'Leitura fácil', media: 'Leitura tranquila', desafiadora: 'Leitura desafiadora' },
+    reasonLikedGroups: title => `Do mesmo tipo de "${title}"`,
+    reasonFeedback: 'Parecido com sugestões que você curtiu',
+    tierHigh: 'a sua cara', tierMid: 'boa aposta', tierLow: 'vale tentar',
+    otherTitle: 'Outras sugestões',
+    otherHint: 'Estes combinam menos com as suas respostas, mas podem te surpreender.',
+    scarce: n => n === 0
+      ? 'Não achamos livros que combinem bem com tudo o que você pediu.'
+      : `Só achamos ${n === 1 ? '1 livro' : n + ' livros'} que combina${n === 1 ? '' : 'm'} bem com tudo o que você pediu.`,
+    relaxType: 'Ver livros de qualquer lugar',
+    relaxLength: 'Ignorar o tamanho',
+    relaxReading: 'Ignorar a dificuldade',
+    shuffle: 'Me mostra outros',
+    shuffled: 'Novas sugestões!',
+    shuffleExhausted: 'Você já viu todos os livros que combinam bem com essas respostas. Que tal refazer o quiz?',
+    likeIt: 'Curti a sugestão', dislikeIt: 'Não é pra mim',
+    liked: 'Você curtiu', disliked: 'Anotado! Não vamos mais sugerir este.',
+    avoidConflict: 'você pediu isso antes',
+    notFoundAsk: title => `Não temos "${title}" aqui. Conta pra gente: ele é de quê? (até 2)`,
+    likedGroupsChosen: 'Você contou que seu livro favorito é de:',
+    useThis: 'Usar isso',
+    noTitleYet: 'Digite o nome do livro primeiro.',
+    leiaUnknown: 'Leia SP: não conferido',
+    leiaUnknownLong: 'Ainda não conferimos se está no Leia SP',
+    storyButton: 'Card pros Stories'
   },
   es: {
     groups: {
@@ -634,7 +976,32 @@ const quizText = {
     pleaseChoose: 'Por favor, seleccione una opción',
     seeResults: 'Ver mis libros',
     next: 'Siguiente',
-    question: (c, t) => `Pregunta ${c} de ${t}`
+    question: (c, t) => `Pregunta ${c} de ${t}`,
+    reasonReading: { facil: 'Lectura fácil', media: 'Lectura tranquila', desafiadora: 'Lectura desafiante' },
+    reasonLikedGroups: title => `Del mismo tipo que "${title}"`,
+    reasonFeedback: 'Parecido a sugerencias que te gustaron',
+    tierHigh: 'tu estilo', tierMid: 'buena apuesta', tierLow: 'vale intentar',
+    otherTitle: 'Otras sugerencias',
+    otherHint: 'Combinan menos con tus respuestas, pero te pueden sorprender.',
+    scarce: n => n === 0
+      ? 'No encontramos libros que combinen bien con todo lo que pediste.'
+      : `Solo encontramos ${n === 1 ? '1 libro' : n + ' libros'} que combina${n === 1 ? '' : 'n'} bien con todo lo que pediste.`,
+    relaxType: 'Ver libros de cualquier lugar',
+    relaxLength: 'Ignorar el tamaño',
+    relaxReading: 'Ignorar la dificultad',
+    shuffle: 'Muéstrame otros',
+    shuffled: '¡Nuevas sugerencias!',
+    shuffleExhausted: 'Ya viste todos los libros que combinan bien con estas respuestas. ¿Rehacemos el quiz?',
+    likeIt: 'Me gustó la sugerencia', dislikeIt: 'No es para mí',
+    liked: 'Te gustó', disliked: '¡Anotado! No vamos a sugerir este otra vez.',
+    avoidConflict: 'lo pediste antes',
+    notFoundAsk: title => `No tenemos "${title}" aquí. Cuéntanos: ¿de qué es? (hasta 2)`,
+    likedGroupsChosen: 'Contaste que tu libro favorito es de:',
+    useThis: 'Usar esto',
+    noTitleYet: 'Escribe primero el nombre del libro.',
+    leiaUnknown: 'Leia SP: sin verificar',
+    leiaUnknownLong: 'Todavía no verificamos si está en Leia SP',
+    storyButton: 'Tarjeta para Stories'
   }
 };
 
@@ -691,7 +1058,17 @@ const quizQuestions = {
       ]
     },
     {
-      id: 6, key: 'type',
+      id: 6, key: 'reading',
+      question: '✍️ E a escrita, como você prefere?',
+      options: [
+        { value: 'facil', label: '🙂 Fácil e direta' },
+        { value: 'media', label: '📚 Normal, sem sufoco' },
+        { value: 'desafiadora', label: '🧠 Pode ser desafiadora' },
+        { value: 'qualquer', label: '🤷 Tanto faz' }
+      ]
+    },
+    {
+      id: 7, key: 'type',
       question: '🌎 Prefere autores do Brasil ou de fora?',
       options: [
         { value: 'brasileira', label: '🇧🇷 Do Brasil' },
@@ -700,7 +1077,7 @@ const quizQuestions = {
       ]
     },
     {
-      id: 7, key: 'avoid', multiple: true, optional: true,
+      id: 8, key: 'avoid', multiple: true, optional: true,
       question: '🚫 Tem algo que você NÃO quer de jeito nenhum?',
       options: [
         { value: 'terror', label: '👻 Terror' },
@@ -760,7 +1137,17 @@ const quizQuestions = {
       ]
     },
     {
-      id: 6, key: 'type',
+      id: 6, key: 'reading',
+      question: '✍️ ¿Y la escritura, cómo la prefieres?',
+      options: [
+        { value: 'facil', label: '🙂 Fácil y directa' },
+        { value: 'media', label: '📚 Normal, sin agobio' },
+        { value: 'desafiadora', label: '🧠 Puede ser desafiante' },
+        { value: 'qualquer', label: '🤷 Me da igual' }
+      ]
+    },
+    {
+      id: 7, key: 'type',
       question: '🌎 ¿Prefieres autores de Brasil o de fuera?',
       options: [
         { value: 'brasileira', label: '🇧🇷 De Brasil' },
@@ -769,7 +1156,7 @@ const quizQuestions = {
       ]
     },
     {
-      id: 7, key: 'avoid', multiple: true, optional: true,
+      id: 8, key: 'avoid', multiple: true, optional: true,
       question: '🚫 ¿Hay algo que NO quieres de ninguna manera?',
       options: [
         { value: 'terror', label: '👻 Terror' },
@@ -960,6 +1347,13 @@ const elements = {
   resultEyebrow: document.getElementById('resultEyebrow'),
   topPick: document.getElementById('topPick'),
   resultsGrid: document.getElementById('resultsGrid'),
+  moreResultsHeading: document.getElementById('moreResultsHeading'),
+  scarceNotice: document.getElementById('scarceNotice'),
+  otherResults: document.getElementById('otherResults'),
+  otherResultsTitle: document.getElementById('otherResultsTitle'),
+  otherResultsHint: document.getElementById('otherResultsHint'),
+  otherResultsGrid: document.getElementById('otherResultsGrid'),
+  shuffleBtn: document.getElementById('shuffleBtn'),
   moreResultsTitle: document.getElementById('moreResultsTitle'),
   onlyAvailableToggle: document.getElementById('onlyAvailableToggle'),
   onlyAvailableLabel: document.getElementById('onlyAvailableLabel'),
@@ -999,6 +1393,10 @@ const elements = {
   bookModalContent: document.getElementById('bookModalContent'),
   bookOfWeek: document.getElementById('bookOfWeek'),
   readingProgress: document.getElementById('readingProgress'),
+  achievements: document.getElementById('achievements'),
+  surpriseBtn: document.getElementById('surpriseBtn'),
+  storyModal: document.getElementById('storyModal'),
+  storyPreview: document.getElementById('storyPreview'),
   nativeShareBtn: document.getElementById('nativeShareBtn')
 };
 
@@ -1008,7 +1406,9 @@ const state = {
   currentQuestion: 0,
   answers: {},
   answerOption: {},
-  recommendations: [],
+  recommendations: { strong: [], other: [] },
+  shuffleRound: 0,
+  seenIds: new Set(),
   lastFilters: null,
   displayedBooksCount: 8,
   lastRecommendedBook: null,
@@ -1053,6 +1453,7 @@ function init() {
   try {
     renderBookOfTheWeek();
     renderReadingProgress();
+    renderAchievements();
   } catch (e) {
     console.error('Erro ao montar a tela inicial:', e);
   }
@@ -1086,6 +1487,7 @@ function setupEventListeners() {
   elements.libraryBtn.addEventListener('click', showLibraryScreen);
   
   elements.brandLink.addEventListener('click', goToHomeScreen);
+  elements.surpriseBtn.addEventListener('click', surpriseMe);
   elements.homeVestibularBtn.addEventListener('click', showVestibularModal);
 
   // Quiz em espanhol
@@ -1113,6 +1515,8 @@ function setupEventListeners() {
     state.displayedBooksCount = 8;
     renderResults();
   });
+  elements.shuffleBtn.addEventListener('click', shuffleRecommendations);
+  elements.resultScreen.addEventListener('click', handleFeedbackClick);
   
   // Navegação da tela de estatísticas
   elements.backToHomeBtn.addEventListener('click', goToHomeScreen);
@@ -1338,6 +1742,7 @@ function goToHomeScreen(e) {
   state.currentScreen = 'home';
   updateBreadcrumbs();
   renderReadingProgress();
+  renderAchievements();
 }
 
 function showStatsScreen() {
@@ -1508,9 +1913,47 @@ function loadQuestion(index) {
   updateNavButtons(index);
 }
 
+// Opções da última pergunta ("o que você NÃO quer") que contradizem respostas anteriores
+function getAvoidConflicts(answers) {
+  const groups = asArray(answers.groups);
+  const vibes = asArray(answers.vibes);
+  const conflicts = new Set();
+  if (groups.includes('terror') || vibes.includes('assustador')) conflicts.add('terror').add('pesado');
+  if (vibes.includes('pesado')) conflicts.add('pesado');
+  if (groups.includes('amor') || vibes.includes('romantico')) conflicts.add('amor');
+  if (groups.includes('poesia')) conflicts.add('poesia');
+  if (groups.includes('teatro')) conflicts.add('teatro');
+  if (groups.includes('classicos')) conflicts.add('classicos');
+  if (answers.length === 'longo') conflicts.add('longo');
+  return conflicts;
+}
+
+// Aviso rápido no canto da tela (no lugar de alert)
+function showToast(message) {
+  let toast = document.getElementById('toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'toast';
+    toast.className = 'toast';
+    toast.setAttribute('role', 'status');
+    toast.setAttribute('aria-live', 'polite');
+    document.body.appendChild(toast);
+  }
+  toast.textContent = message;
+  toast.classList.add('visible');
+  clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(() => toast.classList.remove('visible'), 2600);
+}
+
 function renderOptionsQuestion(question, index) {
   const questions = getQuestions();
   elements.optionsContainer.classList.add(question.options.length > 5 ? 'options-grid' : 'options-list');
+
+  // Na pergunta "NÃO quero", desativa o que a pessoa pediu antes (e tira da resposta, se já estava marcado)
+  const conflicts = question.key === 'avoid' ? getAvoidConflicts(state.answers) : new Set();
+  if (conflicts.size && Array.isArray(state.answers.avoid)) {
+    state.answers.avoid = state.answers.avoid.filter(v => !conflicts.has(v));
+  }
 
   question.options.forEach((option, optionIndex) => {
     const optionElement = document.createElement('div');
@@ -1539,6 +1982,17 @@ function renderOptionsQuestion(question, index) {
     optionElement.appendChild(input);
     optionElement.appendChild(label);
 
+    if (conflicts.has(option.value)) {
+      input.disabled = true;
+      optionElement.classList.add('disabled');
+      const note = document.createElement('small');
+      note.className = 'option-note';
+      note.textContent = `(${t().avoidConflict})`;
+      label.appendChild(note);
+      elements.optionsContainer.appendChild(optionElement);
+      return;
+    }
+
     optionElement.addEventListener('click', (e) => {
       // Clique direto na caixinha: o navegador já marcou/desmarcou sozinho.
       // Clique no texto ou no cartão: impede o clique duplicado do <label> e alterna aqui.
@@ -1553,7 +2007,7 @@ function renderOptionsQuestion(question, index) {
           const checkedCount = elements.optionsContainer.querySelectorAll('input:checked').length;
           if (checkedCount > question.maxSelections) {
             input.checked = false;
-            alert(t().limit(question.maxSelections));
+            showToast(t().limit(question.maxSelections));
             return;
           }
         }
@@ -1579,59 +2033,107 @@ function renderOptionsQuestion(question, index) {
   });
 }
 
-// Pergunta "Qual livro você já leu e amou?": busca na lista de livros
+// Pergunta "Qual livro você já leu e amou?": busca na lista de livros.
+// Se o livro não estiver no site, a pessoa conta de que tipo ele é (até 2 grupos).
 function renderBookSearchQuestion(question, index) {
   const wrapper = document.createElement('div');
   wrapper.className = 'book-search';
+  const text = t();
 
   const chosenId = state.answers[question.key];
   const chosenBook = chosenId ? findBookById(chosenId) : null;
+  const likedGroups = asArray(state.answers.likedGroups);
 
-  if (chosenBook) {
-    wrapper.innerHTML = `
+  const clearChoice = () => {
+    delete state.answers[question.key];
+    delete state.answers.likedGroups;
+    delete state.answers.likedTitle;
+    loadQuestion(index);
+  };
+
+  if (chosenBook || likedGroups.length) {
+    wrapper.innerHTML = chosenBook ? `
       <div class="book-search-chosen">
         <img src="${escapeHtml(chosenBook.cover || PLACEHOLDER_COVER)}" alt="" onerror="this.onerror=null;this.src='assets/sem-capa.svg'">
         <div>
-          <small>${t().chosen}</small>
+          <small>${text.chosen}</small>
           <strong>${escapeHtml(chosenBook.title)}</strong>
           <span>${escapeHtml(chosenBook.author)}</span>
         </div>
-        <button type="button" class="btn btn-ghost btn-small" id="clearLikedBtn">${t().remove}</button>
+        <button type="button" class="btn btn-ghost btn-small" id="clearLikedBtn">${text.remove}</button>
+      </div>` : `
+      <div class="book-search-chosen">
+        <div>
+          <small>${text.likedGroupsChosen}</small>
+          <strong>${escapeHtml(state.answers.likedTitle || '')}</strong>
+          <span>${likedGroups.map(g => escapeHtml(text.groups[g])).join(' · ')}</span>
+        </div>
+        <button type="button" class="btn btn-ghost btn-small" id="clearLikedBtn">${text.remove}</button>
       </div>`;
     elements.optionsContainer.appendChild(wrapper);
-    document.getElementById('clearLikedBtn').addEventListener('click', () => {
-      delete state.answers[question.key];
-      loadQuestion(index);
-    });
+    document.getElementById('clearLikedBtn').addEventListener('click', clearChoice);
     return;
   }
 
   wrapper.innerHTML = `
     <div class="search-container">
       <i class="fas fa-search"></i>
-      <input type="search" id="likedBookSearch" autocomplete="off" placeholder="${escapeHtml(t().searchPlaceholder)}" aria-label="${escapeHtml(t().searchPlaceholder)}">
+      <input type="search" id="likedBookSearch" autocomplete="off" placeholder="${escapeHtml(text.searchPlaceholder)}" aria-label="${escapeHtml(text.searchPlaceholder)}">
     </div>
-    <p class="book-search-help">${t().pickBook}</p>
+    <p class="book-search-help">${text.pickBook}</p>
     <div class="book-search-results" id="likedBookResults"></div>`;
   elements.optionsContainer.appendChild(wrapper);
 
   const input = document.getElementById('likedBookSearch');
   const results = document.getElementById('likedBookResults');
 
+  const renderGroupPicker = (typedTitle) => {
+    const picker = document.createElement('div');
+    picker.className = 'liked-groups';
+    picker.innerHTML = `<p class="book-search-empty">${escapeHtml(text.notFoundAsk(typedTitle))}</p><div class="chip-row"></div>`;
+    const row = picker.querySelector('.chip-row');
+    const selected = new Set();
+    Object.keys(GENRE_GROUPS).forEach(key => {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'chip';
+      chip.textContent = text.groups[key];
+      chip.setAttribute('aria-pressed', 'false');
+      chip.addEventListener('click', () => {
+        if (selected.has(key)) selected.delete(key);
+        else if (selected.size < 2) selected.add(key);
+        else { showToast(text.limit(2)); return; }
+        chip.classList.toggle('selected', selected.has(key));
+        chip.setAttribute('aria-pressed', selected.has(key) ? 'true' : 'false');
+        useBtn.disabled = selected.size === 0;
+      });
+      row.appendChild(chip);
+    });
+    const useBtn = document.createElement('button');
+    useBtn.type = 'button';
+    useBtn.className = 'btn btn-primary btn-small';
+    useBtn.textContent = text.useThis;
+    useBtn.disabled = true;
+    useBtn.addEventListener('click', () => {
+      state.answers.likedGroups = [...selected];
+      state.answers.likedTitle = typedTitle;
+      loadQuestion(index);
+    });
+    picker.appendChild(useBtn);
+    results.appendChild(picker);
+  };
+
   const render = () => {
-    const term = normalizeText(input.value.trim());
+    const typed = input.value.trim();
+    const term = normalizeText(typed);
     results.innerHTML = '';
     if (term.length < 2) return;
 
     const matches = booksDatabase
-      .filter(book => normalizeText(book.title).includes(term) || normalizeText(book.author).includes(term))
+      .filter(book => normalizeText(book.title).includes(term) || normalizeText(book.author).includes(term) ||
+        (book.tituloOriginal && normalizeText(book.tituloOriginal).includes(term)))
       .sort((a, b) => (b.popularity || 0) - (a.popularity || 0))
       .slice(0, 6);
-
-    if (matches.length === 0) {
-      results.innerHTML = `<p class="book-search-empty">${t().noMatch}</p>`;
-      return;
-    }
 
     matches.forEach(book => {
       const item = document.createElement('button');
@@ -1640,13 +2142,18 @@ function renderBookSearchQuestion(question, index) {
       item.innerHTML = `<strong>${escapeHtml(book.title)}</strong><span>${escapeHtml(book.author)}</span>`;
       item.addEventListener('click', () => {
         state.answers[question.key] = book.id;
+        delete state.answers.likedGroups;
+        delete state.answers.likedTitle;
         loadQuestion(index);
       });
       results.appendChild(item);
     });
+
+    // Não achou (ou achou só outros livros): deixa contar de que tipo é o livro
+    if (matches.length === 0 && term.length >= 3) renderGroupPicker(typed);
   };
 
-  input.addEventListener('input', debounce(render, 150));
+  input.addEventListener('input', debounce(render, 250));
   setTimeout(() => input.focus({ preventScroll: true }), 50);
 }
 
@@ -1659,7 +2166,9 @@ function updateQuestionIndicator(currentIndex, totalQuestions) {
     const dot = document.createElement('div');
     dot.className = 'question-dot';
 
-    const answer = state.answers[questions[i].key];
+    const answer = questions[i].key === 'liked'
+      ? (state.answers.liked || (asArray(state.answers.likedGroups).length ? 'grupos' : undefined))
+      : state.answers[questions[i].key];
     const hasAnswer = Array.isArray(answer) ? answer.length > 0 : answer !== undefined;
     if (i === currentIndex) {
       dot.classList.add('active');
@@ -1708,12 +2217,20 @@ function goToPreviousQuestion() {
 // Cada livro ganha pontos em partes (o máximo de cada parte está em SCORE_MAX):
 //  - tipo de história (grupos) e sensação (vibes) são as partes que mais pesam;
 //  - "livro que você amou" puxa livros parecidos com ele;
-//  - tamanho e série ajustam;
+//  - tamanho, dificuldade da escrita e série ajustam;
 //  - popularidade e Leia SP só desempatam.
-// O que a pessoa disse que NÃO quer, livros que ela já marcou como lidos e livros fora da série saem da lista.
-const SCORE_MAX = { groups: 30, vibes: 25, liked: 25, length: 8, grade: 8, popularity: 3, available: 1 };
+// Saem da lista: o que a pessoa disse que NÃO quer, livros já lidos, livros marcados como "não é pra mim",
+// livros fora da série e livros ilustrados para crianças pequenas (quiz: false).
+const SCORE_MAX = { groups: 30, vibes: 25, liked: 25, length: 15, reading: 10, grade: 8, popularity: 3, available: 1 };
+
+// Faixas de combinação (fração da pontuação máxima). Escolhidas testando 1.500 quizzes simulados:
+// com 0.45 para entrar na lista principal, o aviso de "poucos livros" aparece em ~12% dos quizzes.
+const MATCH_HIGH = 0.72;   // "a sua cara"
+const MATCH_MID = 0.55;    // "boa aposta"
+const MATCH_STRONG = 0.45; // entra na lista principal ("vale tentar" abaixo de MATCH_MID)
 
 const LENGTH_ORDER = ['curto', 'medio', 'longo'];
+const READING_ORDER = ['facil', 'media', 'desafiadora'];
 const GRADE_ORDER = ['EF1', 'EF2', 'EM'];
 
 // "J.K. Rowling" e "J. K. Rowling" são a mesma pessoa
@@ -1748,6 +2265,39 @@ function stableHash(text) {
   return (hash >>> 0) / 4294967295;
 }
 
+// Distância entre dois valores numa escala (curto/médio/longo, fácil/média/desafiadora)
+function scalePoints(order, wanted, actual, max) {
+  const w = order.indexOf(wanted);
+  const a = order.indexOf(actual);
+  if (a === -1) return max * 0.5; // não sabemos: meio-termo
+  const distance = Math.abs(a - w);
+  return distance === 0 ? max : distance === 1 ? max * 0.4 : 0;
+}
+
+// ----- "Curti a sugestão" / "Não é pra mim" (salvo no navegador) -----
+const FEEDBACK_KEY = 'acheSeuLivro_feedback';
+
+function getFeedback() {
+  try {
+    return JSON.parse(localStorage.getItem(FEEDBACK_KEY)) || {};
+  } catch (e) {
+    return {};
+  }
+}
+
+function setFeedback(bookId, value) {
+  try {
+    const feedback = getFeedback();
+    if (value === 0 || feedback[bookId] === value) delete feedback[bookId];
+    else feedback[bookId] = value;
+    localStorage.setItem(FEEDBACK_KEY, JSON.stringify(feedback));
+    return feedback[bookId] || 0;
+  } catch (e) {
+    console.error('Erro ao salvar opinião:', e);
+    return 0;
+  }
+}
+
 function isAvoided(book, avoid) {
   if (!avoid || avoid.length === 0) return false;
   const groups = getBookGroups(book);
@@ -1767,12 +2317,24 @@ function isAvoided(book, avoid) {
   });
 }
 
-function fitsGrade(book, grade) {
+function fitsGrade(book, filters) {
   const grades = asArray(book.grade);
-  if (!grade || grades.length === 0) return true;
+  if (!filters.grade || grades.length === 0) return true;
   // 6°-7° ano não recebe livro só de Ensino Médio
-  if (grade === 'EF1') return !grades.every(g => g === 'EM');
+  if (filters.grade === 'EF1') return !grades.every(g => g === 'EM');
+  // Ensino Médio não recebe livro só de 6°-7° ano, a não ser que peça infantojuvenil
+  if (filters.grade === 'EM') return !grades.every(g => g === 'EF1') || filters.groups.includes('juvenil');
   return true;
+}
+
+// O livro tem alguma coisa do que a pessoa pediu?
+function hitsRequest(book, filters) {
+  const groups = getBookGroups(book);
+  const vibes = getBookVibes(book);
+  return filters.groups.some(g => groups.includes(g)) ||
+    filters.vibes.some(v => vibes.includes(v)) ||
+    filters.likedGroups.some(g => groups.includes(g)) ||
+    (filters.likedBook && bookSimilarity(book, filters.likedBook) >= 0.35);
 }
 
 function scoreBook(book, filters) {
@@ -1781,31 +2343,36 @@ function scoreBook(book, filters) {
   const bookGroups = getBookGroups(book);
   const bookVibes = getBookVibes(book);
 
+  // Basta bater em 2 das escolhas para ganhar tudo: ninguém espera um livro que seja tudo ao mesmo tempo
   if (filters.groups.length > 0) {
-    const matched = filters.groups.filter(g => bookGroups.includes(g));
-    parts.groups = SCORE_MAX.groups * (matched.length / filters.groups.length);
+    const matched = filters.groups.filter(g => bookGroups.includes(g)).length;
+    parts.groups = SCORE_MAX.groups * Math.min(1, matched / Math.min(2, filters.groups.length));
     max.groups = SCORE_MAX.groups;
   }
 
   if (filters.vibes.length > 0) {
-    const matched = filters.vibes.filter(v => bookVibes.includes(v));
-    parts.vibes = SCORE_MAX.vibes * (matched.length / filters.vibes.length);
+    const matched = filters.vibes.filter(v => bookVibes.includes(v)).length;
+    parts.vibes = SCORE_MAX.vibes * Math.min(1, matched / Math.min(2, filters.vibes.length));
     max.vibes = SCORE_MAX.vibes;
   }
 
   if (filters.likedBook) {
     parts.liked = SCORE_MAX.liked * bookSimilarity(book, filters.likedBook);
     max.liked = SCORE_MAX.liked;
+  } else if (filters.likedGroups.length > 0) {
+    const matched = filters.likedGroups.filter(g => bookGroups.includes(g)).length;
+    parts.liked = SCORE_MAX.liked * (matched / filters.likedGroups.length);
+    max.liked = SCORE_MAX.liked;
   }
 
   if (filters.length && filters.length !== 'qualquer') {
-    const wanted = LENGTH_ORDER.indexOf(filters.length);
-    const actual = LENGTH_ORDER.indexOf(book.tamanho);
-    if (actual === -1) parts.length = SCORE_MAX.length * 0.5; // tamanho desconhecido: meio-termo
-    else if (actual === wanted) parts.length = SCORE_MAX.length;
-    else if (Math.abs(actual - wanted) === 1) parts.length = SCORE_MAX.length * 0.4;
-    else parts.length = 0;
+    parts.length = scalePoints(LENGTH_ORDER, filters.length, book.tamanho, SCORE_MAX.length);
     max.length = SCORE_MAX.length;
+  }
+
+  if (filters.reading && filters.reading !== 'qualquer') {
+    parts.reading = scalePoints(READING_ORDER, filters.reading, book.leitura, SCORE_MAX.reading);
+    max.reading = SCORE_MAX.reading;
   }
 
   if (filters.grade) {
@@ -1815,17 +2382,42 @@ function scoreBook(book, filters) {
       ? 1
       : Math.min(...grades.map(g => Math.abs(GRADE_ORDER.indexOf(g) - wanted)));
     parts.grade = distance === 0 ? SCORE_MAX.grade : distance === 1 ? SCORE_MAX.grade * 0.5 : 0;
+    // 6°-7° ano: livro pesado só se a pessoa pediu
+    if (filters.grade === 'EF1' && bookVibes.includes('pesado') && !filters.vibes.includes('pesado')) parts.grade = 0;
     max.grade = SCORE_MAX.grade;
   }
 
   parts.popularity = SCORE_MAX.popularity * ((book.popularity || 5) / 10);
   max.popularity = SCORE_MAX.popularity;
-  parts.available = book.available ? SCORE_MAX.available : 0;
+  parts.available = book.available === true ? SCORE_MAX.available : 0;
   max.available = SCORE_MAX.available;
 
   const score = Object.values(parts).reduce((sum, value) => sum + value, 0);
   const maxScore = Object.values(max).reduce((sum, value) => sum + value, 0);
   return { score, match: maxScore > 0 ? score / maxScore : 0, parts };
+}
+
+// Ajustes que mudam a ordem, mas não a porcentagem: opiniões da pessoa e "me mostra outros"
+function rankingAdjustments(book, filters, feedbackBooks) {
+  let bonus = 0;
+  if (feedbackBooks.liked.length) {
+    bonus += 4 * Math.max(...feedbackBooks.liked.map(b => bookSimilarity(book, b)));
+  }
+  if (feedbackBooks.disliked.length) {
+    bonus -= 4 * Math.max(...feedbackBooks.disliked.map(b => bookSimilarity(book, b)));
+  }
+  if (state.shuffleRound > 0) {
+    if (state.seenIds.has(book.id)) bonus -= 15;
+    bonus += stableHash(`${state.shuffleRound}#${book.id}`) * 4;
+  }
+  return bonus;
+}
+
+function matchTier(match) {
+  const text = t();
+  if (match >= MATCH_HIGH) return { key: 'high', label: text.tierHigh };
+  if (match >= MATCH_MID) return { key: 'mid', label: text.tierMid };
+  return { key: 'low', label: text.tierLow };
 }
 
 function getRecommendationReasons(book, filters) {
@@ -1846,13 +2438,19 @@ function getRecommendationReasons(book, filters) {
 
   if (filters.likedBook && bookSimilarity(book, filters.likedBook) >= 0.35) {
     reasons.push(`${text.reasonLiked} "${filters.likedBook.title}"`);
+  } else if (filters.likedTitle && filters.likedGroups.some(g => bookGroups.includes(g))) {
+    reasons.push(text.reasonLikedGroups(filters.likedTitle));
   }
 
   if (filters.length && filters.length !== 'qualquer' && book.tamanho === filters.length) {
     reasons.push(`${text.reasonLength} ${text.lengths[book.tamanho]}`);
   }
 
-  if (book.available) reasons.push(text.reasonAvailable);
+  if (filters.reading && filters.reading !== 'qualquer' && book.leitura === filters.reading) {
+    reasons.push(text.reasonReading[book.leitura]);
+  }
+
+  if (book.available === true) reasons.push(text.reasonAvailable);
   return reasons;
 }
 
@@ -1870,7 +2468,7 @@ function diversify(scored, limit) {
       const sameAuthor = authorCount[authorKey(item.book.author)] || 0;
       const groups = getBookGroups(item.book);
       const sameGroups = groups.length ? Math.min(...groups.map(g => groupCount[g] || 0)) : 0;
-      const value = item.score - sameAuthor * 10 - sameGroups * 0.8;
+      const value = item.rank - sameAuthor * 10 - sameGroups * 0.8;
       if (value > bestValue) {
         bestValue = value;
         bestIndex = i;
@@ -1886,44 +2484,64 @@ function diversify(scored, limit) {
 
 function buildFilters() {
   const answers = state.answers;
+  // Nunca deixa "não quero X" brigar com "quero X" (caso a pessoa tenha voltado e mudado respostas)
+  const conflicts = getAvoidConflicts(answers);
   return {
     grade: answers.grade,
     groups: asArray(answers.groups),
     vibes: asArray(answers.vibes),
     likedBook: answers.liked ? findBookById(answers.liked) : null,
+    likedGroups: answers.liked ? [] : asArray(answers.likedGroups),
+    likedTitle: answers.liked ? '' : (answers.likedTitle || ''),
     length: answers.length,
+    reading: answers.reading,
     type: answers.type || 'qualquer',
-    avoid: asArray(answers.avoid)
+    avoid: asArray(answers.avoid).filter(v => !conflicts.has(v))
   };
 }
 
 function getRecommendedBooks(filters) {
   const readIds = getReadBooks();
+  const feedback = getFeedback();
+  const feedbackBooks = {
+    liked: Object.keys(feedback).filter(id => feedback[id] > 0).map(findBookById).filter(Boolean),
+    disliked: Object.keys(feedback).filter(id => feedback[id] < 0).map(findBookById).filter(Boolean)
+  };
   const seedKey = JSON.stringify(filters, (key, value) => key === 'likedBook' ? (value && value.id) : value);
 
-  const candidatesFor = (options) => booksDatabase.filter(book =>
+  const candidates = booksDatabase.filter(book =>
+    book.quiz !== false &&
     (!filters.likedBook || book.id !== filters.likedBook.id) &&
     !readIds.includes(book.id) &&
+    feedback[book.id] !== -1 &&
     !isAvoided(book, filters.avoid) &&
-    fitsGrade(book, filters.grade) &&
-    (options.ignoreType || matchesType(book, filters.type))
+    fitsGrade(book, filters) &&
+    matchesType(book, filters.type)
   );
-
-  let candidates = candidatesFor({});
-  // Se sobrar pouca coisa, aceita autores de qualquer lugar (mas nunca o que a pessoa disse que NÃO quer)
-  if (candidates.length < 8) {
-    const extra = candidatesFor({ ignoreType: true }).filter(book => !candidates.includes(book));
-    candidates = candidates.concat(extra);
-  }
 
   const scored = candidates.map(book => {
     const result = scoreBook(book, filters);
+    // 6°-7° ano: livro pesado que a pessoa não pediu fica só em "Outras sugestões"
+    const tooHeavy = filters.grade === 'EF1' && getBookVibes(book).includes('pesado') && !filters.vibes.includes('pesado');
+    const strong = hitsRequest(book, filters) && result.match >= MATCH_STRONG && !tooHeavy;
     // Desempate mínimo e estável (muda conforme as respostas)
-    result.score += stableHash(`${seedKey}#${book.id}`) * 0.01;
-    return { book, ...result };
-  }).sort((a, b) => b.score - a.score);
+    const rank = result.score + rankingAdjustments(book, filters, feedbackBooks) +
+      stableHash(`${seedKey}#${book.id}`) * 0.01;
+    return { book, ...result, strong, rank };
+  }).sort((a, b) => b.rank - a.rank);
 
-  return diversify(scored, 60);
+  return {
+    strong: diversify(scored.filter(item => item.strong), 40),
+    other: diversify(scored.filter(item => !item.strong), 12)
+  };
+}
+
+function recomputeRecommendations() {
+  const filters = buildFilters();
+  state.lastFilters = filters;
+  state.recommendations = getRecommendedBooks(filters);
+  const first = state.recommendations.strong[0] || state.recommendations.other[0];
+  state.lastRecommendedBook = first ? first.book : null;
 }
 
 // Mostrar resultados
@@ -1939,17 +2557,19 @@ function showResults() {
 
   setTimeout(() => {
     try {
-      const filters = buildFilters();
-      state.lastFilters = filters;
-      state.recommendations = getRecommendedBooks(filters);
+      state.shuffleRound = 0;
+      state.seenIds = new Set();
       state.displayedBooksCount = 8;
-      state.lastRecommendedBook = state.recommendations[0] ? state.recommendations[0].book : null;
+      recomputeRecommendations();
 
       const pt = state.currentLanguage === 'pt';
       elements.resultTitle.textContent = pt ? 'Livros recomendados para você' : 'Libros recomendados para ti';
       elements.resultEyebrow.textContent = pt ? 'Garimpamos a estante pra você' : 'Buscamos en la estantería para ti';
       elements.moreResultsTitle.textContent = pt ? 'Mais livros com a sua cara' : 'Más libros con tu estilo';
       elements.onlyAvailableLabel.textContent = pt ? 'Só os do Leia SP' : 'Solo los de Leia SP';
+      elements.otherResultsTitle.textContent = t().otherTitle;
+      elements.otherResultsHint.textContent = t().otherHint;
+      elements.shuffleBtn.innerHTML = `<i class="fas fa-shuffle"></i> ${escapeHtml(t().shuffle)}`;
       elements.onlyAvailableToggle.checked = false;
 
       renderResults();
@@ -1969,14 +2589,51 @@ function showResults() {
   }, 250);
 }
 
+// Quando acha pouca coisa, oferece afrouxar as respostas mais restritivas
+function renderScarceNotice(strongCount) {
+  const text = t();
+  const answers = state.answers;
+  const container = elements.scarceNotice;
+  if (strongCount >= 4) {
+    container.style.display = 'none';
+    container.innerHTML = '';
+    return;
+  }
+
+  const actions = [];
+  if (answers.type && answers.type !== 'qualquer') actions.push(['type', text.relaxType]);
+  if (answers.length && answers.length !== 'qualquer') actions.push(['length', text.relaxLength]);
+  if (answers.reading && answers.reading !== 'qualquer') actions.push(['reading', text.relaxReading]);
+
+  container.innerHTML = `
+    <p><i class="fas fa-compass"></i> ${escapeHtml(text.scarce(strongCount))}</p>
+    <div class="scarce-actions">
+      ${actions.map(([key, label]) => `<button type="button" class="btn btn-small" data-relax="${key}">${escapeHtml(label)}</button>`).join('')}
+    </div>`;
+  container.style.display = 'block';
+  container.querySelectorAll('[data-relax]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.answers[btn.dataset.relax] = 'qualquer';
+      state.displayedBooksCount = 8;
+      recomputeRecommendations();
+      renderResults();
+      elements.topPick.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+}
+
 function renderResults() {
   const filters = state.lastFilters;
   const onlyAvailable = elements.onlyAvailableToggle.checked;
-  const list = (state.recommendations || []).filter(item => !onlyAvailable || item.book.available);
+  const keep = item => !onlyAvailable || item.book.available === true;
+  const strong = (state.recommendations.strong || []).filter(keep);
+  const other = (state.recommendations.other || []).filter(keep);
 
-  if (list.length === 0) {
+  if (strong.length === 0 && other.length === 0) {
     elements.topPick.innerHTML = '';
     elements.resultsGrid.innerHTML = '';
+    elements.otherResults.style.display = 'none';
+    elements.scarceNotice.style.display = 'none';
     elements.fallbackBooks.style.display = 'block';
     const fallbackMessage = elements.fallbackBooks.querySelector('.no-books-message');
     if (fallbackMessage) {
@@ -1990,36 +2647,90 @@ function renderResults() {
   }
 
   elements.fallbackBooks.style.display = 'none';
-  renderTopPick(list[0], filters);
+  renderScarceNotice(strong.length);
 
-  const rest = list.slice(1, 1 + state.displayedBooksCount);
+  // Destaque: o melhor que combina de verdade; se nada combina bem, o melhor do resto (com o selo "vale tentar")
+  const top = strong[0] || other[0];
+  renderTopPick(top, filters);
+  state.seenIds.add(top.book.id);
+
+  const rest = strong.slice(1, 1 + state.displayedBooksCount);
   elements.resultsGrid.innerHTML = '';
+  elements.moreResultsHeading.style.display = rest.length ? '' : 'none';
   rest.forEach(item => {
-    const reasons = getRecommendationReasons(item.book, filters);
+    state.seenIds.add(item.book.id);
     elements.resultsGrid.appendChild(createBookCard(item.book, {
-      reason: reasons[0],
-      hideDescription: true
+      reason: getRecommendationReasons(item.book, filters)[0],
+      tier: matchTier(item.match),
+      hideDescription: true,
+      feedback: true
     }));
   });
+
+  const others = (strong.length ? other : other.slice(1)).slice(0, 4);
+  elements.otherResults.style.display = others.length && strong.length < 9 ? 'block' : 'none';
+  elements.otherResultsGrid.innerHTML = '';
+  if (others.length && strong.length < 9) {
+    others.forEach(item => {
+      elements.otherResultsGrid.appendChild(createBookCard(item.book, {
+        reason: getRecommendationReasons(item.book, filters)[0],
+        hideDescription: true,
+        feedback: true
+      }));
+    });
+  }
   setupLazyLoading();
 
-  elements.moreBooksBtn.style.display = list.length > 1 + state.displayedBooksCount ? 'flex' : 'none';
+  elements.moreBooksBtn.style.display = strong.length > 1 + state.displayedBooksCount ? 'flex' : 'none';
 }
 
 function matchPercent(match) {
   return Math.max(1, Math.min(99, Math.round(match * 100)));
 }
 
+function feedbackButtonsHtml(bookId) {
+  const text = t();
+  const value = getFeedback()[bookId] || 0;
+  return `
+    <span class="feedback-buttons">
+      <button type="button" class="feedback-btn ${value > 0 ? 'active' : ''}" data-feedback="1" data-book-id="${bookId}"
+              aria-label="${escapeHtml(text.likeIt)}" title="${escapeHtml(text.likeIt)}" aria-pressed="${value > 0}">👍</button>
+      <button type="button" class="feedback-btn" data-feedback="-1" data-book-id="${bookId}"
+              aria-label="${escapeHtml(text.dislikeIt)}" title="${escapeHtml(text.dislikeIt)}">👎</button>
+    </span>`;
+}
+
+function handleFeedbackClick(event) {
+  const btn = event.target.closest('.feedback-btn');
+  if (!btn) return;
+  event.stopPropagation();
+  const bookId = Number(btn.dataset.bookId);
+  const value = Number(btn.dataset.feedback);
+  const now = setFeedback(bookId, value);
+  if (value < 0) {
+    showToast(t().disliked);
+    recomputeRecommendations();
+    renderResults();
+  } else {
+    document.querySelectorAll(`.feedback-btn[data-feedback="1"][data-book-id="${bookId}"]`).forEach(b => {
+      b.classList.toggle('active', now > 0);
+      b.setAttribute('aria-pressed', now > 0 ? 'true' : 'false');
+    });
+    if (now > 0) showToast(`${t().liked} 👍`);
+  }
+}
+
 function renderTopPick(item, filters) {
   const book = item.book;
   const text = t();
   const reasons = getRecommendationReasons(book, filters);
+  const tier = matchTier(item.match);
 
   elements.topPick.innerHTML = `
     <div class="top-pick-cover">
       <img src="${escapeHtml(book.cover || PLACEHOLDER_COVER)}" alt="Capa do livro: ${escapeHtml(book.title)}"
            onerror="this.onerror=null;this.src='assets/sem-capa.svg'">
-      <span class="match-stamp"><strong>${matchPercent(item.match)}%</strong>${escapeHtml(text.matchLabel)}</span>
+      <span class="match-stamp tier-${tier.key}"><strong>${matchPercent(item.match)}%</strong>${escapeHtml(tier.label)}</span>
     </div>
     <div class="top-pick-info">
       <p class="eyebrow">${escapeHtml(text.topPick)}</p>
@@ -2029,16 +2740,34 @@ function renderTopPick(item, filters) {
       ${book.description ? `<p class="top-pick-description">${escapeHtml(book.description)}</p>` : ''}
       <div class="top-pick-actions">
         <button class="btn btn-primary" id="topPickDetailsBtn"><i class="fas fa-book-open"></i> ${escapeHtml(text.details)}</button>
+        <button class="btn" id="topPickStoryBtn"><i class="fas fa-camera-retro"></i> ${escapeHtml(text.storyButton)}</button>
         ${favoriteButtonHtml(book.id)}
+        ${feedbackButtonsHtml(book.id)}
       </div>
     </div>
   `;
 
   document.getElementById('topPickDetailsBtn').addEventListener('click', () => showBookModal(book.id));
+  document.getElementById('topPickStoryBtn').addEventListener('click', () => openStoryCard(book, item.match));
   fetchCorrectCover(book).then(url => {
     const img = elements.topPick.querySelector('.top-pick-cover img');
     if (url && img) img.src = url;
   });
+}
+
+// "Me mostra outros": tira da frente o que já apareceu e embaralha um pouco os parecidos
+function shuffleRecommendations() {
+  const unseen = (state.recommendations.strong || []).filter(item => !state.seenIds.has(item.book.id)).length;
+  if (unseen === 0) {
+    showToast(t().shuffleExhausted);
+    return;
+  }
+  state.shuffleRound = (state.shuffleRound || 0) + 1;
+  state.displayedBooksCount = 8;
+  recomputeRecommendations();
+  renderResults();
+  showToast(unseen < 4 ? t().shuffleExhausted : t().shuffled);
+  elements.topPick.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // Carregar mais livros
@@ -2397,9 +3126,8 @@ function filterLibraryBooksUnsafe() {
 
   // Aplicar filtro de disponibilidade
   if (libraryState.filters.availability !== 'all') {
-    filtered = filtered.filter(book => 
-      libraryState.filters.availability === 'available' ? book.available : !book.available
-    );
+    const wanted = { available: true, unavailable: false, unknown: null }[libraryState.filters.availability];
+    filtered = filtered.filter(book => (book.available ?? null) === wanted);
   }
   
   // Aplicar filtro de faixa etária

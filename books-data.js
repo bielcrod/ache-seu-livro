@@ -13,6 +13,7 @@
         tags: ["classico", "fabulas"],
         mood: ["emocionar"],
         time: ["fantasia"],
+        leitura: "facil",
         description: "Clássico atemporal que aborda valores humanos essenciais.",
         popularity: 10
       },
@@ -28,6 +29,7 @@
         tags: ["realismo", "literatura-brasileira"],
         mood: ["emocionar"],
         time: ["passado"],
+        leitura: "media",
         description: "Clássico da literatura brasileira que explora ciúme e ambiguidade.",
         popularity: 9
       },
@@ -43,6 +45,7 @@
         tags: ["alegoria", "classico"],
         mood: ["surpreender"],
         time: ["fantasia"],
+        leitura: "facil",
         description: "Fábula política sobre poder e corrupção.",
         popularity: 9
       },
@@ -58,6 +61,7 @@
         tags: ["bahia", "literatura-brasileira"],
         mood: ["emocionar"],
         time: ["passado"],
+        leitura: "media",
         description: "Romance sobre um grupo de meninos de rua em Salvador.",
         popularity: 8
       },
@@ -73,6 +77,7 @@
         tags: ["infantil", "brasil"],
         mood: ["emocionar"],
         time: ["presente"],
+        leitura: "facil",
         description: "Clássico da literatura infantil brasileira sobre as travessuras de um menino.",
         popularity: 7
       }
@@ -92,6 +97,7 @@
     mood: ["surpreender"],
     tamanho: "curto",
     vibes: ["engracado", "leve"],
+    leitura: "media",
     time: ["passado"],
     description: "Uma das primeiras comédias de Shakespeare, cheia de confusões e identidades trocadas.",
     popularity: 6
@@ -109,6 +115,7 @@
     mood: ["emocionar"],
     tamanho: "medio",
     vibes: ["inspirador", "reflexivo"],
+    leitura: "facil",
     time: ["presente"],
     description: "Um estudo sobre vulnerabilidade, coragem e autenticidade.",
     popularity: 7
@@ -126,6 +133,7 @@
     mood: ["emocionar"],
     tamanho: "longo",
     vibes: ["reflexivo"],
+    leitura: "desafiadora",
     time: ["passado"],
     description: "Obra-prima da literatura mundial que descreve a jornada de Dante pelo Inferno, Purgatório e Paraíso.",
     popularity: 8
@@ -143,6 +151,7 @@
     mood: ["emocionar"],
     tamanho: "medio",
     vibes: ["romantico", "leve"],
+    leitura: "media",
     time: ["passado"],
     description: "Primeiro romance romântico brasileiro, que conta a história de um amor juvenil.",
     popularity: 6
@@ -160,6 +169,7 @@
     mood: ["emocionar"],
     tamanho: "medio",
     vibes: ["romantico", "misterio", "reflexivo"],
+    leitura: "media",
     time: ["passado"],
     description: "Clássico da literatura brasileira que explora ciúme e ambiguidade.",
     popularity: 9
@@ -177,6 +187,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["emocionante", "reflexivo", "leve"],
+    leitura: "facil",
     time: ["fantasia"],
     description: "Clássico atemporal que aborda valores humanos essenciais.",
     popularity: 10
@@ -194,6 +205,7 @@
     mood: ["emocionar"],
     tamanho: "medio",
     vibes: ["emocionante", "aventura"],
+    leitura: "media",
     time: ["passado"],
     description: "Romance sobre um grupo de meninos de rua em Salvador.",
     popularity: 9
@@ -211,6 +223,7 @@
     mood: ["surpreender"],
     tamanho: "curto",
     vibes: ["reflexivo"],
+    leitura: "facil",
     time: ["fantasia"],
     description: "Fábula política sobre poder e corrupção.",
     popularity: 9
@@ -228,6 +241,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["engracado", "leve"],
+    leitura: "facil",
     time: ["presente"],
     description: "Clássico da literatura infantil brasileira sobre as travessuras de um menino.",
     popularity: 7
@@ -245,6 +259,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["emocionante", "pesado"],
+    leitura: "media",
     time: ["passado"],
     description: "Retrato da vida difícil de uma família de retirantes no Nordeste.",
     popularity: 9
@@ -262,6 +277,7 @@
     mood: ["surpreender"],
     tamanho: "curto",
     vibes: ["engracado", "reflexivo"],
+    leitura: "media",
     time: ["passado"],
     description: "Conto que questiona os limites entre sanidade e loucura.",
     popularity: 7
@@ -279,6 +295,7 @@
     mood: ["surpreender"],
     tamanho: "medio",
     vibes: ["aventura", "misterio"],
+    leitura: "facil",
     time: ["fantasia"],
     description: "Primeiro livro da famosa série sobre o jovem bruxo Harry Potter.",
     popularity: 9
@@ -296,6 +313,7 @@
     mood: ["emocionar"],
     tamanho: "medio",
     vibes: ["pesado"],
+    leitura: "media",
     time: ["passado"],
     description: "Romance naturalista sobre a vida nos cortiços cariocas.",
     popularity: 7
@@ -313,6 +331,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["emocionante", "reflexivo"],
+    leitura: "media",
     time: ["presente"],
     description: "Último romance da autora, sobre a vida de uma datilógrafa.",
     popularity: 7
@@ -330,6 +349,7 @@
     mood: ["emocionar"],
     tamanho: "medio",
     vibes: ["aventura", "romantico"],
+    leitura: "media",
     time: ["passado"],
     description: "Romance indianista que retrata o amor entre o índio Peri e a branca Ceci.",
     popularity: 6
@@ -347,6 +367,7 @@
     mood: ["surpreender"],
     tamanho: "curto",
     vibes: ["reflexivo", "pesado"],
+    leitura: "media",
     time: ["presente"],
     description: "Conta a história de Gregor Samsa que acorda transformado em um inseto monstruoso.",
     popularity: 8
@@ -364,6 +385,7 @@
     mood: ["surpreender"],
     tamanho: "curto",
     vibes: ["assustador", "pesado"],
+    leitura: "media",
     time: ["passado"],
     description: "Contos sombrios que misturam elementos do Romantismo com o Gótico.",
     popularity: 6
@@ -381,6 +403,7 @@
     mood: ["surpreender"],
     tamanho: "medio",
     vibes: ["aventura", "leve"],
+    leitura: "facil",
     time: ["passado"],
     description: "A clássica aventura de Phileas Fogg em sua jornada ao redor do mundo.",
     popularity: 7
@@ -398,6 +421,7 @@
     mood: ["emocionar"],
     tamanho: "longo",
     vibes: ["engracado", "aventura"],
+    leitura: "desafiadora",
     time: ["passado"],
     description: "A história do fidalgo que enlouquece lendo romances de cavalaria.",
     popularity: 9
@@ -415,6 +439,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["romantico", "emocionante"],
+    leitura: "media",
     time: ["passado"],
     description: "Romance indianista que conta a história de amor entre Iracema e Martim.",
     popularity: 7
@@ -432,6 +457,7 @@
     mood: ["surpreender"],
     tamanho: "medio",
     vibes: ["pesado", "reflexivo"],
+    leitura: "media",
     time: ["futuro"],
     description: "Clássico distópico sobre vigilância governamental e controle da mente.",
     popularity: 10
@@ -449,6 +475,7 @@
     mood: ["surpreender"],
     tamanho: "medio",
     vibes: ["reflexivo"],
+    leitura: "media",
     time: ["presente"],
     description: "Introdução acessível aos conceitos mais complexos da cosmologia.",
     popularity: 8
@@ -466,6 +493,7 @@
     mood: ["emocionar"],
     tamanho: "medio",
     vibes: ["emocionante", "engracado"],
+    leitura: "media",
     time: ["presente"],
     description: "Memórias de um jovem que cria seu irmão mais novo após a morte dos parents.",
     popularity: 6
@@ -483,6 +511,7 @@
     mood: ["emocionar"],
     tamanho: "medio",
     vibes: ["pesado", "inspirador"],
+    leitura: "media",
     time: ["presente"],
     description: "Relato autobiográfico de um ex-criança soldado em Serra Leoa.",
     popularity: 7
@@ -500,6 +529,7 @@
     mood: ["surpreender"],
     tamanho: "curto",
     vibes: ["engracado", "misterio"],
+    leitura: "facil",
     time: ["fantasia"],
     description: "Primeiro livro da série Desventuras em Série sobre três órfãos desafortunados.",
     popularity: 7
@@ -517,6 +547,7 @@
     mood: ["surpreender"],
     tamanho: "medio",
     vibes: ["aventura"],
+    leitura: "facil",
     time: ["futuro"],
     description: "Clássico da ficção científica juvenil sobre viagem no tempo e espaço.",
     popularity: 7
@@ -534,6 +565,7 @@
     mood: ["surpreender"],
     tamanho: "medio",
     vibes: ["engracado", "leve"],
+    leitura: "facil",
     time: ["fantasia"],
     description: "As duas obras clássicas de Carroll sobre o mundo mágico de Alice.",
     popularity: 8
@@ -551,13 +583,15 @@
     mood: ["surpreender"],
     tamanho: "medio",
     vibes: ["misterio"],
+    leitura: "media",
     time: ["passado"],
     description: "Relato da investigação que ledou ao impeachment do presidente Nixon.",
     popularity: 7
   },
   {
     id: 109,
-    title: "Angela's Ashes: memórias",
+    title: "As Cinzas de Angela",
+    tituloOriginal: "Angela's Ashes",
     author: "Frank McCourt",
     cover: "https://covers.openlibrary.org/b/id/8264485-M.jpg",
     grade: "EM",
@@ -568,6 +602,7 @@
     mood: ["emocionar"],
     tamanho: "medio",
     vibes: ["emocionante", "engracado"],
+    leitura: "media",
     time: ["passado"],
     description: "Memórias da infância pobre do autor na Irlanda dos anos 1930-40.",
     popularity: 7
@@ -585,6 +620,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["leve", "emocionante"],
+    leitura: "facil",
     time: ["presente"],
     description: "Clássico juvenil sobre as dúvidas e descobertas da adolescência.",
     popularity: 6
@@ -602,6 +638,7 @@
     mood: ["emocionar"],
     tamanho: "medio",
     vibes: ["romantico", "emocionante"],
+    leitura: "media",
     time: ["presente"],
     description: "História de um sequestro em uma festa diplomática na América do Sul.",
     popularity: 6
@@ -619,6 +656,7 @@
     mood: ["emocionar"],
     tamanho: "medio",
     vibes: ["pesado", "emocionante"],
+    leitura: "desafiadora",
     time: ["passado"],
     description: "Romance premiado sobre os traumas da escravidão nos EUA.",
     popularity: 8
@@ -636,6 +674,7 @@
     mood: ["emocionar"],
     tamanho: "medio",
     vibes: ["inspirador", "aventura"],
+    leitura: "facil",
     time: ["presente"],
     description: "Investigação sobre tribos que correm longas distâncias e segredos da corrida.",
     popularity: 7
@@ -653,6 +692,7 @@
     mood: ["emocionar"],
     tamanho: "medio",
     vibes: ["emocionante", "pesado"],
+    leitura: "media",
     time: ["presente"],
     description: "História de uma jovem haitiana que se muda para Nova York.",
     popularity: 6
@@ -670,6 +710,7 @@
     mood: ["surpreender"],
     tamanho: "longo",
     vibes: ["engracado", "reflexivo"],
+    leitura: "media",
     time: ["passado"],
     description: "Sátira clássica sobre a burocracia militar durante a Segunda Guerra.",
     popularity: 7
@@ -687,6 +728,7 @@
     mood: ["surpreender"],
     tamanho: "curto",
     vibes: ["engracado", "leve"],
+    leitura: "facil",
     time: ["fantasia"],
     description: "A mágica história de Charlie Bucket e sua visita à fábrica de Willy Wonka.",
     popularity: 8
@@ -704,6 +746,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["emocionante", "leve"],
+    leitura: "facil",
     time: ["fantasia"],
     description: "Comovente história de amizade entre um porco e uma aranha.",
     popularity: 8
@@ -721,6 +764,7 @@
     mood: ["emocionar"],
     tamanho: "longo",
     vibes: ["emocionante"],
+    leitura: "media",
     time: ["presente"],
     description: "História de um médico indiano que trabalha na Etiópia.",
     popularity: 6
@@ -738,6 +782,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["engracado", "leve"],
+    leitura: "facil",
     time: ["presente"],
     description: "As desventuras hilárias de Greg Heffley na escola e em casa.",
     popularity: 7
@@ -755,6 +800,7 @@
     mood: ["surpreender"],
     tamanho: "medio",
     vibes: ["aventura", "reflexivo"],
+    leitura: "media",
     time: ["futuro"],
     description: "Continuação da saga de Duna, explorando o destino dos filhos de Paul Atreides.",
     popularity: 7
@@ -772,6 +818,7 @@
     mood: ["surpreender"],
     tamanho: "longo",
     vibes: ["reflexivo"],
+    leitura: "desafiadora",
     time: ["futuro"],
     description: "Romance filosófico que explora temas de individualismo e liberdade.",
     popularity: 7
@@ -789,6 +836,7 @@
     mood: ["surpreender"],
     tamanho: "curto",
     vibes: ["engracado", "leve"],
+    leitura: "facil",
     time: ["fantasia"],
     description: "Sequência de Alice no País das Maravilhas, com mais aventuras fantásticas.",
     popularity: 7
@@ -806,6 +854,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["emocionante"],
+    leitura: "media",
     time: ["passado"],
     description: "Coletânea de poemas do principal expoente do Parnasianismo no Brasil.",
     popularity: 6
@@ -823,6 +872,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["romantico", "reflexivo"],
+    leitura: "media",
     time: ["passado"],
     description: "Romance modernista sobre educação e relações afetivas.",
     popularity: 6
@@ -840,6 +890,7 @@
     mood: ["surpreender"],
     tamanho: "curto",
     vibes: ["reflexivo"],
+    leitura: "media",
     time: ["passado"],
     description: "Defesa de Sócrates perante o tribunal ateniense que o condenou à morte.",
     popularity: 7
@@ -857,6 +908,7 @@
     mood: ["emocionar"],
     tamanho: "medio",
     vibes: ["romantico", "reflexivo"],
+    leitura: "desafiadora",
     time: ["passado"],
     description: "Clássico da literatura portuguesa que mistura narrativa de viagem e ficção.",
     popularity: 7
@@ -874,6 +926,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["emocionante"],
+    leitura: "desafiadora",
     time: ["passado"],
     description: "Conto que faz parte de 'Corpo de Baile', sobre a infância no sertão.",
     popularity: 6
@@ -891,6 +944,7 @@
     mood: ["surpreender"],
     tamanho: "medio",
     vibes: ["reflexivo"],
+    leitura: "media",
     time: ["presente"],
     description: "Reflexão sobre o conflito israelense-palestino em forma de cartas.",
     popularity: 5
@@ -900,7 +954,7 @@
     title: "Cartas para Minha Avó",
     author: "Djamila Ribeiro",
     cover: "https://covers.openlibrary.org/b/id/8264525-M.jpg",
-    grade: "EF1",
+    grade: ["EF2", "EM"],
     available: true,
     type: "brasileira",
     genres: ["biografia", "memoir"],
@@ -908,6 +962,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["emocionante", "inspirador"],
+    leitura: "facil",
     time: ["presente"],
     description: "Reflexões sobre ancestralidade, memória e identidade negra.",
     popularity: 6
@@ -925,6 +980,7 @@
     mood: ["surpreender"],
     tamanho: "curto",
     vibes: ["leve", "reflexivo"],
+    leitura: "facil",
     time: ["presente"],
     description: "Guia infantil sobre os impactos do plástico e como reduzir seu uso.",
     popularity: 4
@@ -942,6 +998,7 @@
     mood: ["surpreender"],
     tamanho: "medio",
     vibes: ["reflexivo"],
+    leitura: "media",
     time: ["passado"],
     description: "Coletânea de contos do mestre do Realismo português.",
     popularity: 6
@@ -959,6 +1016,7 @@
     mood: ["emocionar"],
     tamanho: "medio",
     vibes: ["reflexivo", "engracado"],
+    leitura: "media",
     time: ["passado"],
     description: "Contos que retratam a sociedade brasileira do início do século XX.",
     popularity: 5
@@ -976,6 +1034,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["reflexivo"],
+    leitura: "media",
     time: ["passado"],
     description: "Contos modernistas que exploram a diversidade cultural brasileira.",
     popularity: 5
@@ -993,6 +1052,7 @@
     mood: ["surpreender"],
     tamanho: "longo",
     vibes: ["inspirador"],
+    leitura: "media",
     time: ["presente"],
     description: "Biografia do visionário por trás da Tesla e SpaceX.",
     popularity: 7
@@ -1026,6 +1086,7 @@
     mood: ["surpreender"],
     tamanho: "curto",
     vibes: ["leve"],
+    leitura: "facil",
     time: ["passado"],
     description: "Guia ilustrado sobre os dinossauros e o mundo pré-histórico.",
     popularity: 4
@@ -1043,6 +1104,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["romantico", "emocionante"],
+    leitura: "media",
     time: ["passado"],
     description: "Principal obra poética do 'Poeta dos Escravos'.",
     popularity: 6
@@ -1060,6 +1122,7 @@
     mood: ["surpreender"],
     tamanho: "medio",
     vibes: ["reflexivo"],
+    leitura: "desafiadora",
     time: ["passado"],
     description: "Poemas de Fernando Pessoa sob diversos heterônimos.",
     popularity: 6
@@ -1092,6 +1155,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["pesado", "reflexivo", "misterio"],
+    leitura: "desafiadora",
     time: ["passado"],
     description: "A mais famosa tragédia de Shakespeare sobre vingança e loucura.",
     popularity: 9
@@ -1101,7 +1165,7 @@
     title: "Harry Potter e o Cálice de Fogo",
     author: "J.K. Rowling",
     cover: "https://covers.openlibrary.org/b/id/8264549-M.jpg",
-    grade: "EF1",
+    grade: ["EF2", "EM"],
     available: true,
     type: "estrangeira",
     genres: ["fantasia", "aventura"],
@@ -1109,6 +1173,7 @@
     mood: ["surpreender"],
     tamanho: "longo",
     vibes: ["aventura", "misterio"],
+    leitura: "facil",
     time: ["fantasia"],
     description: "Quarto livro da saga, onde Harry participa do Torneio Tribruxo.",
     popularity: 8
@@ -1118,7 +1183,7 @@
     title: "Harry Potter e o Enigma do Príncipe",
     author: "J.K. Rowling",
     cover: "https://covers.openlibrary.org/b/id/8264551-M.jpg",
-    grade: "EF1",
+    grade: ["EF2", "EM"],
     available: true,
     type: "estrangeira",
     genres: ["fantasia", "aventura"],
@@ -1126,6 +1191,7 @@
     mood: ["emocionar"],
     tamanho: "longo",
     vibes: ["aventura", "emocionante"],
+    leitura: "facil",
     time: ["fantasia"],
     description: "Sexto livro da saga, com revelações sobre o passado de Voldemort.",
     popularity: 8
@@ -1143,6 +1209,7 @@
     mood: ["surpreender"],
     tamanho: "medio",
     vibes: ["aventura", "misterio"],
+    leitura: "facil",
     time: ["fantasia"],
     description: "Terceiro livro da saga, com a fuga de Sirius Black de Azkaban.",
     popularity: 8
@@ -1152,7 +1219,7 @@
     title: "Harry Potter e as Relíquias da Morte",
     author: "J.K. Rowling",
     cover: "https://covers.openlibrary.org/b/id/8264555-M.jpg",
-    grade: "EF1",
+    grade: ["EF2", "EM"],
     available: true,
     type: "estrangeira",
     genres: ["fantasia", "aventura"],
@@ -1160,6 +1227,7 @@
     mood: ["emocionar"],
     tamanho: "longo",
     vibes: ["aventura", "emocionante"],
+    leitura: "facil",
     time: ["fantasia"],
     description: "Sétimo e último livro da saga, com a batalha final contra Voldemort.",
     popularity: 8
@@ -1177,6 +1245,7 @@
     mood: ["emocionar"],
     tamanho: "longo",
     vibes: ["aventura", "pesado"],
+    leitura: "desafiadora",
     time: ["passado"],
     description: "Poema épico sobre a Guerra de Troia e a ira de Aquiles.",
     popularity: 8
@@ -1209,6 +1278,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["emocionante", "reflexivo"],
+    leitura: "facil",
     time: ["passado"],
     description: "Graphic novel que reconta a história bíblica de Jeremias no contexto da escravidão.",
     popularity: 4
@@ -1226,6 +1296,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["pesado"],
+    leitura: "desafiadora",
     time: ["passado"],
     description: "Tragédia sobre ambição desmedida e suas consequências.",
     popularity: 8
@@ -1243,6 +1314,7 @@
     mood: ["surpreender"],
     tamanho: "medio",
     vibes: ["engracado", "aventura"],
+    leitura: "media",
     time: ["fantasia"],
     description: "O 'herói sem nenhum caráter' em uma aventura pelo Brasil folclórico.",
     popularity: 7
@@ -1260,6 +1332,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["reflexivo"],
+    leitura: "desafiadora",
     time: ["passado"],
     description: "Único livro em português publicado em vida por Pessoa, sobre o destino de Portugal.",
     popularity: 7
@@ -1277,6 +1350,7 @@
     mood: ["emocionar"],
     tamanho: "longo",
     vibes: ["emocionante", "leve", "romantico"],
+    leitura: "media",
     time: ["passado"],
     description: "Clássico sobre as irmãs March e suas jornadas para a vida adulta.",
     popularity: 8
@@ -1286,7 +1360,7 @@
     title: "O Ateneu",
     author: "Raul Pompeia",
     cover: "https://covers.openlibrary.org/b/id/8264571-M.jpg",
-    grade: "EF2",
+    grade: "EM",
     available: true,
     type: "brasileira",
     genres: ["romance", "realismo"],
@@ -1294,6 +1368,7 @@
     mood: ["emocionar"],
     tamanho: "medio",
     vibes: ["reflexivo"],
+    leitura: "desafiadora",
     time: ["passado"],
     description: "Romance impressionista sobre a vida em um internato no século XIX.",
     popularity: 6
@@ -1311,6 +1386,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["aventura"],
+    leitura: "media",
     time: ["passado"],
     description: "Poema épico sobre a saga dos bandeirantes em busca de esmeraldas.",
     popularity: 5
@@ -1328,6 +1404,7 @@
     mood: ["surpreender"],
     tamanho: "curto",
     vibes: ["engracado"],
+    leitura: "media",
     time: ["passado"],
     description: "Peça teatral que satiriza os costumes da elite brasileira do século XIX.",
     popularity: 5
@@ -1345,6 +1422,7 @@
     mood: ["surpreender"],
     tamanho: "curto",
     vibes: ["misterio", "aventura", "leve"],
+    leitura: "facil",
     time: ["presente"],
     description: "Aventura de um grupo de crianças para desvendar um mistério.",
     popularity: 5
@@ -1362,6 +1440,7 @@
     mood: ["surpreender"],
     tamanho: "medio",
     vibes: ["leve", "reflexivo"],
+    leitura: "facil",
     time: ["passado"],
     description: "Aventuras matemáticas de Beremiz Samir no mundo árabe.",
     popularity: 6
@@ -1379,6 +1458,7 @@
     mood: ["emocionar"],
     tamanho: "medio",
     vibes: ["leve", "emocionante"],
+    leitura: "facil",
     time: ["passado"],
     description: "Clássico infantil sobre redenção e amizade em um jardim misterioso.",
     popularity: 7
@@ -1396,6 +1476,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["leve", "emocionante"],
+    leitura: "facil",
     time: ["fantasia"],
     description: "História de um menino com o dom de fazer flores crescerem ao seu toque.",
     popularity: 6
@@ -1413,6 +1494,7 @@
     mood: ["emocionar"],
     tamanho: "medio",
     vibes: ["inspirador"],
+    leitura: "facil",
     time: ["presente"],
     description: "História real de um jovem que construiu um moinho de vento no Malawi.",
     popularity: 5
@@ -1422,7 +1504,7 @@
     title: "O Pequeno Manual Antirracista",
     author: "Djamila Ribeiro",
     cover: "https://covers.openlibrary.org/b/id/8264587-M.jpg",
-    grade: "EF1",
+    grade: ["EF2", "EM"],
     available: true,
     type: "brasileira",
     genres: ["ensaio", "social"],
@@ -1430,6 +1512,7 @@
     mood: ["surpreender"],
     tamanho: "curto",
     vibes: ["reflexivo"],
+    leitura: "facil",
     time: ["presente"],
     description: "Guia conciso para compreender e combater o racismo no cotidiano.",
     popularity: 6
@@ -1447,6 +1530,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["pesado", "misterio"],
+    leitura: "media",
     time: ["passado"],
     description: "Tragédia grega sobre Édipo, que sem saber mata o pai e casa com a mãe.",
     popularity: 8
@@ -1464,6 +1548,7 @@
     mood: ["emocionar"],
     tamanho: "medio",
     vibes: ["engracado", "emocionante"],
+    leitura: "media",
     time: ["passado"],
     description: "Sátira sobre um nacionalista ingênuo no Brasil da Primeira República.",
     popularity: 6
@@ -1481,6 +1566,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["pesado", "emocionante"],
+    leitura: "media",
     time: ["passado"],
     description: "Poemas abolicionistas que denunciam os horrores da escravidão.",
     popularity: 6
@@ -1498,6 +1584,7 @@
     mood: ["surpreender"],
     tamanho: "curto",
     vibes: ["reflexivo"],
+    leitura: "desafiadora",
     time: ["passado"],
     description: "Primeiro livro de poemas modernistas de Mário de Andrade.",
     popularity: 6
@@ -1515,6 +1602,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["reflexivo"],
+    leitura: "desafiadora",
     time: ["passado"],
     description: "Poemas do heterônimo mais futurista e angustiado de Pessoa.",
     popularity: 7
@@ -1532,6 +1620,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["reflexivo"],
+    leitura: "desafiadora",
     time: ["passado"],
     description: "Poemas do heterônimo clássico and epicurista de Pessoa.",
     popularity: 7
@@ -1549,6 +1638,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["reflexivo"],
+    leitura: "media",
     time: ["passado"],
     description: "Poemas do heterônimo mais 'natural' de Fernando Pessoa.",
     popularity: 6
@@ -1566,6 +1656,7 @@
     mood: ["emocionar"],
     tamanho: "medio",
     vibes: ["reflexivo"],
+    leitura: "desafiadora",
     time: ["passado"],
     description: "Reunião da obra poética completa do autor modernista.",
     popularity: 6
@@ -1583,6 +1674,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["pesado"],
+    leitura: "desafiadora",
     time: ["passado"],
     description: "Tragédia sobre um rei que divide seu reino entre as filhas, com consequências trágicas.",
     popularity: 8
@@ -1600,6 +1692,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["romantico", "emocionante"],
+    leitura: "media",
     time: ["passado"],
     description: "A mais famosa história de amor proibido da literatura mundial.",
     popularity: 9
@@ -1617,6 +1710,7 @@
     mood: ["surpreender"],
     tamanho: "medio",
     vibes: ["aventura", "romantico"],
+    leitura: "facil",
     time: ["fantasia"],
     description: "Primeiro livro da trilogia Grisha, sobre uma orfã com poderes extraordinários.",
     popularity: 6
@@ -1634,6 +1728,7 @@
     mood: ["surpreender"],
     tamanho: "curto",
     vibes: ["leve"],
+    leitura: "facil",
     time: ["presente"],
     description: "Guia infantil para explorar museus and apreciar arte.",
     popularity: 3
@@ -1651,6 +1746,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["emocionante", "leve"],
+    leitura: "facil",
     time: ["presente"],
     description: "História sobre um caracol diferente que ensina sobre aceitação.",
     popularity: 3
@@ -1668,6 +1764,7 @@
     mood: ["surpreender"],
     tamanho: "curto",
     vibes: ["reflexivo"],
+    leitura: "facil",
     time: ["presente"],
     description: "Explicação lúdica sobre mudanças climáticas para crianças.",
     popularity: 4
@@ -1685,6 +1782,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["emocionante", "inspirador"],
+    leitura: "facil",
     time: ["fantasia"],
     description: "Releitura afrocentrada do clássico, sobre autoestima e herança cultural.",
     popularity: 5
@@ -1702,6 +1800,7 @@
     mood: ["surpreender"],
     tamanho: "curto",
     vibes: ["misterio"],
+    leitura: "facil",
     time: ["presente"],
     description: "Aventura de um grupo de crianças para desvendar um roubo em um hotel luxuoso.",
     popularity: 5
@@ -1719,6 +1818,7 @@
     mood: ["surpreender"],
     tamanho: "longo",
     vibes: ["assustador", "misterio"],
+    leitura: "media",
     time: ["passado"],
     description: "O romance que popularizou o mito do vampiro Conde Drácula.",
     popularity: 8
@@ -1728,7 +1828,7 @@
     title: "Harry Potter e a Ordem da Fênix",
     author: "J.K. Rowling",
     cover: "https://covers.openlibrary.org/b/id/8264625-M.jpg",
-    grade: "EF1",
+    grade: ["EF2", "EM"],
     available: true,
     type: "estrangeira",
     genres: ["fantasia", "aventura"],
@@ -1736,6 +1836,7 @@
     mood: ["emocionar"],
     tamanho: "longo",
     vibes: ["aventura"],
+    leitura: "facil",
     time: ["fantasia"],
     description: "Quinto livro da saga, onde Harry enfrenta a negação do Ministério sobre o retorno de Voldemort.",
     popularity: 8
@@ -1753,6 +1854,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["reflexivo"],
+    leitura: "media",
     time: ["passado"],
     description: "Seleção de poemas do poeta português e seus principais heterônimos.",
     popularity: 7
@@ -1770,6 +1872,7 @@
     mood: ["surpreender"],
     tamanho: "curto",
     vibes: ["leve"],
+    leitura: "facil",
     time: ["presente"],
     description: "Reflexão sobre uso consciente da tecnologia para crianças.",
     popularity: 3
@@ -1779,7 +1882,7 @@
     title: "Memórias Póstumas de Brás Cubas",
     author: "Machado de Assis",
     cover: "https://covers.openlibrary.org/b/id/8264631-M.jpg",
-    grade: "EF2",
+    grade: "EM",
     available: true,
     type: "brasileira",
     genres: ["romance", "realismo"],
@@ -1787,6 +1890,7 @@
     mood: ["surpreender"],
     tamanho: "medio",
     vibes: ["engracado", "reflexivo"],
+    leitura: "media",
     time: ["passado"],
     description: "Romance narrado por um defunto que critica a sociedade brasileira do século XIX.",
     popularity: 7
@@ -1804,6 +1908,7 @@
     mood: ["emocionar"],
     tamanho: "longo",
     vibes: ["pesado", "reflexivo", "misterio"],
+    leitura: "desafiadora",
     time: ["passado"],
     description: "Clássico sobre um estudante que comete um assassinato e lida com as consequências morais.",
     popularity: 8
@@ -1821,6 +1926,7 @@
     mood: ["surpreender"],
     tamanho: "curto",
     vibes: ["leve"],
+    leitura: "facil",
     time: ["presente"],
     description: "Guia ilustrado sobre a vida animal e ecossistemas.",
     popularity: 3
@@ -1830,7 +1936,7 @@
     title: "Quincas Borba",
     author: "Machado de Assis",
     cover: "https://covers.openlibrary.org/b/id/8264637-M.jpg",
-    grade: "EF2",
+    grade: "EM",
     available: true,
     type: "brasileira",
     genres: ["romance", "realismo"],
@@ -1838,6 +1944,7 @@
     mood: ["surpreender"],
     tamanho: "medio",
     vibes: ["reflexivo", "engracado"],
+    leitura: "media",
     time: ["passado"],
     description: "Sátira machadiana sobre heranças, filosofia e ambição.",
     popularity: 6
@@ -1855,6 +1962,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["reflexivo"],
+    leitura: "facil",
     time: ["passado"],
     description: "Narrativas da cosmovisão guarani sobre a criação do mundo.",
     popularity: 4
@@ -1872,6 +1980,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["leve", "engracado"],
+    leitura: "facil",
     time: ["presente"],
     description: "História sobre como a matemática pode unir pessoas diferentes.",
     popularity: 3
@@ -1889,6 +1998,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["reflexivo"],
+    leitura: "media",
     time: ["passado"],
     description: "Conto sobre um compositor famoso que não consegue criar sua obra-prima.",
     popularity: 5
@@ -1905,6 +2015,7 @@
     tags: ["f1", "superacao"],
     mood: ["emocionar"],
     vibes: ["inspirador"],
+    leitura: "facil",
     time: ["passado"],
     description: "Biografia do maior ídolo do automobilismo brasileiro.",
     popularity: 6
@@ -1922,6 +2033,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["pesado", "reflexivo"],
+    leitura: "media",
     time: ["passado"],
     description: "Contos que retratam a geração dos anos 80 com sensibilidade e crueza.",
     popularity: 5
@@ -1939,6 +2051,7 @@
     mood: ["surpreender"],
     tamanho: "curto",
     vibes: ["leve"],
+    leitura: "facil",
     time: ["futuro"],
     description: "Exploração de tecnologias que podem mudar o mundo no futuro.",
     popularity: 3
@@ -1956,6 +2069,7 @@
     mood: ["surpreender"],
     tamanho: "curto",
     vibes: ["reflexivo"],
+    leitura: "facil",
     time: ["presente"],
     description: "Guia sobre a diversidade dos povos indígenas brasileiros.",
     popularity: 3
@@ -1988,6 +2102,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["pesado"],
+    leitura: "desafiadora",
     time: ["passado"],
     description: "Poemas que exploram temas como a morte e a finitude humana.",
     popularity: 5
@@ -2005,6 +2120,7 @@
     mood: ["surpreender"],
     tamanho: "medio",
     vibes: ["engracado", "reflexivo"],
+    leitura: "desafiadora",
     time: ["passado"],
     description: "Poemas do 'Boca do Inferno', conhecido por sua lírica satírica e religiosa.",
     popularity: 6
@@ -2014,7 +2130,7 @@
     title: "Balada de Amor ao Vento",
     author: "Paulina Chiziane",
     cover: "https://covers.openlibrary.org/b/id/8264667-M.jpg",
-    grade: "EF1",
+    grade: "EM",
     available: true,
     type: "estrangeira",
     genres: ["romance", "drama"],
@@ -2022,6 +2138,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["romantico", "emocionante"],
+    leitura: "media",
     time: ["presente"],
     description: "Primeiro romance publicado por uma mulher em Moçambique, sobre tradição e modernidade.",
     popularity: 4
@@ -2054,6 +2171,7 @@
     mood: ["refletir"],
     tamanho: "medio",
     vibes: ["engracado", "leve"],
+    leitura: "media",
     time: ["passado"],
     description: "Contraste entre a vida urbana e rural na obra do mestre do Realismo português.",
     popularity: 6
@@ -2071,6 +2189,7 @@
     mood: ["refletir"],
     tamanho: "curto",
     vibes: ["reflexivo", "engracado"],
+    leitura: "media",
     time: ["presente"],
     description: "Poemas que exploram a beleza nas pequenas coisas do dia a dia.",
     popularity: 4
@@ -2088,6 +2207,7 @@
     mood: ["emocionar"],
     tamanho: "longo",
     vibes: ["romantico", "emocionante"],
+    leitura: "desafiadora",
     time: ["passado"],
     description: "Clássico russo sobre amor, traição e convenções sociais.",
     popularity: 8
@@ -2105,6 +2225,7 @@
     mood: ["refletir"],
     tamanho: "medio",
     vibes: ["reflexivo"],
+    leitura: "desafiadora",
     time: ["passado"],
     description: "Análise social e geográfica sobre regiões marginalizadas do Brasil.",
     popularity: 5
@@ -2122,6 +2243,7 @@
     mood: ["surpreender"],
     tamanho: "curto",
     vibes: ["reflexivo"],
+    leitura: "facil",
     time: ["futuro"],
     description: "Clássico distópico sobre uma sociedade onde livros são proibidos e bombeiros queimam obras literárias.",
     popularity: 9
@@ -2139,6 +2261,7 @@
     mood: ["surpreender"],
     tamanho: "curto",
     vibes: ["engracado", "pesado"],
+    leitura: "media",
     time: ["passado"],
     description: "Relato alucinado de uma viagem pelo sonho americano sob o efeito de substâncias psicodélicas.",
     popularity: 6
@@ -2156,6 +2279,7 @@
     mood: ["surpreender"],
     tamanho: "longo",
     vibes: ["misterio", "pesado"],
+    leitura: "facil",
     time: ["presente"],
     description: "Thriller psicológico sobre o desaparecimento de uma mulher perfeita e os segredos de seu casamento.",
     popularity: 7
@@ -2167,19 +2291,22 @@
     cover: "https://covers.openlibrary.org/b/id/8264673-M.jpg",
     grade: "EF1",
     available: false,
+    quiz: false, // livro ilustrado para crianças pequenas
     type: "estrangeira",
     genres: ["infantil", "poesia"],
     tags: ["hora-de-dormir", "ritual"],
     mood: ["acalmar"],
     tamanho: "curto",
     vibes: ["leve"],
+    leitura: "facil",
     time: ["fantasia"],
     description: "Clássico infantil que acompanha um coelho em seu ritual noturno antes de dormir.",
     popularity: 5
   },
   {
     id: 210,
-    title: "Great Expectations",
+    title: "Grandes Esperanças",
+    tituloOriginal: "Great Expectations",
     author: "Charles Dickens",
     cover: "https://covers.openlibrary.org/b/id/8264675-M.jpg",
     grade: "EM",
@@ -2190,6 +2317,7 @@
     mood: ["refletir"],
     tamanho: "longo",
     vibes: ["emocionante"],
+    leitura: "media",
     time: ["passado"],
     description: "Romance de formação sobre Pip, um órfão que herda uma fortuna misteriosa.",
     popularity: 8
@@ -2207,6 +2335,7 @@
     mood: ["surpreender"],
     tamanho: "longo",
     vibes: ["reflexivo"],
+    leitura: "desafiadora",
     time: ["passado"],
     description: "Análise sobre como fatores geográficos moldaram o desenvolvimento das sociedades humanas.",
     popularity: 7
@@ -2224,6 +2353,7 @@
     mood: ["surpreender"],
     tamanho: "medio",
     vibes: ["aventura", "misterio"],
+    leitura: "facil",
     time: ["fantasia"],
     description: "Segundo livro da série, onde Harry descobre segredos sombrios em Hogwarts.",
     popularity: 8
@@ -2241,6 +2371,7 @@
     mood: ["chocar"],
     tamanho: "medio",
     vibes: ["pesado", "misterio"],
+    leitura: "media",
     time: ["passado"],
     description: "Clássico do jornalismo literário sobre um assassinato real no Kansas.",
     popularity: 8
@@ -2258,6 +2389,7 @@
     mood: ["emocionar"],
     tamanho: "medio",
     vibes: ["emocionante"],
+    leitura: "media",
     time: ["presente"],
     description: "Contos sobre indianos e seus descendentes lidando com deslocamento cultural.",
     popularity: 6
@@ -2275,6 +2407,7 @@
     mood: ["refletir"],
     tamanho: "longo",
     vibes: ["reflexivo", "pesado"],
+    leitura: "desafiadora",
     time: ["passado"],
     description: "Romance seminal sobre um homem negro invisível para a sociedade americana dos anos 1950.",
     popularity: 7
@@ -2292,6 +2425,7 @@
     mood: ["refletir"],
     tamanho: "medio",
     vibes: ["emocionante"],
+    leitura: "media",
     time: ["presente"],
     description: "Graphic novel que explora solidão e conexões humanas de forma visual inovadora.",
     popularity: 5
@@ -2309,6 +2443,7 @@
     mood: ["surpreender"],
     tamanho: "medio",
     vibes: ["engracado"],
+    leitura: "facil",
     time: ["presente"],
     description: "Relato cru dos bastidores da alta gastronomia por um chef icônico.",
     popularity: 6
@@ -2326,6 +2461,7 @@
     mood: ["emocionar"],
     tamanho: "longo",
     vibes: ["reflexivo", "emocionante"],
+    leitura: "media",
     time: ["passado"],
     description: "História de uma mulher que vive múltiplas vidas alternativas durante a Segunda Guerra.",
     popularity: 6
@@ -2343,6 +2479,7 @@
     mood: ["emocionar"],
     tamanho: "medio",
     vibes: ["leve", "aventura"],
+    leitura: "facil",
     time: ["passado"],
     description: "Clássico autobiográfico sobre a vida pioneira nos EUA do século XIX.",
     popularity: 5
@@ -2360,6 +2497,7 @@
     mood: ["perturbar"],
     tamanho: "medio",
     vibes: ["pesado"],
+    leitura: "desafiadora",
     time: ["passado"],
     description: "Controversa obra sobre a obsessão de um homem por uma adolescente.",
     popularity: 8
@@ -2377,6 +2515,7 @@
     mood: ["emocionar"],
     tamanho: "longo",
     vibes: ["romantico"],
+    leitura: "media",
     time: ["passado"],
     description: "História de um amor que persiste por décadas na América Latina.",
     popularity: 8
@@ -2394,6 +2533,7 @@
     mood: ["emocionar"],
     tamanho: "medio",
     vibes: ["emocionante"],
+    leitura: "media",
     time: ["passado"],
     description: "Saga familiar sobre a comunidade indígena Chippewa no século XX.",
     popularity: 5
@@ -2411,6 +2551,7 @@
     mood: ["refletir"],
     tamanho: "curto",
     vibes: ["inspirador", "reflexivo"],
+    leitura: "facil",
     time: ["passado"],
     description: "Relato de um psiquiatra sobre sua sobrevivência em campos de concentração e sua teoria psicológica.",
     popularity: 7
@@ -2428,6 +2569,7 @@
     mood: ["divertir"],
     tamanho: "medio",
     vibes: ["engracado"],
+    leitura: "facil",
     time: ["presente"],
     description: "Ensaios humorísticos sobre as experiências absurdas do autor nos EUA e França.",
     popularity: 6
@@ -2445,6 +2587,7 @@
     mood: ["refletir"],
     tamanho: "longo",
     vibes: ["emocionante", "reflexivo"],
+    leitura: "media",
     time: ["passado"],
     description: "Saga multigeracional sobre um intersexual descendente de imigrantes gregos.",
     popularity: 7
@@ -2462,6 +2605,7 @@
     mood: ["surpreender"],
     tamanho: "longo",
     vibes: ["reflexivo"],
+    leitura: "desafiadora",
     time: ["passado"],
     description: "Romance épico sobre crianças nascidas no momento da independência da Índia.",
     popularity: 8
@@ -2479,6 +2623,7 @@
     mood: ["surpreender"],
     tamanho: "medio",
     vibes: ["inspirador"],
+    leitura: "media",
     time: ["presente"],
     description: "Análise revolucionária sobre como dados transformaram o beisebol profissional.",
     popularity: 6
@@ -2496,6 +2641,7 @@
     mood: ["refletir"],
     tamanho: "longo",
     vibes: ["emocionante", "romantico"],
+    leitura: "media",
     time: ["passado"],
     description: "Clássico sobre um médico com deformidade física e suas relações conturbadas.",
     popularity: 7
@@ -2513,13 +2659,15 @@
     mood: ["inspirar"],
     tamanho: "medio",
     vibes: ["aventura"],
+    leitura: "media",
     time: ["passado"],
     description: "Obra seminal da geração beat sobre viagens rodoviárias pelos EUA.",
     popularity: 6
   },
   {
     id: 230,
-    title: "Out of Africa",
+    title: "A Fazenda Africana",
+    tituloOriginal: "Out of Africa",
     author: "Isak Dinesen",
     cover: "https://covers.openlibrary.org/b/id/8264715-M.jpg",
     grade: "EM",
@@ -2530,6 +2678,7 @@
     mood: ["emocionar"],
     tamanho: "medio",
     vibes: ["emocionante"],
+    leitura: "media",
     time: ["passado"],
     description: "Memórias poéticas de uma dinamarquesa em uma fazenda no Quênia colonial.",
     popularity: 6
@@ -2547,6 +2696,7 @@
     mood: ["emocionar"],
     tamanho: "medio",
     vibes: ["romantico", "engracado"],
+    leitura: "media",
     time: ["passado"],
     description: "Clássico romance sobre Elizabeth Bennet e Mr. Darcy na Inglaterra do século XIX.",
     popularity: 9
@@ -2564,13 +2714,15 @@
     mood: ["refletir"],
     tamanho: "medio",
     vibes: ["reflexivo"],
+    leitura: "media",
     time: ["passado"],
     description: "Obra pioneira que alertou sobre os perigos dos pesticidas sintéticos.",
     popularity: 7
   },
   {
     id: 233,
-    title: "Slaughterhouse-Five",
+    title: "Matadouro-Cinco",
+    tituloOriginal: "Slaughterhouse-Five",
     author: "Kurt Vonnegut",
     cover: "https://covers.openlibrary.org/b/id/8264721-M.jpg",
     grade: "EM",
@@ -2581,6 +2733,7 @@
     mood: ["perturbar"],
     tamanho: "curto",
     vibes: ["engracado", "pesado", "reflexivo"],
+    leitura: "media",
     time: ["passado"],
     description: "Sátira anti-guerra sobre um soldado que viaja no tempo após o bombardeio de Dresden.",
     popularity: 8
@@ -2598,6 +2751,7 @@
     mood: ["refletir"],
     tamanho: "longo",
     vibes: ["inspirador"],
+    leitura: "desafiadora",
     time: ["passado"],
     description: "Análise de como Lincoln formou seu gabinete com ex-rivais políticos.",
     popularity: 6
@@ -2615,13 +2769,15 @@
     mood: ["refletir"],
     tamanho: "medio",
     vibes: ["romantico"],
+    leitura: "media",
     time: ["passado"],
     description: "Crítica à alta sociedade nova-iorquina do século XIX através de um triângulo amoroso.",
     popularity: 7
   },
   {
     id: 236,
-    title: "The Amazing Adventures of Kavalier & Clay",
+    title: "As Incríveis Aventuras de Kavalier & Clay",
+    tituloOriginal: "The Amazing Adventures of Kavalier & Clay",
     author: "Michael Chabon",
     cover: "https://covers.openlibrary.org/b/id/8264727-M.jpg",
     grade: "EM",
@@ -2632,6 +2788,7 @@
     mood: ["emocionar"],
     tamanho: "longo",
     vibes: ["aventura", "emocionante"],
+    leitura: "media",
     time: ["passado"],
     description: "História de dois primos que criam um super-herói durante a Era de Ouro dos quadrinhos.",
     popularity: 7
@@ -2649,6 +2806,7 @@
     mood: ["inspirar"],
     tamanho: "longo",
     vibes: ["inspirador"],
+    leitura: "media",
     time: ["passado"],
     description: "Autobiografia do icônico ativista dos direitos civis norte-americanos.",
     popularity: 6
@@ -2666,6 +2824,7 @@
     mood: ["emocionar"],
     tamanho: "longo",
     vibes: ["emocionante", "pesado"],
+    leitura: "media",
     time: ["passado"],
     description: "História de uma jovem que encontra refúgio nos livros durante a Alemanha nazista.",
     popularity: 8
@@ -2683,6 +2842,7 @@
     mood: ["emocionar"],
     tamanho: "medio",
     vibes: ["engracado", "emocionante"],
+    leitura: "media",
     time: ["passado"],
     description: "História de um jovem dominicano-americano obcecado por ficção científica e amor.",
     popularity: 7
@@ -2700,6 +2860,7 @@
     mood: ["refletir"],
     tamanho: "curto",
     vibes: ["reflexivo"],
+    leitura: "facil",
     time: ["passado"],
     description: "Clássico sobre Holden Caulfield e sua jornada de descoberta em Nova York.",
     popularity: 9
@@ -2717,6 +2878,7 @@
     mood: ["emocionar"],
     tamanho: "medio",
     vibes: ["inspirador", "emocionante"],
+    leitura: "facil",
     time: ["passado"],
     description: "Memórias de um homem negro sobre sua mãe branca e judia nos EUA dos anos 1960.",
     popularity: 6
@@ -2734,6 +2896,7 @@
     mood: ["refletir"],
     tamanho: "longo",
     vibes: ["reflexivo"],
+    leitura: "media",
     time: ["presente"],
     description: "Saga familiar sobre os Lambert e suas complexas relações no meio-oeste americano.",
     popularity: 6
@@ -2751,6 +2914,7 @@
     mood: ["chocar"],
     tamanho: "longo",
     vibes: ["assustador", "misterio"],
+    leitura: "media",
     time: ["passado"],
     description: "Narrativa real sobre um arquiteto e um serial killer durante a Feira Mundial de Chicago.",
     popularity: 7
@@ -2768,6 +2932,7 @@
     mood: ["emocionar"],
     tamanho: "medio",
     vibes: ["emocionante", "pesado"],
+    leitura: "facil",
     time: ["passado"],
     description: "Relato pessoal de uma jovem judia escondida durante a Segunda Guerra Mundial.",
     popularity: 9
@@ -2785,6 +2950,7 @@
     mood: ["emocionar"],
     tamanho: "medio",
     vibes: ["romantico", "emocionante"],
+    leitura: "facil",
     time: ["presente"],
     description: "História de amor entre dois adolescentes que se conhecem em um grupo de apoio ao câncer.",
     popularity: 8
@@ -2802,6 +2968,7 @@
     mood: ["refletir"],
     tamanho: "curto",
     vibes: ["reflexivo", "misterio"],
+    leitura: "facil",
     time: ["futuro"],
     description: "Clássico juvenil sobre uma sociedade aparentemente perfeita sem dor ou memórias.",
     popularity: 6
@@ -2819,6 +2986,7 @@
     mood: ["surpreender"],
     tamanho: "medio",
     vibes: ["aventura"],
+    leitura: "media",
     time: ["fantasia"],
     description: "Primeiro livro da trilogia Fronteiras do Universo, sobre Lyra e sua jornada épica.",
     popularity: 7
@@ -2836,6 +3004,7 @@
     mood: ["refletir"],
     tamanho: "curto",
     vibes: ["romantico", "reflexivo"],
+    leitura: "media",
     time: ["passado"],
     description: "Retrato da decadência do sonho americano nos anos 1920 através de Jay Gatsby.",
     popularity: 9
@@ -2853,6 +3022,7 @@
     mood: ["perturbar"],
     tamanho: "medio",
     vibes: ["pesado"],
+    leitura: "media",
     time: ["futuro"],
     description: "Distopia sobre um regime teocrático onde mulheres são escravas reprodutivas.",
     popularity: 8
@@ -2864,12 +3034,14 @@
     cover: "https://covers.openlibrary.org/b/id/8264755-M.jpg",
     grade: "EF1",
     available: false,
+    quiz: false, // livro ilustrado para crianças pequenas
     type: "estrangeira",
     genres: ["infantil", "fantasia"],
     tags: ["ursinho-pooh", "amizade"],
     mood: ["divertir"],
     tamanho: "curto",
     vibes: ["leve", "engracado"],
+    leitura: "facil",
     time: ["fantasia"],
     description: "Continução das aventuras do Ursinho Pooh e seus amigos na Floresta dos Cem Acres.",
     popularity: 6
@@ -2887,6 +3059,7 @@
     mood: ["surpreender"],
     tamanho: "medio",
     vibes: ["aventura"],
+    leitura: "facil",
     time: ["futuro"],
     description: "Primeiro livro da trilogia sobre Katniss Everdeen e os jogos mortais do Capitólio.",
     popularity: 8
@@ -2904,6 +3077,7 @@
     mood: ["refletir"],
     tamanho: "medio",
     vibes: ["reflexivo"],
+    leitura: "media",
     time: ["passado"],
     description: "História real por trás das células HeLa e os dilemas éticos da pesquisa médica.",
     popularity: 7
@@ -2921,6 +3095,7 @@
     mood: ["emocionar"],
     tamanho: "medio",
     vibes: ["emocionante", "engracado"],
+    leitura: "media",
     time: ["passado"],
     description: "Memórias de uma infância turbulenta no Texas dos anos 1960.",
     popularity: 5
@@ -2930,7 +3105,7 @@
     title: "Percy Jackson e o ladrão de raios",
     author: "Rick Riordan",
     cover: "https://covers.openlibrary.org/b/id/8264763-M.jpg",
-    grade: "EF1",
+    grade: ["EF1", "EF2"],
     available: false,
     type: "estrangeira",
     genres: ["fantasia", "aventura"],
@@ -2938,6 +3113,7 @@
     mood: ["divertir"],
     tamanho: "medio",
     vibes: ["aventura", "engracado"],
+    leitura: "facil",
     time: ["presente"],
     description: "Primeiro livro da série sobre um garoto que descobre ser filho de Poseidon.",
     popularity: 7
@@ -2955,6 +3131,7 @@
     mood: ["surpreender"],
     tamanho: "curto",
     vibes: ["misterio"],
+    leitura: "media",
     time: ["passado"],
     description: "Clássico do romance noir com o detetive Philip Marlowe em Los Angeles.",
     popularity: 7
@@ -2972,6 +3149,7 @@
     mood: ["refletir"],
     tamanho: "longo",
     vibes: ["misterio", "pesado"],
+    leitura: "media",
     time: ["passado"],
     description: "Investigação sobre os eventos que levaram aos ataques de 11 de setembro.",
     popularity: 6
@@ -2989,6 +3167,7 @@
     mood: ["surpreender"],
     tamanho: "longo",
     vibes: ["aventura"],
+    leitura: "media",
     time: ["fantasia"],
     description: "Trilogia épica sobre a jornada para destruir o Um Anel e salvar a Terra-média.",
     popularity: 10
@@ -3006,6 +3185,7 @@
     mood: ["surpreender"],
     tamanho: "medio",
     vibes: ["reflexivo"],
+    leitura: "media",
     time: ["presente"],
     description: "Estudos de caso neurológicos que revelam os mistérios do cérebro humano.",
     popularity: 7
@@ -3023,6 +3203,7 @@
     mood: ["refletir"],
     tamanho: "medio",
     vibes: ["reflexivo"],
+    leitura: "media",
     time: ["presente"],
     description: "Investigação sobre as origens do que comemos e seus impactos éticos e ambientais.",
     popularity: 6
@@ -3040,6 +3221,7 @@
     mood: ["refletir"],
     tamanho: "curto",
     vibes: ["engracado", "aventura"],
+    leitura: "facil",
     time: ["fantasia"],
     description: "Clássico infantil que ensina sobre perspectivas através de aventuras imaginativas.",
     popularity: 5
@@ -3057,6 +3239,7 @@
     mood: ["emocionar"],
     tamanho: "longo",
     vibes: ["emocionante"],
+    leitura: "media",
     time: ["passado"],
     description: "História de uma família de missionários no México dos anos 1950 e seus conflitos culturais.",
     popularity: 6
@@ -3074,6 +3257,7 @@
     mood: ["refletir"],
     tamanho: "longo",
     vibes: ["reflexivo"],
+    leitura: "desafiadora",
     time: ["passado"],
     description: "Biografia de Robert Moses e sua influência no desenvolvimento urbano de Nova York.",
     popularity: 7
@@ -3091,6 +3275,7 @@
     mood: ["surpreender"],
     tamanho: "medio",
     vibes: ["aventura", "inspirador"],
+    leitura: "media",
     time: ["passado"],
     description: "Romance sobre os primeiros astronautas do programa espacial norte-americano.",
     popularity: 6
@@ -3108,6 +3293,7 @@
     mood: ["perturbar"],
     tamanho: "curto",
     vibes: ["pesado", "emocionante"],
+    leitura: "media",
     time: ["futuro"],
     description: "História sombria de um pai e seu filho em um mundo pós-apocalíptico.",
     popularity: 8
@@ -3125,6 +3311,7 @@
     mood: ["surpreender"],
     tamanho: "longo",
     vibes: ["misterio"],
+    leitura: "media",
     time: ["passado"],
     description: "Narrativa sobre um grupo de estudantes de elite envolvidos em um assassinato.",
     popularity: 7
@@ -3142,6 +3329,7 @@
     mood: ["assustar"],
     tamanho: "longo",
     vibes: ["assustador"],
+    leitura: "media",
     time: ["passado"],
     description: "Clássico do terror sobre um escritor que se torna zelador de um hotel assombrado.",
     popularity: 9
@@ -3159,6 +3347,7 @@
     mood: ["refletir"],
     tamanho: "curto",
     vibes: ["reflexivo"],
+    leitura: "media",
     time: ["passado"],
     description: "Romance existencialista sobre um homem indiferente julgado por um crime.",
     popularity: 8
@@ -3176,13 +3365,15 @@
     mood: ["refletir"],
     tamanho: "medio",
     vibes: ["romantico", "reflexivo"],
+    leitura: "media",
     time: ["passado"],
     description: "Retrato da Geração Perdida de americanos em Paris após a Primeira Guerra.",
     popularity: 7
   },
   {
     id: 269,
-    title: "The Things they Carried",
+    title: "As Coisas que Eles Carregavam",
+    tituloOriginal: "The Things They Carried",
     author: "Tim O'Brien",
     cover: "https://covers.openlibrary.org/b/id/8264793-M.jpg",
     grade: "EM",
@@ -3193,6 +3384,7 @@
     mood: ["emocionar"],
     tamanho: "medio",
     vibes: ["pesado", "emocionante"],
+    leitura: "media",
     time: ["passado"],
     description: "Coleção de histórias interligadas sobre soldados na Guerra do Vietnã.",
     popularity: 7
@@ -3204,12 +3396,14 @@
     cover: "https://covers.openlibrary.org/b/id/8264795-M.jpg",
     grade: "EF1",
     available: false,
+    quiz: false, // livro ilustrado para crianças pequenas
     type: "estrangeira",
     genres: ["infantil", "educativo"],
     tags: ["alimentacao", "cores"],
     mood: ["divertir"],
     tamanho: "curto",
     vibes: ["leve"],
+    leitura: "facil",
     time: ["fantasia"],
     description: "Clássico infantil sobre uma lagarta que come até se transformar em borboleta.",
     popularity: 5
@@ -3227,13 +3421,15 @@
     mood: ["acalmar"],
     tamanho: "medio",
     vibes: ["leve", "aventura"],
+    leitura: "facil",
     time: ["fantasia"],
     description: "Aventuras de Toupeira, Rato e outros animais antropomórficos na Inglaterra rural.",
     popularity: 6
   },
   {
     id: 272,
-    title: "The wind-up bird chronicle",
+    title: "Crônica do Pássaro de Corda",
+    tituloOriginal: "The Wind-Up Bird Chronicle",
     author: "Haruki Murakami",
     cover: "https://covers.openlibrary.org/b/id/8264799-M.jpg",
     grade: "EM",
@@ -3244,6 +3440,7 @@
     mood: ["surpreender"],
     tamanho: "longo",
     vibes: ["misterio"],
+    leitura: "media",
     time: ["presente"],
     description: "Narrativa surreal sobre um homem que busca sua esposa desaparecida em Tóquio.",
     popularity: 7
@@ -3261,13 +3458,15 @@
     mood: ["emocionar"],
     tamanho: "longo",
     vibes: ["engracado", "emocionante"],
+    leitura: "media",
     time: ["passado"],
     description: "História da vida do escritor T.S. Garp e sua família incomum.",
     popularity: 6
   },
   {
     id: 274,
-    title: "The Year of Magical Thinking",
+    title: "O Ano do Pensamento Mágico",
+    tituloOriginal: "The Year of Magical Thinking",
     author: "Joan Didion",
     cover: "https://covers.openlibrary.org/b/id/8264803-M.jpg",
     grade: "EM",
@@ -3278,6 +3477,7 @@
     mood: ["emocionar"],
     tamanho: "curto",
     vibes: ["emocionante"],
+    leitura: "media",
     time: ["presente"],
     description: "Relato autobiográfico sobre o luto após a morte repentina do marido da autora.",
     popularity: 6
@@ -3295,6 +3495,7 @@
     mood: ["refletir"],
     tamanho: "curto",
     vibes: ["reflexivo", "pesado"],
+    leitura: "media",
     time: ["passado"],
     description: "Clássico africano sobre o choque entre tradições igbo e o colonialismo britânico.",
     popularity: 8
@@ -3312,6 +3513,7 @@
     mood: ["emocionar"],
     tamanho: "medio",
     vibes: ["emocionante", "reflexivo"],
+    leitura: "media",
     time: ["passado"],
     description: "Clássico sobre um advogado que defende um homem negro injustamente acusado no sul dos EUA.",
     popularity: 9
@@ -3329,13 +3531,15 @@
     mood: ["inspirar"],
     tamanho: "longo",
     vibes: ["inspirador"],
+    leitura: "facil",
     time: ["passado"],
     description: "História real de um atleta olímpico sobrevivente de um acidente aéreo na Segunda Guerra.",
     popularity: 7
   },
   {
     id: 278,
-    title: "Valley of the Dolls",
+    title: "O Vale das Bonecas",
+    tituloOriginal: "Valley of the Dolls",
     author: "Jacqueline Susann",
     cover: "https://covers.openlibrary.org/b/id/8264811-M.jpg",
     grade: "EM",
@@ -3346,6 +3550,7 @@
     mood: ["chocar"],
     tamanho: "longo",
     vibes: ["pesado"],
+    leitura: "media",
     time: ["passado"],
     description: "Clássico sobre três mulheres e seus dramas na indústria do entretenimento dos anos 1960.",
     popularity: 6
@@ -3363,6 +3568,7 @@
     mood: ["divertir"],
     tamanho: "curto",
     vibes: ["engracado", "leve"],
+    leitura: "facil",
     time: ["fantasia"],
     description: "Coleção de poemas nonsense e ilustrações para crianças.",
     popularity: 6
@@ -3374,12 +3580,14 @@
     cover: "https://covers.openlibrary.org/b/id/8264815-M.jpg",
     grade: "EF1",
     available: false,
+    quiz: false, // livro ilustrado para crianças pequenas
     type: "estrangeira",
     genres: ["infantil", "fantasia"],
     tags: ["imaginacao", "aventura"],
     mood: ["divertir"],
     tamanho: "curto",
     vibes: ["leve", "aventura"],
+    leitura: "facil",
     time: ["fantasia"],
     description: "Clássico infantil sobre Max e sua terra de monstros selvagens.",
     popularity: 7
@@ -3397,6 +3605,7 @@
   mood: ["emocionar"],
   tamanho: "curto",
   vibes: ["emocionante", "pesado"],
+  leitura: "media",
   time: ["passado"],
   description: "Romance sobre a seca de 1915 no Nordeste brasileiro e a luta pela sobrevivência.",
   popularity: 7
@@ -3414,6 +3623,7 @@
   mood: ["refletir"],
   tamanho: "curto",
   vibes: ["reflexivo", "pesado"],
+  leitura: "media",
   time: ["passado"],
   description: "Narrativa em primeira pessoa sobre um homem obcecado por posses e controle.",
   popularity: 7
@@ -3431,6 +3641,7 @@
   mood: ["emocionar"],
   tamanho: "medio",
   vibes: ["emocionante"],
+  leitura: "media",
   time: ["passado"],
   description: "Primeiro romance do ciclo nordestino, retratando a vida dos retirantes.",
   popularity: 6
@@ -3448,6 +3659,7 @@
   mood: ["refletir"],
   tamanho: "medio",
   vibes: ["pesado"],
+  leitura: "media",
   time: ["passado"],
   description: "Último livro do ciclo da cana-de-açúcar, mostrando a decadência dos engenhos.",
   popularity: 6
@@ -3465,6 +3677,7 @@
   mood: ["surpreender"],
   tamanho: "longo",
   vibes: ["engracado"],
+  leitura: "media",
   time: ["passado"],
   description: "Sátira política onde mortos ressuscitam para protestar contra injustiças.",
   popularity: 7
@@ -3482,6 +3695,7 @@
   mood: ["refletir"],
   tamanho: "curto",
   vibes: ["reflexivo"],
+  leitura: "media",
   time: ["presente"],
   description: "Coletânea de contos que exploram as relações familiares e a condição feminina.",
   popularity: 8
@@ -3499,6 +3713,7 @@
   mood: ["perturbar"],
   tamanho: "curto",
   vibes: ["reflexivo"],
+  leitura: "desafiadora",
   time: ["presente"],
   description: "Narrativa introspectiva sobre uma mulher em crise existencial.",
   popularity: 8
@@ -3516,6 +3731,7 @@
   mood: ["surpreender"],
   tamanho: "medio",
   vibes: ["emocionante"],
+  leitura: "desafiadora",
   time: ["passado"],
   description: "Nove contos que recriam o universo do sertão mineiro com linguagem inovadora.",
   popularity: 8
@@ -3533,6 +3749,7 @@
   mood: ["emocionar"],
   tamanho: "curto",
   vibes: ["emocionante"],
+  leitura: "desafiadora",
   time: ["passado"],
   description: "Coletânea de contos com temas que vão do místico ao cotidiano do sertão.",
   popularity: 7
@@ -3550,6 +3767,7 @@
   mood: ["perturbar"],
   tamanho: "curto",
   vibes: ["pesado"],
+  leitura: "media",
   time: ["presente"],
   description: "Contos que retratam a solidão e os dramas urbanos de forma concisa e impactante.",
   popularity: 6
@@ -3567,6 +3785,7 @@
   mood: ["perturbar"],
   tamanho: "medio",
   vibes: ["pesado"],
+  leitura: "desafiadora",
   time: ["futuro"],
   description: "Romance experimental que critica a ditadura militar através de estrutura não-linear.",
   popularity: 6
@@ -3584,6 +3803,7 @@
   mood: ["divertir"],
   tamanho: "medio",
   vibes: ["engracado", "aventura"],
+  leitura: "media",
   time: ["passado"],
   description: "Sátira histórica sobre um aventureiro espanhol que se torna imperador do Acre.",
   popularity: 5
@@ -3601,6 +3821,7 @@
   mood: ["surpreender"],
   tamanho: "longo",
   vibes: ["misterio"],
+  leitura: "media",
   time: ["passado"],
   description: "Romance policial que se passa durante a crise política que levou ao suicídio de Getúlio Vargas.",
   popularity: 7
@@ -3618,6 +3839,7 @@
   mood: ["refletir"],
   tamanho: "medio",
   vibes: ["misterio"],
+  leitura: "media",
   time: ["passado"],
   description: "História de um cineasta que revisita seu passado através de suas memórias.",
   popularity: 6
@@ -3635,6 +3857,7 @@
   mood: ["refletir"],
   tamanho: "curto",
   vibes: ["reflexivo"],
+  leitura: "media",
   time: ["presente"],
   description: "História de um ghost writer que se descobre em uma cidade estrangeira.",
   popularity: 7
@@ -3652,6 +3875,7 @@
   mood: ["emocionar"],
   tamanho: "curto",
   vibes: ["emocionante", "reflexivo"],
+  leitura: "media",
   time: ["passado"],
   description: "Narrativa de um patriarca que relembra a história de sua família em declínio.",
   popularity: 6
@@ -3669,6 +3893,7 @@
   mood: ["emocionar"],
   tamanho: "medio",
   vibes: ["emocionante", "pesado"],
+  leitura: "media",
   time: ["passado"],
   description: "História de gêmeos com personalidades opostas e sua relação conturbada.",
   popularity: 7
@@ -3686,6 +3911,7 @@
   mood: ["refletir"],
   tamanho: "medio",
   vibes: ["reflexivo"],
+  leitura: "desafiadora",
   time: ["passado"],
   description: "Narrativa sobre memórias familiares e a experiência de imigrantes no Amazonas.",
   popularity: 6
@@ -3703,6 +3929,7 @@
   mood: ["surpreender"],
   tamanho: "longo",
   vibes: ["engracado", "aventura"],
+  leitura: "desafiadora",
   time: ["passado"],
   description: "Romance que mistura realidade e fantasia no contexto do movimento armorial.",
   popularity: 7
@@ -3720,6 +3947,7 @@
   mood: ["refletir"],
   tamanho: "longo",
   vibes: ["romantico", "reflexivo"],
+  leitura: "desafiadora",
   time: ["passado"],
   description: "Romance histórico sobre a construção do Convento de Mafra no século XVIII.",
   popularity: 8
@@ -3737,6 +3965,7 @@
   mood: ["surpreender"],
   tamanho: "medio",
   vibes: ["reflexivo"],
+  leitura: "media",
   time: ["presente"],
   description: "Narrativa fantástica sobre a Península Ibérica que se desprende da Europa.",
   popularity: 7
@@ -3769,6 +3998,7 @@
   mood: ["divertir"],
   tamanho: "medio",
   vibes: ["engracado"],
+  leitura: "media",
   time: ["passado"],
   description: "Sátira à hipocrisia religiosa e social da burguesia portuguesa do século XIX.",
   popularity: 7
@@ -3786,6 +4016,7 @@
   mood: ["refletir"],
   tamanho: "longo",
   vibes: ["reflexivo", "misterio"],
+  leitura: "desafiadora",
   time: ["passado"],
   description: "Último romance de Dostoiévski, explorando temas de fé, moralidade e livre-arbítrio.",
   popularity: 8
@@ -3803,6 +4034,7 @@
   mood: ["refletir"],
   tamanho: "longo",
   vibes: ["emocionante", "reflexivo"],
+  leitura: "desafiadora",
   time: ["passado"],
   description: "Épico que narra a história de cinco famílias aristocráticas durante as guerras napoleônicas.",
   popularity: 8
@@ -3820,6 +4052,7 @@
   mood: ["emocionar"],
   tamanho: "medio",
   vibes: ["romantico", "pesado"],
+  leitura: "media",
   time: ["passado"],
   description: "Clássico do realismo francês sobre uma mulher insatisfeita com sua vida conjugal.",
   popularity: 8
@@ -3837,6 +4070,7 @@
   mood: ["emocionar"],
   tamanho: "longo",
   vibes: ["emocionante", "inspirador"],
+  leitura: "desafiadora",
   time: ["passado"],
   description: "Épico sobre redenção, justiça social e amor na França do século XIX.",
   popularity: 9
@@ -3854,6 +4088,7 @@
   mood: ["emocionar"],
   tamanho: "longo",
   vibes: ["emocionante", "romantico"],
+  leitura: "media",
   time: ["passado"],
   description: "História trágica de Quasímodo, o corcunda que vive na catedral de Notre-Dame.",
   popularity: 8
@@ -3871,6 +4106,7 @@
   mood: ["perturbar"],
   tamanho: "medio",
   vibes: ["misterio", "pesado"],
+  leitura: "media",
   time: ["passado"],
   description: "Clássico sobre um homem cujo retrato envelhece enquanto ele permanece jovem.",
   popularity: 8
@@ -3888,6 +4124,7 @@
   mood: ["emocionar"],
   tamanho: "medio",
   vibes: ["romantico", "pesado"],
+  leitura: "media",
   time: ["passado"],
   description: "História de amor obsessivo e vingança entre Heathcliff e Catherine.",
   popularity: 8
@@ -3905,6 +4142,7 @@
   mood: ["emocionar"],
   tamanho: "longo",
   vibes: ["romantico", "misterio"],
+  leitura: "media",
   time: ["passado"],
   description: "História de uma órfã que se torna governanta e se apaixona por seu empregador.",
   popularity: 8
@@ -3922,6 +4160,7 @@
   mood: ["refletir"],
   tamanho: "longo",
   vibes: ["aventura"],
+  leitura: "desafiadora",
   time: ["passado"],
   description: "Épica jornada do Capitão Ahab em sua obsessiva caça à grande baleia branca.",
   popularity: 8
@@ -3939,6 +4178,7 @@
   mood: ["emocionar"],
   tamanho: "longo",
   vibes: ["emocionante", "pesado"],
+  leitura: "media",
   time: ["passado"],
   description: "História da família Joad durante a Grande Depressão nos Estados Unidos.",
   popularity: 8
@@ -3956,6 +4196,7 @@
   mood: ["refletir"],
   tamanho: "longo",
   vibes: ["emocionante"],
+  leitura: "media",
   time: ["passado"],
   description: "Narrativa bíblica recontada através de duas famílias no Vale de Salinas.",
   popularity: 7
@@ -3973,6 +4214,7 @@
   mood: ["refletir"],
   tamanho: "curto",
   vibes: ["inspirador", "emocionante"],
+  leitura: "facil",
   time: ["passado"],
   description: "História de um velho pescador cubano e sua luta épica com um marlim gigante.",
   popularity: 7
@@ -3990,6 +4232,7 @@
   mood: ["emocionar"],
   tamanho: "longo",
   vibes: ["pesado", "romantico"],
+  leitura: "media",
   time: ["passado"],
   description: "História de um professor americano que luta na Guerra Civil Espanhola.",
   popularity: 7
@@ -4007,6 +4250,7 @@
   mood: ["perturbar"],
   tamanho: "medio",
   vibes: ["pesado"],
+  leitura: "desafiadora",
   time: ["passado"],
   description: "Obra modernista que explora a decadência de uma família sulista americana.",
   popularity: 7
@@ -4024,6 +4268,7 @@
   mood: ["refletir"],
   tamanho: "longo",
   vibes: ["reflexivo"],
+  leitura: "desafiadora",
   time: ["passado"],
   description: "História que aborda questões raciais e religiosas no Sul dos Estados Unidos.",
   popularity: 6
@@ -4041,6 +4286,7 @@
   mood: ["perturbar"],
   tamanho: "medio",
   vibes: ["reflexivo"],
+  leitura: "desafiadora",
   time: ["presente"],
   description: "Romance filosófico que explora a angústia existencial e o absurdo da existência.",
   popularity: 7
@@ -4058,6 +4304,7 @@
   mood: ["emocionar"],
   tamanho: "medio",
   vibes: ["romantico", "aventura"],
+  leitura: "media",
   time: ["passado"],
   description: "História de uma contadora de histórias na América Latina.",
   popularity: 7
@@ -4074,6 +4321,7 @@
   tags: ["pessimismo", "existência"],
   mood: ["perturbar"],
   vibes: ["reflexivo"],
+  leitura: "desafiadora",
   time: ["presente"],
   description: "Reflexões filosóficas sobre o sofrimento humano e a condição existencial.",
   popularity: 6
@@ -4091,6 +4339,7 @@
   mood: ["surpreender"],
   tamanho: "longo",
   vibes: ["aventura"],
+  leitura: "media",
   time: ["futuro"],
   description: "Épico de ficção científica sobre o planeta deserto Arrakis e sua preciosa especiaria.",
   popularity: 8
@@ -4108,6 +4357,7 @@
   mood: ["surpreender"],
   tamanho: "medio",
   vibes: ["reflexivo"],
+  leitura: "media",
   time: ["futuro"],
   description: "Série sobre a queda de um império galáctico e a tentativa de preservar o conhecimento.",
   popularity: 8
@@ -4125,6 +4375,7 @@
   mood: ["refletir"],
   tamanho: "medio",
   vibes: ["reflexivo", "misterio"],
+  leitura: "facil",
   time: ["futuro"],
   description: "Coletânea de contos que exploram as implicações éticas da inteligência artificial.",
   popularity: 7
@@ -4142,6 +4393,7 @@
   mood: ["perturbar"],
   tamanho: "curto",
   vibes: ["pesado"],
+  leitura: "media",
   time: ["futuro"],
   description: "Distopia sobre violência juvenil e tentativas de controle comportamental.",
   popularity: 7
@@ -4159,6 +4411,7 @@
   mood: ["surpreender"],
   tamanho: "medio",
   vibes: ["aventura"],
+  leitura: "desafiadora",
   time: ["futuro"],
   description: "Obra seminal do cyberpunk sobre um hacker e a inteligência artificial.",
   popularity: 7
@@ -4176,6 +4429,7 @@
   mood: ["divertir"],
   tamanho: "curto",
   vibes: ["engracado", "aventura"],
+  leitura: "facil",
   time: ["futuro"],
   description: "Comédia de ficção científica sobre as aventuras de Arthur Dent pelo universo.",
   popularity: 8
@@ -4193,6 +4447,7 @@
   mood: ["aventura"],
   tamanho: "medio",
   vibes: ["aventura", "leve"],
+  leitura: "facil",
   time: ["fantasia"],
   description: "Aventura de Bilbo Bolseiro em uma jornada para recuperar um tesouro guardado por um dragão.",
   popularity: 9
@@ -4210,6 +4465,7 @@
   mood: ["aventura"],
   tamanho: "longo",
   vibes: ["aventura"],
+  leitura: "facil",
   time: ["fantasia"],
   description: "Série de aventuras em um mundo fantástico cheio de criaturas mágicas.",
   popularity: 8
@@ -4227,6 +4483,7 @@
   mood: ["refletir"],
   tamanho: "medio",
   vibes: ["reflexivo"],
+  leitura: "media",
   time: ["futuro"],
   description: "Coletânea de contos sobre a colonização de Marte e encontros com marcianos.",
   popularity: 7
@@ -4244,6 +4501,7 @@
   mood: ["surpreender"],
   tamanho: "medio",
   vibes: ["reflexivo"],
+  leitura: "media",
   time: ["passado"],
   description: "História alternativa onde o Eixo venceu a Segunda Guerra Mundial.",
   popularity: 7
@@ -4261,6 +4519,7 @@
   mood: ["refletir"],
   tamanho: "medio",
   vibes: ["reflexivo", "misterio"],
+  leitura: "media",
   time: ["futuro"],
   description: "Romance que explora o que significa ser humano em um mundo de androides.",
   popularity: 7
@@ -4278,6 +4537,7 @@
   mood: ["emocionar"],
   tamanho: "medio",
   vibes: ["emocionante"],
+  leitura: "media",
   time: ["presente"],
   description: "Comovente história sobre um homem com deficiência intelectual que participa de um experimento.",
   popularity: 7
@@ -4295,6 +4555,7 @@
   mood: ["refletir"],
   tamanho: "curto",
   vibes: ["reflexivo"],
+  leitura: "media",
   time: ["passado"],
   description: "Tragédia grega sobre conflito entre lei divina e lei humana.",
   popularity: 7
@@ -4312,6 +4573,7 @@
   mood: ["perturbar"],
   tamanho: "curto",
   vibes: ["pesado"],
+  leitura: "media",
   time: ["passado"],
   description: "Tragédia sobre a vingança de Medeia contra Jasão por tê-la traído.",
   popularity: 7
@@ -4329,6 +4591,7 @@
   mood: ["emocionar"],
   tamanho: "curto",
   vibes: ["romantico", "pesado"],
+  leitura: "media",
   time: ["passado"],
   description: "Tragédia francesa baseada no mito de Fedra e seu amor proibido pelo enteado.",
   popularity: 6
@@ -4346,6 +4609,7 @@
   mood: ["emocionar"],
   tamanho: "curto",
   vibes: ["emocionante"],
+  leitura: "media",
   time: ["passado"],
   description: "Drama sobre Willy Loman e sua crise existencial ao enfrentar o fracasso profissional.",
   popularity: 8
@@ -4363,6 +4627,7 @@
   mood: ["perturbar"],
   tamanho: "curto",
   vibes: ["pesado"],
+  leitura: "media",
   time: ["passado"],
   description: "Alegoria sobre o macarthismo através dos julgamentos das bruxas de Salem.",
   popularity: 7
@@ -4380,6 +4645,7 @@
   mood: ["refletir"],
   tamanho: "curto",
   vibes: ["engracado", "reflexivo"],
+  leitura: "media",
   time: ["presente"],
   description: "Peça do teatro do absurdo sobre dois personagens que esperam por alguém que nunca chega.",
   popularity: 7
@@ -4397,6 +4663,7 @@
   mood: ["divertir"],
   tamanho: "curto",
   vibes: ["engracado"],
+  leitura: "media",
   time: ["presente"],
   description: "Primeira peça do teatro do absurdo, satirizando a banalidade da conversação burguesa.",
   popularity: 7
@@ -4414,6 +4681,7 @@
   mood: ["emocionar"],
   tamanho: "curto",
   vibes: ["romantico", "emocionante"],
+  leitura: "media",
   time: ["passado"],
   description: "Drama sobre artistas e suas complexas relações amorosas e profissionais.",
   popularity: 7
@@ -4431,6 +4699,7 @@
   mood: ["refletir"],
   tamanho: "curto",
   vibes: ["reflexivo"],
+  leitura: "media",
   time: ["passado"],
   description: "Peça sobre frustração e arrependimento na vida provinciana russa.",
   popularity: 7
@@ -4448,6 +4717,7 @@
   mood: ["refletir"],
   tamanho: "longo",
   vibes: ["reflexivo"],
+  leitura: "media",
   time: ["presente"],
   description: "Defesa do pensamento cético e científico contra pseudociências e superstições.",
   popularity: 7
@@ -4465,6 +4735,7 @@
   mood: ["refletir"],
   tamanho: "longo",
   vibes: ["reflexivo"],
+  leitura: "desafiadora",
   time: ["presente"],
   description: "Análise da mudança de paradigma do pensamento mecanicista para o holístico.",
   popularity: 6
@@ -4482,6 +4753,7 @@
   mood: ["surpreender"],
   tamanho: "longo",
   vibes: ["reflexivo"],
+  leitura: "media",
   time: ["passado"],
   description: "Narrativa da história da humanidade desde a evolução do Homo sapiens.",
   popularity: 8
@@ -4499,6 +4771,7 @@
   mood: ["refletir"],
   tamanho: "longo",
   vibes: ["reflexivo"],
+  leitura: "media",
   time: ["futuro"],
   description: "Exploração do futuro da humanidade e dos desafios éticos da tecnologia.",
   popularity: 7
@@ -4516,6 +4789,7 @@
   mood: ["refletir"],
   tamanho: "medio",
   vibes: ["reflexivo"],
+  leitura: "media",
   time: ["presente"],
   description: "Análise dos principais desafios e questões do mundo contemporâneo.",
   popularity: 7
@@ -4533,6 +4807,7 @@
   mood: ["surpreender"],
   tamanho: "medio",
   vibes: ["reflexivo"],
+  leitura: "media",
   time: ["presente"],
   description: "Teoria da evolução centrada nos genes como unidades fundamentais da seleção natural.",
   popularity: 7
@@ -4550,6 +4825,7 @@
   mood: ["surpreender"],
   tamanho: "medio",
   vibes: ["reflexivo"],
+  leitura: "media",
   time: ["presente"],
   description: "Exploração do papel do acaso e da aleatoriedade em nossas vidas.",
   popularity: 6
@@ -4567,6 +4843,7 @@
   mood: ["surpreender"],
   tamanho: "curto",
   vibes: ["reflexivo"],
+  leitura: "media",
   time: ["presente"],
   description: "Reflexões sobre as grandes questões da existência humana e do universo.",
   popularity: 7
@@ -4584,6 +4861,7 @@
   mood: ["surpreender"],
   tamanho: "medio",
   vibes: ["reflexivo", "inspirador"],
+  leitura: "media",
   time: ["presente"],
   description: "Jornada através do espaço e tempo explorando as maravilhas do cosmos.",
   popularity: 8
@@ -4601,6 +4879,7 @@
   mood: ["refletir"],
   tamanho: "curto",
   vibes: ["reflexivo"],
+  leitura: "media",
   time: ["passado"],
   description: "Tratado político sobre a aquisição e manutenção do poder.",
   popularity: 8
@@ -4618,6 +4897,7 @@
   mood: ["emocionar"],
   tamanho: "medio",
   vibes: ["reflexivo"],
+  leitura: "media",
   time: ["presente"],
   description: "Coleção de poemas que celebran objetos e aspectos simples da vida cotidiana.",
   popularity: 7
@@ -4635,6 +4915,7 @@
   mood: ["emocionar"],
   tamanho: "curto",
   vibes: ["romantico"],
+  leitura: "media",
   time: ["presente"],
   description: "Uma das obras mais famosas de Neruda sobre amor, paixão e desespero.",
   popularity: 8
@@ -4652,6 +4933,7 @@
   mood: ["refletir"],
   tamanho: "longo",
   vibes: ["reflexivo"],
+  leitura: "desafiadora",
   time: ["passado"],
   description: "Compilação completa da obra poética de um dos maiores poetas brasileiros.",
   popularity: 9
@@ -4669,6 +4951,7 @@
   mood: ["refletir"],
   tamanho: "medio",
   vibes: ["reflexivo"],
+  leitura: "desafiadora",
   time: ["passado"],
   description: "Livro de poesia com forte engajamento social e político.",
   popularity: 7
@@ -4686,6 +4969,7 @@
   mood: ["refletir"],
   tamanho: "curto",
   vibes: ["reflexivo"],
+  leitura: "desafiadora",
   time: ["presente"],
   description: "Poesia que aborda questões existenciais e metafísicas.",
   popularity: 7
@@ -4703,6 +4987,7 @@
   mood: ["emocionar"],
   tamanho: "medio",
   vibes: ["romantico"],
+  leitura: "media",
   time: ["passado"],
   description: "Seleção dos melhores poemas do poeta da paixão e da musicalidade.",
   popularity: 8
@@ -4720,6 +5005,7 @@
   mood: ["emocionar"],
   tamanho: "curto",
   vibes: ["romantico"],
+  leitura: "media",
   time: ["passado"],
   description: "Coleção de sonetos que demonstram o domínio de Vinicius da forma clássica.",
   popularity: 7
@@ -4737,6 +5023,7 @@
   mood: ["refletir"],
   tamanho: "medio",
   vibes: ["reflexivo"],
+  leitura: "desafiadora",
   time: ["passado"],
   description: "Obra poética do próprio Fernando Pessoa, distinta de seus heterônimos.",
   popularity: 8
@@ -4754,6 +5041,7 @@
   mood: ["refletir"],
   tamanho: "curto",
   vibes: ["reflexivo"],
+  leitura: "desafiadora",
   time: ["presente"],
   description: "Um dos poemas mais famosos de Álvaro de Campos sobre a condição humana.",
   popularity: 8
@@ -4773,5 +5061,906 @@
   time: ["presente"],
   description: "Em uma universidade de elite, uma bolsista descobre segredos sombrios e um jogo misterioso que concede poderes extraordinários, desencadeando uma trama de conspirações, traições e amores intensos.",
   "popularity": 7
-}
+},
+  // ===== Livros adicionados em novembro de 2026 (Leia SP ainda não conferido) =====
+  {
+    id: 401,
+    title: "Senhora",
+    author: "José de Alencar",
+    cover: "",
+    grade: "EM",
+    available: null,
+    type: "brasileira",
+    genres: ["romance","classico","romantismo"],
+    tags: ["casamento","dinheiro"],
+    mood: [],
+    tamanho: "medio",
+    vibes: ["romantico","reflexivo"],
+    leitura: "media",
+    time: ["passado"],
+    description: "Aurélia fica rica de repente e \"compra\" como marido o homem que a trocou por um dote maior. Crítica ao casamento por interesse no Rio do século XIX.",
+    popularity: 7
+  },
+  {
+    id: 402,
+    title: "Memórias de um Sargento de Milícias",
+    author: "Manuel Antônio de Almeida",
+    cover: "",
+    grade: "EM",
+    available: null,
+    type: "brasileira",
+    genres: ["romance","classico"],
+    tags: ["malandragem","rio-de-janeiro"],
+    mood: [],
+    tamanho: "medio",
+    vibes: ["engracado","aventura"],
+    leitura: "media",
+    time: ["passado"],
+    description: "As trapalhadas de Leonardo, um malandro no Rio de Janeiro do tempo de D. João VI. Divertido e cheio de tipos populares.",
+    popularity: 6
+  },
+  {
+    id: 403,
+    title: "Grande Sertão: Veredas",
+    author: "João Guimarães Rosa",
+    cover: "",
+    grade: "EM",
+    available: null,
+    type: "brasileira",
+    genres: ["romance","regionalismo","classico"],
+    tags: ["sertao","jagunco"],
+    mood: [],
+    tamanho: "longo",
+    vibes: ["reflexivo","aventura","romantico"],
+    leitura: "desafiadora",
+    time: ["passado"],
+    description: "Riobaldo, ex-jagunço, relembra as batalhas pelo sertão, o amor por Diadorim e a dúvida sobre ter feito um pacto com o diabo.",
+    popularity: 8
+  },
+  {
+    id: 404,
+    title: "Os Sertões",
+    author: "Euclides da Cunha",
+    cover: "",
+    grade: "EM",
+    available: null,
+    type: "brasileira",
+    genres: ["historia","ensaio","classico"],
+    tags: ["canudos","sertao"],
+    mood: [],
+    tamanho: "longo",
+    vibes: ["reflexivo","pesado"],
+    leitura: "desafiadora",
+    time: ["passado"],
+    description: "Relato da Guerra de Canudos, no sertão da Bahia, no fim do século XIX, misturando geografia, história e reportagem.",
+    popularity: 6
+  },
+  {
+    id: 405,
+    title: "Auto da Compadecida",
+    author: "Ariano Suassuna",
+    cover: "",
+    grade: ["EF2","EM"],
+    available: null,
+    type: "brasileira",
+    genres: ["teatro","comedia"],
+    tags: ["nordeste","cultura-popular"],
+    mood: [],
+    tamanho: "curto",
+    vibes: ["engracado","leve"],
+    leitura: "facil",
+    time: ["passado"],
+    description: "João Grilo e Chicó aprontam no sertão nordestino até irem parar num julgamento diante da Compadecida. Comédia cheia de cultura popular.",
+    popularity: 9
+  },
+  {
+    id: 406,
+    title: "Morte e Vida Severina",
+    author: "João Cabral de Melo Neto",
+    cover: "",
+    grade: "EM",
+    available: null,
+    type: "brasileira",
+    genres: ["poesia","teatro"],
+    tags: ["retirante","nordeste"],
+    mood: [],
+    tamanho: "curto",
+    vibes: ["emocionante","pesado"],
+    leitura: "media",
+    time: ["passado"],
+    description: "Poema dramático sobre Severino, um retirante que deixa o sertão rumo ao Recife e encontra morte pelo caminho, até surgir um sinal de vida.",
+    popularity: 8
+  },
+  {
+    id: 407,
+    title: "Menino de Engenho",
+    author: "José Lins do Rego",
+    cover: "",
+    grade: "EM",
+    available: null,
+    type: "brasileira",
+    genres: ["romance","regionalismo"],
+    tags: ["infancia","engenho"],
+    mood: [],
+    tamanho: "curto",
+    vibes: ["emocionante","reflexivo"],
+    leitura: "media",
+    time: ["passado"],
+    description: "Órfão, Carlinhos vai morar no engenho do avô na Paraíba e descobre a vida no campo e as desigualdades da região.",
+    popularity: 6
+  },
+  {
+    id: 408,
+    title: "Gabriela, Cravo e Canela",
+    author: "Jorge Amado",
+    cover: "",
+    grade: "EM",
+    available: null,
+    type: "brasileira",
+    genres: ["romance"],
+    tags: ["bahia","cacau"],
+    mood: [],
+    tamanho: "longo",
+    vibes: ["romantico","engracado"],
+    leitura: "media",
+    time: ["passado"],
+    description: "Em Ilhéus, na época do cacau, a retirante Gabriela vira cozinheira do bar de Nacib e muda a vida da cidade.",
+    popularity: 7
+  },
+  {
+    id: 409,
+    title: "Quarto de Despejo",
+    author: "Carolina Maria de Jesus",
+    cover: "",
+    grade: ["EF2","EM"],
+    available: null,
+    type: "brasileira",
+    genres: ["memoir","biografia","social"],
+    tags: ["favela","sao-paulo","diario"],
+    mood: [],
+    tamanho: "curto",
+    vibes: ["emocionante","pesado","inspirador"],
+    leitura: "facil",
+    time: ["passado"],
+    description: "Diário de Carolina, catadora de papel na favela do Canindé, em São Paulo, nos anos 1950: a fome, a luta diária e a escrita.",
+    popularity: 8
+  },
+  {
+    id: 410,
+    title: "Torto Arado",
+    author: "Itamar Vieira Junior",
+    cover: "",
+    grade: "EM",
+    available: null,
+    type: "brasileira",
+    genres: ["romance","social"],
+    tags: ["bahia","terra"],
+    mood: [],
+    tamanho: "medio",
+    vibes: ["emocionante","pesado"],
+    leitura: "media",
+    time: ["passado"],
+    description: "No sertão da Bahia, as irmãs Bibiana e Belonísia têm a vida marcada por um acidente na infância e pela luta dos trabalhadores pela terra.",
+    popularity: 9
+  },
+  {
+    id: 411,
+    title: "O Meu Pé de Laranja Lima",
+    author: "José Mauro de Vasconcelos",
+    cover: "",
+    grade: ["EF1","EF2"],
+    available: null,
+    type: "brasileira",
+    genres: ["drama","infantil"],
+    tags: ["infancia","amizade"],
+    mood: [],
+    tamanho: "curto",
+    vibes: ["emocionante"],
+    leitura: "facil",
+    time: ["passado"],
+    description: "Zezé, um menino levado e sonhador, conversa com seu pé de laranja lima e descobre a amizade e a dor de crescer.",
+    popularity: 9
+  },
+  {
+    id: 412,
+    title: "A Bolsa Amarela",
+    author: "Lygia Bojunga",
+    cover: "",
+    grade: "EF1",
+    available: null,
+    type: "brasileira",
+    genres: ["infantil","fantasia"],
+    tags: ["infancia","imaginacao"],
+    mood: [],
+    tamanho: "curto",
+    vibes: ["leve","reflexivo"],
+    leitura: "facil",
+    time: ["presente"],
+    description: "Raquel esconde numa bolsa amarela suas três grandes vontades: crescer, ser garoto e virar escritora.",
+    popularity: 7
+  },
+  {
+    id: 413,
+    title: "A Droga da Obediência",
+    author: "Pedro Bandeira",
+    cover: "",
+    grade: ["EF1","EF2"],
+    available: null,
+    type: "brasileira",
+    genres: ["aventura","crime"],
+    tags: ["os-karas","escola"],
+    mood: [],
+    tamanho: "curto",
+    vibes: ["misterio","aventura"],
+    leitura: "facil",
+    time: ["presente"],
+    description: "Os Karas, um grupo secreto de alunos, investigam o sumiço de estudantes e descobrem uma droga que torna as pessoas obedientes.",
+    popularity: 9
+  },
+  {
+    id: 414,
+    title: "O Escaravelho do Diabo",
+    author: "Lúcia Machado de Almeida",
+    cover: "",
+    grade: ["EF1","EF2"],
+    available: null,
+    type: "brasileira",
+    genres: ["crime","aventura"],
+    tags: ["vaga-lume","investigacao"],
+    mood: [],
+    tamanho: "curto",
+    vibes: ["misterio","assustador"],
+    leitura: "facil",
+    time: ["presente"],
+    description: "Numa cidade do interior, pessoas ruivas começam a ser assassinadas depois de receber um escaravelho pelo correio. Alberto tenta desvendar o caso.",
+    popularity: 8
+  },
+  {
+    id: 415,
+    title: "A Ilha Perdida",
+    author: "Maria José Dupré",
+    cover: "",
+    grade: "EF1",
+    available: null,
+    type: "brasileira",
+    genres: ["aventura","infantil"],
+    tags: ["vaga-lume","natureza"],
+    mood: [],
+    tamanho: "curto",
+    vibes: ["aventura","leve"],
+    leitura: "facil",
+    time: ["passado"],
+    description: "Os primos Henrique e Eduardo vão escondidos a uma ilha no meio do rio, ficam presos lá e precisam aprender a sobreviver.",
+    popularity: 7
+  },
+  {
+    id: 416,
+    title: "Reinações de Narizinho",
+    author: "Monteiro Lobato",
+    cover: "",
+    grade: "EF1",
+    available: null,
+    type: "brasileira",
+    genres: ["infantil","fantasia"],
+    tags: ["sitio-do-picapau-amarelo"],
+    mood: [],
+    tamanho: "medio",
+    vibes: ["leve","aventura"],
+    leitura: "facil",
+    time: ["fantasia"],
+    description: "Narizinho, a boneca Emília e o primo Pedrinho vivem aventuras fantásticas no Sítio do Picapau Amarelo.",
+    popularity: 7
+  },
+  {
+    id: 417,
+    title: "Felicidade Clandestina",
+    author: "Clarice Lispector",
+    cover: "",
+    grade: "EM",
+    available: null,
+    type: "brasileira",
+    genres: ["conto"],
+    tags: ["infancia","cotidiano"],
+    mood: [],
+    tamanho: "curto",
+    vibes: ["reflexivo","emocionante"],
+    leitura: "media",
+    time: ["passado"],
+    description: "Contos sobre infância, desejo e pequenos momentos do dia a dia, como o da menina que faz de tudo para ganhar um livro emprestado.",
+    popularity: 7
+  },
+  {
+    id: 418,
+    title: "O Tempo e o Vento: O Continente",
+    author: "Erico Verissimo",
+    cover: "",
+    grade: "EM",
+    available: null,
+    type: "brasileira",
+    genres: ["romance","historico","epico"],
+    tags: ["rio-grande-do-sul","familia"],
+    mood: [],
+    tamanho: "longo",
+    vibes: ["aventura","emocionante"],
+    leitura: "media",
+    time: ["passado"],
+    description: "Primeira parte da saga das famílias Terra e Cambará, que acompanha a formação do Rio Grande do Sul ao longo de gerações.",
+    popularity: 7
+  },
+  {
+    id: 419,
+    title: "A Escrava Isaura",
+    author: "Bernardo Guimarães",
+    cover: "",
+    grade: "EM",
+    available: null,
+    type: "brasileira",
+    genres: ["romance","romantismo"],
+    tags: ["escravidao","abolicao"],
+    mood: [],
+    tamanho: "medio",
+    vibes: ["romantico","emocionante"],
+    leitura: "media",
+    time: ["passado"],
+    description: "Isaura, uma mulher escravizada, é perseguida pelo senhor Leôncio. Romance do século XIX que ficou famoso na televisão.",
+    popularity: 6
+  },
+  {
+    id: 420,
+    title: "Olhos d'Água",
+    author: "Conceição Evaristo",
+    cover: "",
+    grade: "EM",
+    available: null,
+    type: "brasileira",
+    genres: ["conto","social"],
+    tags: ["racismo","mulheres"],
+    mood: [],
+    tamanho: "curto",
+    vibes: ["emocionante","pesado"],
+    leitura: "media",
+    time: ["presente"],
+    description: "Contos sobre a vida de mulheres e homens negros no Brasil, entre violência, afeto e resistência.",
+    popularity: 8
+  },
+  {
+    id: 421,
+    title: "Lira dos Vinte Anos",
+    author: "Álvares de Azevedo",
+    cover: "",
+    grade: "EM",
+    available: null,
+    type: "brasileira",
+    genres: ["poesia","romantismo"],
+    tags: ["ultrarromantismo"],
+    mood: [],
+    tamanho: "curto",
+    vibes: ["romantico","reflexivo"],
+    leitura: "media",
+    time: ["passado"],
+    description: "Poemas do ultrarromantismo brasileiro, entre o amor idealizado, a morte e a ironia.",
+    popularity: 6
+  },
+  {
+    id: 430,
+    title: "Frankenstein",
+    author: "Mary Shelley",
+    cover: "",
+    grade: "EM",
+    available: null,
+    type: "estrangeira",
+    genres: ["terror","gotico","ficcao-cientifica","classico"],
+    tags: ["monstro","ciencia"],
+    mood: [],
+    tamanho: "medio",
+    vibes: ["assustador","reflexivo"],
+    leitura: "media",
+    time: ["passado"],
+    description: "O cientista Victor Frankenstein dá vida a uma criatura e depois a abandona. Um clássico do terror sobre criação e responsabilidade.",
+    popularity: 9
+  },
+  {
+    id: 431,
+    title: "O Médico e o Monstro",
+    author: "Robert Louis Stevenson",
+    cover: "",
+    grade: ["EF2","EM"],
+    available: null,
+    type: "estrangeira",
+    genres: ["terror","gotico","classico"],
+    tags: ["londres","dupla-personalidade"],
+    mood: [],
+    tamanho: "curto",
+    vibes: ["assustador","misterio"],
+    leitura: "media",
+    time: ["passado"],
+    description: "Em Londres, o respeitado Dr. Jekyll esconde uma ligação misteriosa com o violento Sr. Hyde.",
+    popularity: 8
+  },
+  {
+    id: 432,
+    title: "Histórias Extraordinárias",
+    author: "Edgar Allan Poe",
+    cover: "",
+    grade: "EM",
+    available: null,
+    type: "estrangeira",
+    genres: ["terror","conto","gotico"],
+    tags: ["contos-de-terror"],
+    mood: [],
+    tamanho: "medio",
+    vibes: ["assustador","misterio"],
+    leitura: "media",
+    time: ["passado"],
+    description: "Contos de terror e mistério de Edgar Allan Poe, um dos pais do conto de horror e da história de detetive.",
+    popularity: 8
+  },
+  {
+    id: 433,
+    title: "Coraline",
+    author: "Neil Gaiman",
+    cover: "",
+    grade: ["EF1","EF2"],
+    available: null,
+    type: "estrangeira",
+    genres: ["terror","fantasia","infantil"],
+    tags: ["portal","outra-mae"],
+    mood: [],
+    tamanho: "curto",
+    vibes: ["assustador","aventura"],
+    leitura: "facil",
+    time: ["presente"],
+    description: "Coraline encontra uma porta para uma casa igual à sua, onde uma \"Outra Mãe\" com botões no lugar dos olhos não quer deixá-la ir embora.",
+    popularity: 8
+  },
+  {
+    id: 434,
+    title: "It: A Coisa",
+    author: "Stephen King",
+    cover: "",
+    grade: "EM",
+    available: null,
+    type: "estrangeira",
+    genres: ["terror"],
+    tags: ["palhaco","amizade"],
+    mood: [],
+    tamanho: "longo",
+    vibes: ["assustador","pesado"],
+    leitura: "media",
+    time: ["passado"],
+    description: "Um grupo de amigos enfrenta uma criatura que toma a forma de um palhaço e aterroriza a cidade de Derry.",
+    popularity: 8
+  },
+  {
+    id: 435,
+    title: "O Fantasma da Ópera",
+    author: "Gaston Leroux",
+    cover: "",
+    grade: ["EF2","EM"],
+    available: null,
+    type: "estrangeira",
+    genres: ["gotico","classico"],
+    tags: ["paris","musica"],
+    mood: [],
+    tamanho: "medio",
+    vibes: ["misterio","romantico"],
+    leitura: "media",
+    time: ["passado"],
+    description: "Na Ópera de Paris, um misterioso \"fantasma\" se apaixona pela cantora Christine e tenta controlar o destino dela.",
+    popularity: 7
+  },
+  {
+    id: 436,
+    title: "Um Estudo em Vermelho",
+    author: "Arthur Conan Doyle",
+    cover: "",
+    grade: ["EF2","EM"],
+    available: null,
+    type: "estrangeira",
+    genres: ["crime","classico"],
+    tags: ["sherlock-holmes","detetive"],
+    mood: [],
+    tamanho: "curto",
+    vibes: ["misterio"],
+    leitura: "media",
+    time: ["passado"],
+    description: "A primeira aventura de Sherlock Holmes e Dr. Watson, que investigam um assassinato misterioso em Londres.",
+    popularity: 8
+  },
+  {
+    id: 437,
+    title: "O Cão dos Baskerville",
+    author: "Arthur Conan Doyle",
+    cover: "",
+    grade: ["EF2","EM"],
+    available: null,
+    type: "estrangeira",
+    genres: ["crime","gotico","classico"],
+    tags: ["sherlock-holmes","detetive"],
+    mood: [],
+    tamanho: "curto",
+    vibes: ["misterio","assustador"],
+    leitura: "media",
+    time: ["passado"],
+    description: "Sherlock Holmes investiga a lenda de um cão monstruoso que estaria perseguindo os herdeiros da família Baskerville.",
+    popularity: 8
+  },
+  {
+    id: 438,
+    title: "E Não Sobrou Nenhum",
+    author: "Agatha Christie",
+    cover: "",
+    grade: ["EF2","EM"],
+    available: null,
+    type: "estrangeira",
+    genres: ["crime","classico"],
+    tags: ["ilha","detetive"],
+    mood: [],
+    tamanho: "curto",
+    vibes: ["misterio","assustador"],
+    leitura: "facil",
+    time: ["passado"],
+    description: "Dez pessoas são convidadas para uma ilha isolada e começam a morrer uma a uma, seguindo os versos de uma cantiga infantil.",
+    popularity: 9
+  },
+  {
+    id: 439,
+    title: "Assassinato no Expresso do Oriente",
+    author: "Agatha Christie",
+    cover: "",
+    grade: ["EF2","EM"],
+    available: null,
+    type: "estrangeira",
+    genres: ["crime"],
+    tags: ["hercule-poirot","detetive"],
+    mood: [],
+    tamanho: "curto",
+    vibes: ["misterio"],
+    leitura: "facil",
+    time: ["passado"],
+    description: "Um passageiro é assassinado num trem parado pela neve, e o detetive Hercule Poirot precisa descobrir quem entre os viajantes é o culpado.",
+    popularity: 8
+  },
+  {
+    id: 440,
+    title: "O Senhor das Moscas",
+    author: "William Golding",
+    cover: "",
+    grade: "EM",
+    available: null,
+    type: "estrangeira",
+    genres: ["drama","aventura","classico"],
+    tags: ["ilha","sobrevivencia"],
+    mood: [],
+    tamanho: "curto",
+    vibes: ["pesado","reflexivo","aventura"],
+    leitura: "media",
+    time: ["passado"],
+    description: "Depois de um acidente de avião, um grupo de meninos fica preso numa ilha deserta e tenta se organizar, até a violência tomar conta.",
+    popularity: 8
+  },
+  {
+    id: 441,
+    title: "A Ilha do Tesouro",
+    author: "Robert Louis Stevenson",
+    cover: "",
+    grade: ["EF1","EF2"],
+    available: null,
+    type: "estrangeira",
+    genres: ["aventura","classico"],
+    tags: ["piratas","tesouro"],
+    mood: [],
+    tamanho: "medio",
+    vibes: ["aventura"],
+    leitura: "facil",
+    time: ["passado"],
+    description: "O jovem Jim Hawkins encontra um mapa do tesouro e embarca numa viagem cheia de piratas, como o famoso Long John Silver.",
+    popularity: 8
+  },
+  {
+    id: 442,
+    title: "As Aventuras de Tom Sawyer",
+    author: "Mark Twain",
+    cover: "",
+    grade: ["EF1","EF2"],
+    available: null,
+    type: "estrangeira",
+    genres: ["aventura","classico","humor"],
+    tags: ["infancia","rio-mississippi"],
+    mood: [],
+    tamanho: "medio",
+    vibes: ["aventura","engracado"],
+    leitura: "facil",
+    time: ["passado"],
+    description: "Tom Sawyer, um garoto esperto e encrenqueiro, apronta às margens do rio Mississippi e acaba testemunhando um crime.",
+    popularity: 7
+  },
+  {
+    id: 443,
+    title: "Vinte Mil Léguas Submarinas",
+    author: "Júlio Verne",
+    cover: "",
+    grade: "EF2",
+    available: null,
+    type: "estrangeira",
+    genres: ["aventura","ficcao-cientifica","classico"],
+    tags: ["oceano","submarino"],
+    mood: [],
+    tamanho: "medio",
+    vibes: ["aventura"],
+    leitura: "media",
+    time: ["passado"],
+    description: "Um professor vai parar a bordo do Náutilus, o submarino do misterioso Capitão Nemo, numa viagem pelo fundo dos oceanos.",
+    popularity: 7
+  },
+  {
+    id: 444,
+    title: "O Conde de Monte Cristo",
+    author: "Alexandre Dumas",
+    cover: "",
+    grade: "EM",
+    available: null,
+    type: "estrangeira",
+    genres: ["aventura","classico"],
+    tags: ["vinganca","prisao"],
+    mood: [],
+    tamanho: "longo",
+    vibes: ["aventura","misterio"],
+    leitura: "media",
+    time: ["passado"],
+    description: "Preso injustamente, Edmond Dantès foge da prisão, encontra um tesouro e volta para se vingar de quem o traiu.",
+    popularity: 9
+  },
+  {
+    id: 445,
+    title: "Os Três Mosqueteiros",
+    author: "Alexandre Dumas",
+    cover: "",
+    grade: ["EF2","EM"],
+    available: null,
+    type: "estrangeira",
+    genres: ["aventura","classico"],
+    tags: ["franca","amizade"],
+    mood: [],
+    tamanho: "longo",
+    vibes: ["aventura","engracado"],
+    leitura: "media",
+    time: ["passado"],
+    description: "D'Artagnan chega a Paris para ser mosqueteiro e se junta a Athos, Porthos e Aramis em duelos e intrigas na corte.",
+    popularity: 7
+  },
+  {
+    id: 446,
+    title: "Robinson Crusoé",
+    author: "Daniel Defoe",
+    cover: "",
+    grade: "EF2",
+    available: null,
+    type: "estrangeira",
+    genres: ["aventura","classico"],
+    tags: ["naufragio","sobrevivencia"],
+    mood: [],
+    tamanho: "medio",
+    vibes: ["aventura","inspirador"],
+    leitura: "media",
+    time: ["passado"],
+    description: "Depois de um naufrágio, Robinson passa anos sozinho numa ilha e aprende a sobreviver com o que encontra.",
+    popularity: 6
+  },
+  {
+    id: 447,
+    title: "Admirável Mundo Novo",
+    author: "Aldous Huxley",
+    cover: "",
+    grade: "EM",
+    available: null,
+    type: "estrangeira",
+    genres: ["distopia","ficcao-cientifica","classico"],
+    tags: ["controle","sociedade"],
+    mood: [],
+    tamanho: "medio",
+    vibes: ["reflexivo","pesado"],
+    leitura: "media",
+    time: ["futuro"],
+    description: "Num futuro em que as pessoas são fabricadas em laboratório e mantidas felizes com uma droga, alguém começa a questionar o sistema.",
+    popularity: 8
+  },
+  {
+    id: 448,
+    title: "Ensaio sobre a Cegueira",
+    author: "José Saramago",
+    cover: "",
+    grade: "EM",
+    available: null,
+    type: "portuguesa",
+    genres: ["romance","distopia"],
+    tags: ["epidemia","sociedade"],
+    mood: [],
+    tamanho: "medio",
+    vibes: ["pesado","reflexivo"],
+    leitura: "desafiadora",
+    time: ["presente"],
+    description: "Uma epidemia de \"cegueira branca\" se espalha por uma cidade e revela o melhor e o pior das pessoas.",
+    popularity: 9
+  },
+  {
+    id: 449,
+    title: "Cem Anos de Solidão",
+    author: "Gabriel García Márquez",
+    cover: "",
+    grade: "EM",
+    available: null,
+    type: "estrangeira",
+    genres: ["realismo-magico","romance"],
+    tags: ["familia","macondo"],
+    mood: [],
+    tamanho: "longo",
+    vibes: ["reflexivo","emocionante"],
+    leitura: "desafiadora",
+    time: ["passado"],
+    description: "Sete gerações da família Buendía na cidade imaginária de Macondo, numa história que mistura o real e o fantástico.",
+    popularity: 9
+  },
+  {
+    id: 450,
+    title: "Os Maias",
+    author: "Eça de Queirós",
+    cover: "",
+    grade: "EM",
+    available: null,
+    type: "portuguesa",
+    genres: ["romance","realismo","classico"],
+    tags: ["lisboa","familia"],
+    mood: [],
+    tamanho: "longo",
+    vibes: ["romantico","pesado"],
+    leitura: "desafiadora",
+    time: ["passado"],
+    description: "A decadência da família Maia na Lisboa do fim do século XIX, com uma história de amor que esconde um segredo.",
+    popularity: 6
+  },
+  {
+    id: 451,
+    title: "O Primo Basílio",
+    author: "Eça de Queirós",
+    cover: "",
+    grade: "EM",
+    available: null,
+    type: "portuguesa",
+    genres: ["romance","realismo","classico"],
+    tags: ["lisboa","casamento"],
+    mood: [],
+    tamanho: "medio",
+    vibes: ["romantico","pesado"],
+    leitura: "media",
+    time: ["passado"],
+    description: "Entediada no casamento, Luísa se envolve com o primo Basílio e passa a ser chantageada pela empregada Juliana.",
+    popularity: 6
+  },
+  {
+    id: 460,
+    title: "Extraordinário",
+    author: "R. J. Palacio",
+    cover: "",
+    grade: ["EF1","EF2"],
+    available: null,
+    type: "estrangeira",
+    genres: ["drama","infantil"],
+    tags: ["escola","amizade"],
+    mood: [],
+    tamanho: "medio",
+    vibes: ["emocionante","inspirador"],
+    leitura: "facil",
+    time: ["presente"],
+    description: "Auggie nasceu com uma diferença no rosto e vai pela primeira vez à escola, onde precisa lidar com olhares, amizades e muita coragem.",
+    popularity: 10
+  },
+  {
+    id: 461,
+    title: "O Menino do Pijama Listrado",
+    author: "John Boyne",
+    cover: "",
+    grade: ["EF2","EM"],
+    available: null,
+    type: "estrangeira",
+    genres: ["drama","historico"],
+    tags: ["segunda-guerra","amizade"],
+    mood: [],
+    tamanho: "curto",
+    vibes: ["emocionante","pesado"],
+    leitura: "facil",
+    time: ["passado"],
+    description: "Bruno, filho de um comandante nazista, faz amizade com um menino do outro lado de uma cerca durante a Segunda Guerra.",
+    popularity: 8
+  },
+  {
+    id: 462,
+    title: "Persépolis",
+    author: "Marjane Satrapi",
+    cover: "",
+    grade: "EM",
+    available: null,
+    type: "estrangeira",
+    genres: ["quadrinhos","memoir","historia"],
+    tags: ["ira","revolucao"],
+    mood: [],
+    tamanho: "medio",
+    vibes: ["emocionante","reflexivo"],
+    leitura: "facil",
+    time: ["passado"],
+    description: "Em quadrinhos, Marjane conta sua infância e juventude no Irã durante a Revolução Islâmica e a guerra.",
+    popularity: 8
+  },
+  {
+    id: 463,
+    title: "Maus",
+    author: "Art Spiegelman",
+    cover: "",
+    grade: "EM",
+    available: null,
+    type: "estrangeira",
+    genres: ["quadrinhos","memoir","historico"],
+    tags: ["holocausto","pai-e-filho"],
+    mood: [],
+    tamanho: "medio",
+    vibes: ["emocionante","pesado"],
+    leitura: "media",
+    time: ["passado"],
+    description: "Em quadrinhos, o autor conta como o pai sobreviveu ao Holocausto, com judeus desenhados como ratos e nazistas como gatos.",
+    popularity: 8
+  },
+  {
+    id: 464,
+    title: "A Seleção",
+    author: "Kiera Cass",
+    cover: "",
+    grade: ["EF2","EM"],
+    available: null,
+    type: "estrangeira",
+    genres: ["romance","distopia"],
+    tags: ["competicao","principe"],
+    mood: [],
+    tamanho: "medio",
+    vibes: ["romantico","leve"],
+    leitura: "facil",
+    time: ["futuro"],
+    description: "America é escolhida para disputar, com outras garotas, o coração do príncipe Maxon numa competição transmitida pela TV.",
+    popularity: 8
+  },
+  {
+    id: 465,
+    title: "Divergente",
+    author: "Veronica Roth",
+    cover: "",
+    grade: ["EF2","EM"],
+    available: null,
+    type: "estrangeira",
+    genres: ["distopia","aventura"],
+    tags: ["faccoes","escolhas"],
+    mood: [],
+    tamanho: "medio",
+    vibes: ["aventura","romantico"],
+    leitura: "facil",
+    time: ["futuro"],
+    description: "Numa Chicago do futuro dividida em facções, Tris descobre que é \"divergente\" e que isso a coloca em perigo.",
+    popularity: 8
+  },
+  {
+    id: 466,
+    title: "Fazendo Meu Filme",
+    author: "Paula Pimenta",
+    cover: "",
+    grade: "EF2",
+    available: null,
+    type: "brasileira",
+    genres: ["romance","humor"],
+    tags: ["adolescencia","cinema"],
+    mood: [],
+    tamanho: "medio",
+    vibes: ["romantico","engracado","leve"],
+    leitura: "facil",
+    time: ["presente"],
+    description: "Fani, uma adolescente de Belo Horizonte apaixonada por cinema, se prepara para um intercâmbio enquanto lida com amizades e um amor inesperado.",
+    popularity: 8
+  }
 ];
